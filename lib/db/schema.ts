@@ -12,3 +12,5 @@ export const pollsTable = sqliteTable("polls", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
+
+export type Poll = typeof pollsTable.$inferSelect;
