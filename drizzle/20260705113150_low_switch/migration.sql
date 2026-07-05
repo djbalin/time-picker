@@ -1,0 +1,1 @@
+ALTER TABLE `polls` ADD `dates` text DEFAULT (json_array()) NOT NULL;

@@ -1,9 +1,9 @@
 import { db } from "./db";
 import { pollsTable } from "./schema";
 
-type Poll = typeof pollsTable.$inferInsert;
+type PollInsert = typeof pollsTable.$inferInsert;
 
-const seedPolls: Poll[] = [
+const seedPolls: PollInsert[] = [
   {
     description: "Hvornår skal vi spille The Band?",
     title: "EL GRUPO",
@@ -15,7 +15,10 @@ const seedPolls: Poll[] = [
 ];
 
 const seed = async () => {
+  // await db.delete(pollsTable);
+  console.log("Seeding ...");
   await db.insert(pollsTable).values(seedPolls);
+  console.log("Seeding done");
 };
 
 seed().catch((err) => {

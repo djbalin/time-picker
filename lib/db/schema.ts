@@ -11,6 +11,10 @@ export const pollsTable = sqliteTable("polls", {
   updatedAt: integer()
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
+  dates: text("dates", { mode: "json" })
+    .notNull()
+    .$type<string[]>()
+    .default(sql`(json_array())`),
 });
 
 export type Poll = typeof pollsTable.$inferSelect;
