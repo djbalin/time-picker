@@ -41,7 +41,7 @@ export function CreatePollForm() {
 
   useEffect(() => {
     if (state?.id) {
-      router.push(`/poll/${state.id}`);
+      router.push(`/polls/${state.id}`);
     }
   }, [state, router]);
 

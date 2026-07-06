@@ -52,7 +52,7 @@ export const PollItem = ({ poll }: { poll: PollEnriched }) => {
         <div className="flex items-center gap-4">
           <Link
             className="text-sm font-extrabold text-ink underline-offset-2 hover:underline"
-            href={`/poll/${poll.slug}`}
+            href={`/polls/${poll.slug}`}
           >
             Open poll
           </Link>

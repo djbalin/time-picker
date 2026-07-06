@@ -40,7 +40,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/poll/create"
+                href="/polls/create"
                 className="inline-flex items-center justify-center rounded-full bg-ink px-6 py-3.5 text-base font-extrabold text-paper shadow-raised transition hover:bg-graphite"
               >
                 Create a poll
@@ -96,7 +96,7 @@ export default function Home() {
             </p>
           </div>
           <Link
-            href="/poll/create"
+            href="/polls/create"
             className="inline-flex items-center justify-center rounded-full bg-sky px-6 py-3.5 text-base font-extrabold text-white shadow-raised transition hover:bg-sky-light"
           >
             Get started

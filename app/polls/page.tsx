@@ -18,7 +18,7 @@ export default function PollsPage() {
           </p>
         </div>
         <Link
-          href="/poll/create"
+          href="/polls/create"
           className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-3 text-sm font-extrabold text-paper shadow-raised transition hover:bg-graphite"
         >
           Create poll
