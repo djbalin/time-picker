@@ -16,7 +16,7 @@ importers:
         version: 0.17.4
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@libsql/client@0.17.4)
+        version: 1.0.0-rc.4(@libsql/client@0.17.4)(zod@4.4.3)
       next:
         specifier: 16.2.10
         version: 16.2.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -26,6 +26,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.0
@@ -1232,6 +1235,9 @@ packages:
       utf-8-validate:
         optional: true
 
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
@@ -1760,9 +1766,10 @@ snapshots:
       get-tsconfig: 4.14.0
       jiti: 2.7.0
 
-  drizzle-orm@1.0.0-rc.4(@libsql/client@0.17.4):
+  drizzle-orm@1.0.0-rc.4(@libsql/client@0.17.4)(zod@4.4.3):
     optionalDependencies:
       '@libsql/client': 0.17.4
+      zod: 4.4.3
 
   enhanced-resolve@5.21.6:
     dependencies:
@@ -2030,3 +2037,5 @@ snapshots:
   undici-types@6.21.0: {}
 
   ws@8.21.0: {}
+
+  zod@4.4.3: {}

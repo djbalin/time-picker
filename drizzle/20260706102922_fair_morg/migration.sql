@@ -1,0 +1,1 @@
+ALTER TABLE `polls` ADD `participants` text DEFAULT (json_array()) NOT NULL;

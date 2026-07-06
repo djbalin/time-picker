@@ -5,7 +5,18 @@ import { pollsTable } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { refresh } from "next/cache";
 
-var counter = 0;
+const parseJsonStringArray = (jsonArray: string): any[] => {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(jsonArray);
+  } catch {
+    throw new Error(`Input must be a valid JSON array`);
+  }
+  if (!Array.isArray(parsed)) {
+    throw new Error("Input must be an array");
+  }
+  return parsed;
+};
 
 export async function addPoll(
   _prevState: typeof pollsTable.$inferSelect | null,
@@ -14,22 +25,23 @@ export async function addPoll(
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const rawDates = formData.get("dates");
+  const rawParticipants = formData.get("participants");
 
-  if (!title || !description || typeof rawDates !== "string") {
-    throw new Error("Title, description, and dates are required");
+  console.log(rawParticipants);
+
+  if (
+    !title ||
+    !description ||
+    typeof rawDates !== "string" ||
+    typeof rawParticipants !== "string"
+  ) {
+    throw new Error("Title, participants, and dates are required");
   }
 
-  let parsedDates: unknown;
-  try {
-    parsedDates = JSON.parse(rawDates);
-  } catch {
-    throw new Error("Dates must be a valid JSON array");
-  }
+  const parsedDates = parseJsonStringArray(rawDates);
+  const parsedParticipants = parseJsonStringArray(rawParticipants);
 
-  if (!Array.isArray(parsedDates)) {
-    throw new Error("Dates must be an array");
-  }
-
+  console.log("Parsed participants;", parsedParticipants);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -54,6 +66,7 @@ export async function addPoll(
       description,
       title,
       dates: uniqueDates,
+      participants: parsedParticipants,
     })
     .returning();
   refresh();

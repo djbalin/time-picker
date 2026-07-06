@@ -35,6 +35,24 @@ export const PollItem = ({ poll }: { poll: Poll }) => {
         </span>
       )}
 
+      {poll.participants.length > 0 && (
+        <div className="mt-4">
+          <p className="text-xs font-extrabold uppercase tracking-wide text-slate">
+            Participants
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {poll.participants.map((participant) => (
+              <span
+                key={participant}
+                className="rounded-full bg-cloud px-3.5 py-1.5 text-xs font-extrabold text-slate"
+              >
+                {participant}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <span className="text-xs font-bold text-mist">
           Updated {formatTimestamp(poll.updatedAt)}

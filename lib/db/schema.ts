@@ -4,7 +4,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const pollsTable = sqliteTable("polls", {
   id: integer().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
-  description: text().notNull(),
+  description: text(),
   createdAt: integer()
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -12,6 +12,10 @@ export const pollsTable = sqliteTable("polls", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
   dates: text("dates", { mode: "json" })
+    .notNull()
+    .$type<string[]>()
+    .default(sql`(json_array())`),
+  participants: text("participants", { mode: "json" })
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),

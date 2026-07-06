@@ -1,0 +1,94 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "6ebd2695-3f1a-4f71-8138-87d9bbb99681",
+  "prevIds": [
+    "faaee952-17f1-4630-a072-b4524d479185"
+  ],
+  "ddl": [
+    {
+      "name": "polls",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(json_array())",
+      "generated": null,
+      "name": "dates",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(json_array())",
+      "generated": null,
+      "name": "participants",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "polls_pk",
+      "table": "polls",
+      "entityType": "pks"
+    }
+  ],
+  "renames": []
+}
