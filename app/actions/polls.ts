@@ -76,7 +76,7 @@ export async function createPoll(
     }
   }
 
-  const [{ id: newPollId }] = await db
+  const [newPoll] = await db
     .insert(pollsTable)
     .values({
       description,
@@ -89,12 +89,12 @@ export async function createPoll(
   await db.insert(participantsTable).values(
     parsedParticipants.map((name) => ({
       name,
-      pollId: newPollId,
+      pollId: newPoll.id,
     })),
   );
 
   refresh();
-  return newPollId;
+  return newPoll;
 }
 
 async function getAvailabilitiesByParticipant(

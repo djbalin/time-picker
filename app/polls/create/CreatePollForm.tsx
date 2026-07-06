@@ -2,7 +2,6 @@
 import Form from "next/form";
 import { useRouter } from "next/navigation";
 import {
-  type FormEvent,
   type KeyboardEvent,
   type SVGProps,
   useActionState,
@@ -50,7 +49,8 @@ export function CreatePollForm() {
     setDates(next);
   }, []);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const result = createPollSchema.safeParse({
       title: formData.get("title"),
@@ -61,9 +61,6 @@ export function CreatePollForm() {
 
     if (!result.success) {
       const fieldErrors = z.flattenError(result.error).fieldErrors;
-      console.log("FIELD ERRORS:");
-
-      console.log(fieldErrors);
       setErrors({
         title: fieldErrors.title?.[0],
         dates: fieldErrors.dates?.[0],
@@ -74,8 +71,6 @@ export function CreatePollForm() {
       setErrors({});
     }
   }
-
-  console.log(errors);
 
   return (
     <Form
