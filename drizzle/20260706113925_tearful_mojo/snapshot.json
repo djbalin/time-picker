@@ -1,0 +1,142 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "e4cfb115-7173-45ac-ae78-50551d46ce2a",
+  "prevIds": [
+    "6ebd2695-3f1a-4f71-8138-87d9bbb99681"
+  ],
+  "ddl": [
+    {
+      "name": "participants",
+      "entityType": "tables"
+    },
+    {
+      "name": "polls",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "participants"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "pollId",
+      "entityType": "columns",
+      "table": "participants"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "participants"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(json_array())",
+      "generated": null,
+      "name": "dates",
+      "entityType": "columns",
+      "table": "polls"
+    },
+    {
+      "columns": [
+        "pollId"
+      ],
+      "tableTo": "polls",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_participants_pollId_polls_id_fk",
+      "entityType": "fks",
+      "table": "participants"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "participants_pk",
+      "table": "participants",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "polls_pk",
+      "table": "polls",
+      "entityType": "pks"
+    }
+  ],
+  "renames": []
+}

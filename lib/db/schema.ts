@@ -15,10 +15,23 @@ export const pollsTable = sqliteTable("polls", {
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),
-  participants: text("participants", { mode: "json" })
+});
+
+export const participantsTable = sqliteTable("participants", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  pollId: integer().references(() => pollsTable.id),
+  name: text().notNull(),
+});
+
+export const availabilitiesTable = sqliteTable("availabilities", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  participantId: integer().references(() => participantsTable.id),
+  dates: text("dates", { mode: "json" })
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),
 });
 
 export type Poll = typeof pollsTable.$inferSelect;
+export type Participant = typeof participantsTable.$inferSelect;
+export type Availability = typeof availabilitiesTable.$inferSelect;

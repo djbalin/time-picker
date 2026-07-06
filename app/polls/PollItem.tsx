@@ -1,17 +1,9 @@
 "use client";
 import Link from "next/link";
-import type { Poll } from "@/lib/db/schema";
-import { deletePoll } from "../actions/polls";
+import { deletePoll, type ParticipantEnriched } from "../actions/polls";
+import type { PollEnriched } from "../actions/polls";
 
-function formatTimestamp(value: Poll["updatedAt"]) {
-  return new Date(value * 1000).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-export const PollItem = ({ poll }: { poll: Poll }) => {
+export const PollItem = ({ poll }: { poll: PollEnriched }) => {
   return (
     <li className="rounded-lg border border-line bg-white p-6 shadow-soft transition hover:shadow-raised">
       <div className="flex items-start justify-between gap-4">
@@ -43,10 +35,10 @@ export const PollItem = ({ poll }: { poll: Poll }) => {
           <div className="mt-2 flex flex-wrap gap-2">
             {poll.participants.map((participant) => (
               <span
-                key={participant}
+                key={participant.id}
                 className="rounded-full bg-cloud px-3.5 py-1.5 text-xs font-extrabold text-slate"
               >
-                {participant}
+                {participant.name}
               </span>
             ))}
           </div>
@@ -55,7 +47,7 @@ export const PollItem = ({ poll }: { poll: Poll }) => {
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <span className="text-xs font-bold text-mist">
-          Updated {formatTimestamp(poll.updatedAt)}
+          Updated {poll.updatedAt}
         </span>
         <div className="flex items-center gap-4">
           <Link

@@ -86,7 +86,7 @@ export default async function PollPage({
                 key={date}
                 className="rounded-full bg-sky-tint px-3.5 py-1.5 text-xs font-extrabold text-sky-deep"
               >
-                {formatDateKey(date)}
+                {date}
               </span>
             ))}
           </div>

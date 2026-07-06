@@ -95,7 +95,7 @@ export function CreatePollForm() {
           name="title"
           placeholder="e.g. Team offsite"
           aria-invalid={Boolean(errors.title)}
-          className={`w-full rounded-md border bg-paper px-4 py-3 text-sm font-semibold text-ink placeholder:text-mist placeholder:font-semibold focus:bg-white focus:outline-none focus:ring-4 ${
+          className={`w-full rounded-md border bg-paper px-4 py-3 text-sm font-semibold text-ink placeholder:text-mist placeholder:font-semibold  focus:border-sky focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-tint  ${
             errors.title
               ? "border-red-500"
               : "border-line focus:border-sky focus:ring-sky-tint"

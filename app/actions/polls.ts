@@ -1,9 +1,23 @@
 "use server";
 
 import { db } from "@/lib/db/db";
-import { pollsTable } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  availabilitiesTable,
+  Availability,
+  Participant,
+  participantsTable,
+  pollsTable,
+} from "@/lib/db/schema";
+import { eq, getColumns, sql } from "drizzle-orm";
 import { refresh } from "next/cache";
+
+export type ParticipantEnriched = typeof participantsTable.$inferSelect & {
+  availabilities: (typeof availabilitiesTable.$inferSelect)[];
+};
+
+export type PollEnriched = typeof pollsTable.$inferSelect & {
+  participants: ParticipantEnriched[];
+};
 
 const parseJsonStringArray = (jsonArray: string): any[] => {
   let parsed: unknown;
@@ -66,16 +80,63 @@ export async function addPoll(
       description,
       title,
       dates: uniqueDates,
-      participants: parsedParticipants,
     })
     .returning();
   refresh();
   return inserted;
 }
 
+async function getAvailabilitiesByParticipant(
+  participantId: number,
+): Promise<Availability[]> {
+  return await db
+    .select()
+    .from(availabilitiesTable)
+    .where(eq(availabilitiesTable.participantId, participantId));
+}
+
+export async function getParticipantsByPollId(
+  pollId: number,
+): Promise<Participant[]> {
+  return await db
+    .select()
+    .from(participantsTable)
+    .where(eq(participantsTable.pollId, pollId));
+}
+
+async function enrichParticipantWithAvailabilities(
+  participant: typeof participantsTable.$inferSelect,
+): Promise<ParticipantEnriched> {
+  const availabilities = await getAvailabilitiesByParticipant(participant.id);
+  return {
+    ...participant,
+    availabilities: availabilities,
+  };
+}
+
+async function enrichPoll(
+  poll: typeof pollsTable.$inferSelect,
+): Promise<PollEnriched> {
+  const participants = await getParticipantsByPollId(poll.id);
+  const participantsEnriched = await Promise.all(
+    participants.map(async (part) => enrichParticipantWithAvailabilities(part)),
+  );
+  return {
+    ...poll,
+    participants: participantsEnriched,
+  };
+}
+
 export async function getPolls() {
-  const result = await db.select().from(pollsTable);
-  return result;
+  const polls = await db.select().from(pollsTable);
+
+  const pollsEnriched = await Promise.all(
+    polls.map(async (poll) => {
+      return enrichPoll(poll);
+    }),
+  );
+
+  return pollsEnriched;
 }
 
 export async function getPollById(id: number) {

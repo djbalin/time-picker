@@ -1,7 +1,9 @@
 import { db } from "./db";
-import { pollsTable } from "./schema";
+import { availabilitiesTable, participantsTable, pollsTable } from "./schema";
 
 type PollInsert = typeof pollsTable.$inferInsert;
+type ParticipantsInsert = typeof participantsTable.$inferInsert;
+type AvailabilityInsert = typeof availabilitiesTable.$inferInsert;
 
 const danishNames = [
   "Freja",
@@ -50,6 +52,12 @@ function pickRandomNames() {
   return shuffled.slice(0, count);
 }
 
+function pickRandomAvailableDates(pollDates: string[]) {
+  const shuffled = [...pollDates].sort(() => Math.random() - 0.5);
+  const count = randomInt(1, pollDates.length);
+  return shuffled.slice(0, count).sort();
+}
+
 function generateRandomDates() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -77,14 +85,37 @@ function generateRandomDates() {
 const seedPolls: PollInsert[] = pollTemplates.map((poll) => ({
   ...poll,
   dates: generateRandomDates(),
-  participants: pickRandomNames(),
 }));
 
 const seed = async () => {
-  console.warn("Deleting polls table...");
+  console.warn("Deleting existing data...");
+  await db.delete(availabilitiesTable);
+  await db.delete(participantsTable);
   await db.delete(pollsTable);
   console.log("Seeding ...");
-  await db.insert(pollsTable).values(seedPolls);
+  const newPolls = await db.insert(pollsTable).values(seedPolls).returning();
+
+  for (const poll of newPolls) {
+    const randomNames = pickRandomNames();
+    const participantObjects: ParticipantsInsert[] = randomNames.map(
+      (name) => ({
+        name: name,
+        pollId: poll.id,
+      }),
+    );
+    const newParticipants = await db
+      .insert(participantsTable)
+      .values(participantObjects)
+      .returning();
+
+    const availabilityObjects: AvailabilityInsert[] = newParticipants.map(
+      (participant) => ({
+        participantId: participant.id,
+        dates: pickRandomAvailableDates(poll.dates),
+      }),
+    );
+    await db.insert(availabilitiesTable).values(availabilityObjects);
+  }
   console.log("Seeding done");
 };
 
