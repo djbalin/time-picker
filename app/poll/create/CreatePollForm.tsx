@@ -12,7 +12,7 @@ import {
   useState,
 } from "react";
 import { z } from "zod";
-import { addPoll } from "../../actions/polls";
+import { createPoll } from "../../actions/polls";
 import { DatePicker } from "./DatePicker";
 
 function toDateKey(date: Date) {
@@ -34,7 +34,7 @@ type FormErrors = Partial<
 
 export function CreatePollForm() {
   const router = useRouter();
-  const [state, formAction, pending] = useActionState(addPoll, null);
+  const [state, formAction, pending] = useActionState(createPoll, null);
   const [dates, setDates] = useState<Date[]>([]);
   const [participants, setParticipants] = useState<string[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});

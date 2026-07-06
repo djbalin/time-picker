@@ -15,6 +15,10 @@ export const pollsTable = sqliteTable("polls", {
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),
+  slug: text()
+    .notNull()
+    .unique()
+    .default(sql`(lower(hex(randomblob(16))))`),
 });
 
 export const participantsTable = sqliteTable("participants", {

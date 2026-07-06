@@ -84,10 +84,12 @@ export function DatePicker({
       dates: selected,
       month,
     });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const datesOfMonth = getDatesOfMonth({
       month: month,
       year: date.getFullYear(),
-    });
+    }).filter((d) => d >= today);
     onSelect(filtered.concat(datesOfMonth));
   };
 
@@ -109,6 +111,7 @@ export function DatePicker({
         selected={selected}
         onSelect={onSelect}
         required
+        disabled={{ before: new Date() }}
         hideNavigation
         showWeekNumber
         numberOfMonths={6}

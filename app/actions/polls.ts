@@ -32,30 +32,32 @@ const parseJsonStringArray = (jsonArray: string): any[] => {
   return parsed;
 };
 
-export async function addPoll(
+export async function createPoll(
   _prevState: typeof pollsTable.$inferSelect | null,
   formData: FormData,
 ) {
+  console.log("Hallooo create oll");
+  console.log("Formdata:", formData);
   const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
   const rawDates = formData.get("dates");
+  const description = formData.get("description") as string;
   const rawParticipants = formData.get("participants");
 
-  console.log(rawParticipants);
+  if (!title) {
+    throw new Error("Title is required");
+  }
 
-  if (
-    !title ||
-    !description ||
-    typeof rawDates !== "string" ||
-    typeof rawParticipants !== "string"
-  ) {
-    throw new Error("Title, participants, and dates are required");
+  if (typeof rawDates !== "string") {
+    throw new Error("Dates must be a JSON array");
+  }
+
+  if (typeof rawParticipants !== "string") {
+    throw new Error("Participants is required");
   }
 
   const parsedDates = parseJsonStringArray(rawDates);
   const parsedParticipants = parseJsonStringArray(rawParticipants);
 
-  console.log("Parsed participants;", parsedParticipants);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -69,12 +71,12 @@ export async function addPoll(
 
   for (const date of uniqueDates) {
     const parsedDate = new Date(`${date}T00:00:00`);
-    if (Number.isNaN(parsedDate.getTime()) || parsedDate <= today) {
+    if (Number.isNaN(parsedDate.getTime()) || parsedDate < today) {
       throw new Error("All dates must be in the future");
     }
   }
 
-  const [inserted] = await db
+  const [{ id: newPollId }] = await db
     .insert(pollsTable)
     .values({
       description,
@@ -82,8 +84,17 @@ export async function addPoll(
       dates: uniqueDates,
     })
     .returning();
+
+  // Insert participants
+  await db.insert(participantsTable).values(
+    parsedParticipants.map((name) => ({
+      name,
+      pollId: newPollId,
+    })),
+  );
+
   refresh();
-  return inserted;
+  return newPollId;
 }
 
 async function getAvailabilitiesByParticipant(
