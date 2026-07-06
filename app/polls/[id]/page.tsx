@@ -2,18 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getPollById } from "@/app/actions/polls";
+import { ResponseFlow } from "./ResponseFlow";
 
 function formatTimestamp(value: number) {
   return new Date(value * 1000).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function formatDateKey(value: string) {
-  return new Date(`${value}T00:00:00`).toLocaleDateString(undefined, {
-    weekday: "short",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -73,24 +65,11 @@ export default async function PollPage({
 
       <section className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
         <h2 className="font-display text-lg font-semibold text-ink">
-          Proposed dates
+          Availability
         </h2>
-        {poll.dates.length === 0 ? (
-          <p className="mt-2 text-sm font-semibold text-slate">
-            No dates have been proposed for this poll yet.
-          </p>
-        ) : (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {poll.dates.map((date) => (
-              <span
-                key={date}
-                className="rounded-full bg-sky-tint px-3.5 py-1.5 text-xs font-extrabold text-sky-deep"
-              >
-                {date}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="mt-4">
+          <ResponseFlow pollId={poll.id} dates={poll.dates} />
+        </div>
       </section>
     </main>
   );
