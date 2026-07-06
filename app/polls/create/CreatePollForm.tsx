@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import { z } from "zod";
+import { participantColor } from "@/lib/participant-colors";
 import { createPoll } from "../../actions/polls";
 import { DatePicker } from "./DatePicker";
 
@@ -213,13 +214,6 @@ function TrashIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const BADGE_COLORS = [
-  { bg: "bg-sky-tint", text: "text-sky-deep" },
-  { bg: "bg-green-tint", text: "text-green-deep" },
-  { bg: "bg-orange-tint", text: "text-orange-deep" },
-  { bg: "bg-yellow", text: "text-ink" },
-];
-
 function ParticipantBadge({
   name,
   index,
@@ -231,7 +225,7 @@ function ParticipantBadge({
   onEdit: () => void;
   onDelete: () => void;
 }) {
-  const { bg, text } = BADGE_COLORS[index % BADGE_COLORS.length];
+  const { bg, text } = participantColor(index);
   return (
     <span
       className={`group relative inline-flex items-center rounded-full px-4 py-2 text-sm font-extrabold ${bg} ${text}`}

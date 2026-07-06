@@ -1,5 +1,7 @@
 "use client";
 import { type KeyboardEvent, type SVGProps, useState } from "react";
+import { formatDateKey } from "@/lib/format";
+import { participantColor } from "@/lib/participant-colors";
 
 /**
  * Data shapes this flow expects (align backend to these):
@@ -184,7 +186,7 @@ function IdentifyScreen({
 
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {participants.map((participant, i) => {
-          const { bg, text } = BADGE_COLORS[i % BADGE_COLORS.length];
+          const { bg, text } = participantColor(i);
           return (
             <button
               key={participant.id}
@@ -268,12 +270,18 @@ function AvailabilityGrid({
   onToggle: (dateKey: string) => void;
   onChangeIdentity: () => void;
 }) {
+  const currentColor = participantColor(
+    participants.findIndex((p) => p.id === current.id),
+  );
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold text-slate">
           Answering as{" "}
-          <span className="rounded-full bg-sky-tint px-3 py-1 text-xs font-extrabold text-sky-deep">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-extrabold ${currentColor.bg} ${currentColor.text}`}
+          >
             {current.name}
           </span>
         </p>
@@ -300,23 +308,31 @@ function AvailabilityGrid({
               >
                 Date
               </th>
-              {participants.map((participant) => {
+              {participants.map((participant, i) => {
                 const isCurrent = participant.id === current.id;
+                const { bg, text } = participantColor(i);
                 return (
                   <th
                     key={participant.id}
                     scope="col"
                     aria-disabled={!isCurrent}
-                    className={`px-2 py-3 text-center text-xs font-extrabold ${
-                      isCurrent ? "text-sky-deep" : "text-mist"
-                    }`}
+                    className="px-2 py-3 text-center text-xs font-extrabold"
                   >
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1.5">
                       {!isCurrent && (
-                        <LockIcon className="h-3.5 w-3.5" aria-label="locked" />
+                        <LockIcon
+                          className="h-3.5 w-3.5 text-mist"
+                          aria-label="locked"
+                        />
                       )}
-                      {participant.name}
-                      {isCurrent && " (you)"}
+                      <span
+                        className={`rounded-full px-2.5 py-1 ${bg} ${text} ${
+                          isCurrent ? "" : "opacity-70"
+                        }`}
+                      >
+                        {participant.name}
+                        {isCurrent && " (you)"}
+                      </span>
                     </span>
                   </th>
                 );
@@ -328,23 +344,23 @@ function AvailabilityGrid({
               const availableCount = participants.filter((p) =>
                 (availability[p.id] ?? []).includes(dateKey),
               ).length;
-              const allAvailable =
-                availableCount === participants.length &&
-                participants.length > 0;
+              const state = availabilityState(
+                availableCount,
+                participants.length,
+              );
               return (
-                <tr key={dateKey} className="border-b border-line">
+                <tr
+                  key={dateKey}
+                  className={`border-b border-line ${state.row}`}
+                >
                   <th
                     scope="row"
-                    className="py-2.5 pr-4 text-left text-sm font-semibold text-ink"
+                    className="py-2.5 pr-4 pl-2 text-left text-sm font-semibold text-ink"
                   >
                     <span className="flex items-center gap-2">
                       {formatDateKey(dateKey)}
                       <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold ${
-                          allAvailable
-                            ? "bg-green-tint text-green-deep"
-                            : "bg-cloud text-slate"
-                        }`}
+                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold ${state.pill}`}
                       >
                         {availableCount}/{participants.length}
                       </span>
@@ -358,9 +374,7 @@ function AvailabilityGrid({
                     return (
                       <td
                         key={participant.id}
-                        className={`px-2 py-2.5 text-center ${
-                          isCurrent ? "bg-sky-tint/30" : ""
-                        }`}
+                        className="px-2 py-2.5 text-center"
                       >
                         <AvailabilityCell
                           checked={checked}
@@ -430,19 +444,28 @@ function AvailabilityCell({
   );
 }
 
-const BADGE_COLORS = [
-  { bg: "bg-sky-tint", text: "text-sky-deep" },
-  { bg: "bg-green-tint", text: "text-green-deep" },
-  { bg: "bg-orange-tint", text: "text-orange-deep" },
-  { bg: "bg-yellow", text: "text-ink" },
-];
-
-function formatDateKey(value: string) {
-  return new Date(`${value}T00:00:00`).toLocaleDateString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
+/**
+ * Row color by how close the date is to working for everyone:
+ * all available = green, one short = orange, two or more short = red.
+ * Muted tint backgrounds so the grid stays calm.
+ */
+function availabilityState(count: number, total: number) {
+  if (total > 0 && count === total) {
+    return {
+      row: "bg-green-tint/40",
+      pill: "bg-green-tint text-green-deep",
+    };
+  }
+  if (count === total - 1) {
+    return {
+      row: "bg-orange-tint/40",
+      pill: "bg-orange-tint text-orange-deep",
+    };
+  }
+  return {
+    row: "bg-red-tint/40",
+    pill: "bg-red-tint text-red-deep",
+  };
 }
 
 function PlusIcon(props: SVGProps<SVGSVGElement>) {

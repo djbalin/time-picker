@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { deletePoll, type ParticipantEnriched } from "../actions/polls";
-import type { PollEnriched } from "../actions/polls";
+import { formatTimestamp } from "@/lib/format";
+import { participantColor } from "@/lib/participant-colors";
+import { deletePoll, type PollEnriched } from "../actions/polls";
 
 export const PollItem = ({ poll }: { poll: PollEnriched }) => {
   return (
@@ -33,21 +34,24 @@ export const PollItem = ({ poll }: { poll: PollEnriched }) => {
             Participants
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {poll.participants.map((participant) => (
-              <span
-                key={participant.id}
-                className="rounded-full bg-cloud px-3.5 py-1.5 text-xs font-extrabold text-slate"
-              >
-                {participant.name}
-              </span>
-            ))}
+            {poll.participants.map((participant, i) => {
+              const { bg, text } = participantColor(i);
+              return (
+                <span
+                  key={participant.id}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-extrabold ${bg} ${text}`}
+                >
+                  {participant.name}
+                </span>
+              );
+            })}
           </div>
         </div>
       )}
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <span className="text-xs font-bold text-mist">
-          Updated {poll.updatedAt}
+          Updated {formatTimestamp(poll.updatedAt)}
         </span>
         <div className="flex items-center gap-4">
           <Link
