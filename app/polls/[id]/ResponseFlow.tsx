@@ -316,7 +316,11 @@ function AvailabilityGrid({
                     key={participant.id}
                     scope="col"
                     aria-disabled={!isCurrent}
-                    className="px-2 py-3 text-center text-xs font-extrabold"
+                    className={`px-2 py-3 text-center text-xs font-extrabold ${
+                      isCurrent
+                        ? "border-x-2 border-t-2 border-sky/50 bg-sky-tint/50"
+                        : ""
+                    }`}
                   >
                     <span className="inline-flex items-center gap-1.5">
                       {!isCurrent && (
@@ -337,6 +341,9 @@ function AvailabilityGrid({
                   </th>
                 );
               })}
+              <th scope="col" className="sr-only">
+                Count
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -357,14 +364,7 @@ function AvailabilityGrid({
                     scope="row"
                     className="py-2.5 pr-4 pl-2 text-left text-sm font-semibold text-ink"
                   >
-                    <span className="flex items-center gap-2">
-                      {formatDateKey(dateKey)}
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold ${state.pill}`}
-                      >
-                        {availableCount}/{participants.length}
-                      </span>
-                    </span>
+                    {formatDateKey(dateKey)}
                   </th>
                   {participants.map((participant) => {
                     const isCurrent = participant.id === current.id;
@@ -374,7 +374,11 @@ function AvailabilityGrid({
                     return (
                       <td
                         key={participant.id}
-                        className="px-2 py-2.5 text-center"
+                        className={`px-2 py-2.5 text-center ${
+                          isCurrent
+                            ? "border-x-2 border-sky/30 bg-sky-tint/30"
+                            : ""
+                        }`}
                       >
                         <AvailabilityCell
                           checked={checked}
@@ -389,6 +393,11 @@ function AvailabilityGrid({
                       </td>
                     );
                   })}
+                  <td
+                    className={`px-3 py-2.5 text-center text-base font-black tabular-nums ${state.countCell}`}
+                  >
+                    {availableCount}/{participants.length}
+                  </td>
                 </tr>
               );
             })}
@@ -453,18 +462,18 @@ function availabilityState(count: number, total: number) {
   if (total > 0 && count === total) {
     return {
       row: "bg-green-tint/40",
-      pill: "bg-green-tint text-green-deep",
+      countCell: "bg-green-600 text-white",
     };
   }
   if (count === total - 1) {
     return {
       row: "bg-orange-tint/40",
-      pill: "bg-orange-tint text-orange-deep",
+      countCell: "bg-orange-200 text-slate-700",
     };
   }
   return {
     row: "bg-red-tint/40",
-    pill: "bg-red-tint text-red-deep",
+    countCell: "bg-red-400 text-slate-700",
   };
 }
 

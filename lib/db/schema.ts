@@ -18,7 +18,7 @@ export const pollsTable = sqliteTable("polls", {
   slug: text()
     .notNull()
     .unique()
-    .default(sql`(lower(hex(randomblob(16))))`),
+    .default(sql`(lower(hex(randomblob(8))))`),
 });
 
 export const participantsTable = sqliteTable("participants", {

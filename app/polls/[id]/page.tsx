@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getPollById } from "@/app/actions/polls";
+import { getPollById, getPollBySlug } from "@/app/actions/polls";
 import { formatTimestamp } from "@/lib/format";
 import { ResponseFlow } from "./ResponseFlow";
 
@@ -12,12 +12,12 @@ export default async function PollPage({
 }) {
   const { id } = await params;
   const numericId = Number.parseInt(id, 10);
+  console.log(id);
+  // if (Number.isNaN(numericId)) {
+  //   notFound();
+  // }
 
-  if (Number.isNaN(numericId)) {
-    notFound();
-  }
-
-  const poll = await getPollById(numericId);
+  const poll = await getPollBySlug(id);
 
   if (!poll) {
     notFound();

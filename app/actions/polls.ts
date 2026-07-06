@@ -157,6 +157,13 @@ export async function getPollById(id: number) {
     .where(eq(pollsTable.id, id));
   return poll ?? null;
 }
+export async function getPollBySlug(slug: string) {
+  const [poll] = await db
+    .select()
+    .from(pollsTable)
+    .where(eq(pollsTable.slug, slug));
+  return poll ?? null;
+}
 
 export async function deletePoll(id: number) {
   const deleted = await db
