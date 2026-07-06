@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Brand & accent */
+  --color-sky: #01b2ff;
+  --color-sky-light: #63c6ff;
+  --color-sky-tint: #e6f6ff;
+  --color-sky-deep: #0090d8;
+  --color-green: #00c078;
+  --color-green-tint: #e4f8ef;
+  --color-green-deep: #00a768;
+  --color-orange: #ff6b2c;
+  --color-orange-tint: #feeee2;
+  --color-orange-deep: #c4520e;
+  --color-yellow: #ffc94d;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Neutrals & surfaces */
+  --color-ink: #101010;
+  --color-graphite: #2c2c2c;
+  --color-slate: #55554f;
+  --color-mist: #8a8a88;
+  --color-silver: #b8b8b4;
+  --color-line: #e8e7e4;
+  --color-cloud: #f2f1ee;
+  --color-paper: #fbfaf8;
+
+  --font-sans: var(--font-nunito-sans);
+  --font-display: var(--font-fredoka);
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 24px;
+
+  --shadow-soft: 0 2px 8px rgba(16, 16, 16, 0.06);
+  --shadow-raised: 0 8px 20px rgba(16, 16, 16, 0.12);
+  --shadow-float: 0 20px 44px rgba(1, 178, 255, 0.32);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-sky-tint);
 }

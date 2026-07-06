@@ -4,8 +4,16 @@ import { notFound } from "next/navigation";
 import { getPollById } from "@/app/actions/polls";
 
 function formatTimestamp(value: number) {
-  console.log(value);
   return new Date(value * 1000).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatDateKey(value: string) {
+  return new Date(`${value}T00:00:00`).toLocaleDateString(undefined, {
+    weekday: "short",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -31,30 +39,59 @@ export default async function PollPage({
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-10">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-          {poll.title}
-        </h1>{" "}
-        <p className="mt-3 text-base text-slate-700">{poll.description}</p>
-        <div className="mt-6 grid gap-3 border-t border-slate-100 pt-4 text-sm text-slate-600 sm:grid-cols-2">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
+      <Link
+        className="text-sm font-extrabold text-slate underline-offset-2 hover:text-ink hover:underline"
+        href="/polls"
+      >
+        ← Back to all polls
+      </Link>
+
+      <header className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+            {poll.title}
+          </h1>
+          <span className="shrink-0 rounded-full bg-cloud px-3 py-1 text-xs font-extrabold text-slate">
+            Poll #{poll.id}
+          </span>
+        </div>
+        <p className="mt-3 text-base font-semibold text-slate">
+          {poll.description}
+        </p>
+        <div className="mt-6 grid gap-3 border-t border-line pt-4 text-sm font-semibold text-slate sm:grid-cols-2">
           <p>
-            <span className="font-medium text-slate-800">Created:</span>{" "}
-            {poll.createdAt}
+            <span className="font-extrabold text-ink">Created:</span>{" "}
+            {formatTimestamp(poll.createdAt)}
           </p>
           <p>
-            <span className="font-medium text-slate-800">Updated:</span>{" "}
-            {poll.updatedAt}
+            <span className="font-extrabold text-ink">Updated:</span>{" "}
+            {formatTimestamp(poll.updatedAt)}
           </p>
         </div>
       </header>
 
-      <Link
-        className="text-sm font-medium text-slate-700 underline-offset-2 hover:underline"
-        href="/polls"
-      >
-        Back to all polls
-      </Link>
+      <section className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
+        <h2 className="font-display text-lg font-semibold text-ink">
+          Proposed dates
+        </h2>
+        {poll.dates.length === 0 ? (
+          <p className="mt-2 text-sm font-semibold text-slate">
+            No dates have been proposed for this poll yet.
+          </p>
+        ) : (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {poll.dates.map((date) => (
+              <span
+                key={date}
+                className="rounded-full bg-sky-tint px-3.5 py-1.5 text-xs font-extrabold text-sky-deep"
+              >
+                {formatDateKey(date)}
+              </span>
+            ))}
+          </div>
+        )}
+      </section>
     </main>
   );
 }

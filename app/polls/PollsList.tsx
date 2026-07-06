@@ -6,10 +6,12 @@ export async function PollList() {
 
   if (polls.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-        <p className="text-lg font-semibold text-slate-900">No polls yet</p>
-        <p className="mt-2 text-sm text-slate-600">
-          Your poll list will render here once your server logic is wired up.
+      <div className="rounded-lg border border-dashed border-line bg-white p-10 text-center">
+        <p className="font-display text-lg font-semibold text-ink">
+          No polls yet
+        </p>
+        <p className="mt-2 text-sm font-semibold text-slate">
+          Create your first poll to start finding a time that works.
         </p>
       </div>
     );
@@ -18,7 +20,7 @@ export async function PollList() {
   return (
     <ul className="grid gap-4">
       {polls.map((poll) => (
-        <PollItem poll={poll} />
+        <PollItem key={poll.id} poll={poll} />
       ))}
     </ul>
   );

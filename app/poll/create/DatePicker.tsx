@@ -1,11 +1,20 @@
-import { useState, type SVGProps } from "react";
-
-import { DayPicker, MonthCaption, MonthCaptionProps } from "@daypicker/react";
+import {
+  DayPicker,
+  MonthCaption,
+  type MonthCaptionProps,
+} from "@daypicker/react";
+import type { SVGProps } from "react";
 import "@daypicker/react/style.css";
 
 function PlusIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
       <path
         d="M12 5v14M5 12h14"
         strokeWidth="2"
@@ -18,7 +27,13 @@ function PlusIcon(props: SVGProps<SVGSVGElement>) {
 
 function MinusIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
       <path
         d="M5 12h14"
         strokeWidth="2"
@@ -56,9 +71,13 @@ function getDatesOfMonth({ month, year }: { month: number; year: number }) {
   return dates;
 }
 
-export function DatePicker() {
-  const [selected, setSelected] = useState<Date[]>([]);
-
+export function DatePicker({
+  selected,
+  onSelect,
+}: {
+  selected: Date[];
+  onSelect: (dates: Date[]) => void;
+}) {
   const selectEntireMonth = (date: Date) => {
     const month = date.getMonth();
     const filtered = removeDatesOfMonthFromDatesArray({
@@ -69,7 +88,7 @@ export function DatePicker() {
       month: month,
       year: date.getFullYear(),
     });
-    setSelected(filtered.concat(datesOfMonth));
+    onSelect(filtered.concat(datesOfMonth));
   };
 
   const deselectEntireMonth = (date: Date) => {
@@ -79,7 +98,7 @@ export function DatePicker() {
       month: monthNum,
     });
 
-    setSelected(filtered);
+    onSelect(filtered);
   };
 
   return (
@@ -88,26 +107,22 @@ export function DatePicker() {
         animate
         mode="multiple"
         selected={selected}
-        onSelect={setSelected}
+        onSelect={onSelect}
         required
         hideNavigation
-        // captionLayout="dropdown"
         showWeekNumber
         numberOfMonths={6}
         classNames={{
           months: "flex w-max flex-row gap-4",
-          month:
-            "rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-950",
+          month: "rounded-md border border-line bg-white p-3 shadow-soft",
           month_caption: "mb-3",
-          weekdays: "text-zinc-500 dark:text-zinc-400",
-          weekday: "text-xs font-medium",
+          weekdays: "text-mist",
+          weekday: "text-xs font-bold",
           day_button:
-            "h-9 w-9 rounded-md text-sm hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-400 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-600",
-          selected:
-            "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200",
-          today: "border border-zinc-300 dark:border-zinc-700",
-          week_number:
-            "px-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400",
+            "h-9 w-9 rounded-md text-sm font-semibold text-ink hover:bg-cloud focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky",
+          selected: "bg-sky text-white hover:bg-sky-light",
+          today: "border border-sky",
+          week_number: "px-1.5 text-xs font-bold text-mist",
         }}
         components={{
           MonthCaption: ({
@@ -117,30 +132,30 @@ export function DatePicker() {
           }: MonthCaptionProps) => (
             <MonthCaption {...props} calendarMonth={calendarMonth}>
               <div className="flex flex-col gap-2">
-                <div className="text-center text-sm font-semibold">
+                <div className="text-center font-display text-sm font-semibold text-ink">
                   {children}
                 </div>
-                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900">
-                  <button
-                    type="button"
-                    onClick={() => selectEntireMonth(calendarMonth.date)}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-700 transition hover:bg-zinc-200 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:hover:text-white dark:focus-visible:ring-zinc-600"
-                    aria-label="Select entire month"
-                    title="Select entire month"
-                  >
-                    <PlusIcon className="h-4 w-4" />
-                  </button>
-                  <div className="text-center text-xs font-medium uppercase tracking-wide text-zinc-600 dark:text-zinc-300">
-                    Entire month
-                  </div>
+                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-md border border-line bg-cloud px-2 py-1">
                   <button
                     type="button"
                     onClick={() => deselectEntireMonth(calendarMonth.date)}
-                    className="inline-flex h-7 w-7 items-center justify-center justify-self-end rounded-md text-zinc-700 transition hover:bg-zinc-200 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:hover:text-white dark:focus-visible:ring-zinc-600"
+                    className="inline-flex h-7 w-7 items-center justify-center justify-self-end rounded-full text-slate transition hover:bg-sky-tint hover:text-sky-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
                     aria-label="Deselect entire month"
                     title="Deselect entire month"
                   >
                     <MinusIcon className="h-4 w-4" />
+                  </button>
+                  <div className="text-center text-xs font-extrabold uppercase tracking-wide text-slate">
+                    Entire month
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => selectEntireMonth(calendarMonth.date)}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate transition hover:bg-sky-tint hover:text-sky-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+                    aria-label="Select entire month"
+                    title="Select entire month"
+                  >
+                    <PlusIcon className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -148,13 +163,6 @@ export function DatePicker() {
           ),
         }}
       />
-      {/* <DayPicker
-      animate
-      mode="multiple"
-      selected={selected}
-      onSelect={setSelected}
-      required
-      /> */}
     </div>
   );
 }

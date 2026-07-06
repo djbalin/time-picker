@@ -1,6 +1,6 @@
 "use client";
-import { Poll } from "@/lib/db/schema";
 import Link from "next/link";
+import type { Poll } from "@/lib/db/schema";
 import { deletePoll } from "../actions/polls";
 
 function formatTimestamp(value: Poll["updatedAt"]) {
@@ -13,30 +13,48 @@ function formatTimestamp(value: Poll["updatedAt"]) {
 
 export const PollItem = ({ poll }: { poll: Poll }) => {
   return (
-    <li
-      className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-      key={poll.id}
-    >
+    <li className="rounded-lg border border-line bg-white p-6 shadow-soft transition hover:shadow-raised">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">{poll.title}</h2>
-          <p className="mt-1 text-sm text-slate-600">{poll.description}</p>
+          <h2 className="font-display text-lg font-semibold text-ink">
+            {poll.title}
+          </h2>
+          <p className="mt-1 text-sm font-semibold text-slate">
+            {poll.description}
+          </p>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+        <span className="shrink-0 rounded-full bg-cloud px-3 py-1 text-xs font-extrabold text-slate">
           Poll #{poll.id}
         </span>
       </div>
 
-      <div className="mt-4 border-t border-slate-100 pt-3 text-xs text-slate-500">
-        Updated {poll.updatedAt}
+      {poll.dates.length > 0 && (
+        <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-sky-tint px-3 py-1 text-xs font-extrabold text-sky-deep">
+          {poll.dates.length} proposed{" "}
+          {poll.dates.length === 1 ? "date" : "dates"}
+        </span>
+      )}
+
+      <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+        <span className="text-xs font-bold text-mist">
+          Updated {formatTimestamp(poll.updatedAt)}
+        </span>
+        <div className="flex items-center gap-4">
+          <Link
+            className="text-sm font-extrabold text-ink underline-offset-2 hover:underline"
+            href={`/poll/${poll.id}`}
+          >
+            Open poll
+          </Link>
+          <button
+            type="button"
+            className="text-sm font-extrabold text-mist transition hover:text-[#ff3b30]"
+            onClick={() => deletePoll(poll.id)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
-      <Link
-        className="text-sm text-slate-700 underline"
-        href={`/poll/${poll.id}`}
-      >
-        Open poll
-      </Link>
-      <button onClick={() => deletePoll(poll.id)}>Delete poll</button>
     </li>
   );
 };
