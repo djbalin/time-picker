@@ -1,175 +1,303 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
+import { refresh } from "next/cache";
 import { db } from "@/lib/db/db";
 import {
+  getPollsBySlugs,
+  getPollWithTokenBySlug,
+  type PollSummaryRow,
+} from "@/lib/db/queries";
+import {
   availabilitiesTable,
-  Availability,
-  Participant,
+  type Poll,
   participantsTable,
   pollsTable,
 } from "@/lib/db/schema";
-import { eq, getColumns, sql } from "drizzle-orm";
-import { refresh } from "next/cache";
+import { generateAdminToken, generateSlug } from "@/lib/ids";
+import {
+  type CreatePollFieldErrors,
+  createPollSchema,
+  dedupeNames,
+  firstFieldErrors,
+  MAX_PARTICIPANTS,
+  nameIsTaken,
+  normalizeDateKeys,
+  participantNameSchema,
+} from "@/lib/validation";
 
-export type ParticipantEnriched = typeof participantsTable.$inferSelect & {
-  availabilities: (typeof availabilitiesTable.$inferSelect)[];
+/**
+ * Every export here is a public POST endpoint, so this module holds mutations
+ * only — reads live in `lib/db/queries.ts`. Actions return a result object
+ * instead of throwing, so a validation failure renders as a message next to
+ * the field rather than as an error overlay.
+ */
+
+export type ActionFailure = {
+  ok: false;
+  message: string;
+  fieldErrors?: CreatePollFieldErrors;
 };
 
-export type PollEnriched = typeof pollsTable.$inferSelect & {
-  participants: ParticipantEnriched[];
-};
+export type ActionResult<T> = ({ ok: true } & T) | ActionFailure;
 
-const parseJsonStringArray = (jsonArray: string): any[] => {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(jsonArray);
-  } catch {
-    throw new Error(`Input must be a valid JSON array`);
-  }
-  if (!Array.isArray(parsed)) {
-    throw new Error("Input must be an array");
-  }
-  return parsed;
-};
+function failure(
+  message: string,
+  fieldErrors?: CreatePollFieldErrors,
+): ActionFailure {
+  return { ok: false, message, fieldErrors };
+}
+
+export type CreatePollResult = ActionResult<{
+  slug: string;
+  adminToken: string;
+  title: string;
+}>;
 
 export async function createPoll(
-  _prevState: typeof pollsTable.$inferSelect | null,
+  _prevState: CreatePollResult | null,
   formData: FormData,
-) {
-  console.log("Hallooo create oll");
-  console.log("Formdata:", formData);
-  const title = formData.get("title") as string;
-  const rawDates = formData.get("dates");
-  const description = formData.get("description") as string;
-  const rawParticipants = formData.get("participants");
+): Promise<CreatePollResult> {
+  const parsed = createPollSchema.safeParse({
+    title: formData.get("title") ?? "",
+    description: formData.get("description") ?? "",
+    dates: readJsonArray(formData.get("dates")),
+    participants: readJsonArray(formData.get("participants")),
+  });
 
-  if (!title) {
-    throw new Error("Title is required");
+  if (!parsed.success) {
+    return failure("Some details need fixing.", firstFieldErrors(parsed.error));
   }
 
-  if (typeof rawDates !== "string") {
-    throw new Error("Dates must be a JSON array");
+  const { title, description } = parsed.data;
+  const dates = normalizeDateKeys(parsed.data.dates);
+  const participants = dedupeNames(parsed.data.participants);
+
+  if (dates.length === 0) {
+    return failure("Pick at least one date.", {
+      dates: "Pick at least one date.",
+    });
+  }
+  if (participants.length === 0) {
+    return failure("Add at least one person.", {
+      participants: "Add at least one person.",
+    });
   }
 
-  if (typeof rawParticipants !== "string") {
-    throw new Error("Participants is required");
-  }
+  const slug = generateSlug();
+  const adminToken = generateAdminToken();
 
-  const parsedDates = parseJsonStringArray(rawDates);
-  const parsedParticipants = parseJsonStringArray(rawParticipants);
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const uniqueDates = [...new Set(parsedDates)]
-    .filter((date): date is string => typeof date === "string")
-    .sort();
-
-  if (uniqueDates.length === 0) {
-    throw new Error("At least one future date is required");
-  }
-
-  for (const date of uniqueDates) {
-    const parsedDate = new Date(`${date}T00:00:00`);
-    if (Number.isNaN(parsedDate.getTime()) || parsedDate < today) {
-      throw new Error("All dates must be in the future");
-    }
-  }
-
-  const [newPoll] = await db
+  const [poll] = await db
     .insert(pollsTable)
-    .values({
-      description,
-      title,
-      dates: uniqueDates,
-    })
+    .values({ slug, adminToken, title, description, dates })
     .returning();
 
-  // Insert participants
   await db.insert(participantsTable).values(
-    parsedParticipants.map((name) => ({
+    participants.map((name) => ({
+      pollId: poll.id,
       name,
-      pollId: newPoll.id,
     })),
   );
 
   refresh();
-  return newPoll;
+  return { ok: true, slug: poll.slug, adminToken, title: poll.title };
 }
 
-async function getAvailabilitiesByParticipant(
-  participantId: number,
-): Promise<Availability[]> {
-  return await db
-    .select()
-    .from(availabilitiesTable)
-    .where(eq(availabilitiesTable.participantId, participantId));
-}
+export type JoinPollResult = ActionResult<{ participantId: number }>;
 
-export async function getParticipantsByPollId(
-  pollId: number,
-): Promise<Participant[]> {
-  return await db
-    .select()
+/** Adds someone the organizer didn't list, and answers as them. */
+export async function joinPoll(
+  slug: string,
+  rawName: string,
+): Promise<JoinPollResult> {
+  const parsed = participantNameSchema.safeParse(rawName);
+  if (!parsed.success) {
+    return failure(parsed.error.issues[0]?.message ?? "Enter a name.");
+  }
+  const name = parsed.data;
+
+  const poll = await getPollWithTokenBySlug(slug);
+  if (!poll) {
+    return failure("That poll no longer exists.");
+  }
+
+  const existing = await db
+    .select({ id: participantsTable.id, name: participantsTable.name })
     .from(participantsTable)
-    .where(eq(participantsTable.pollId, pollId));
-}
+    .where(eq(participantsTable.pollId, poll.id));
 
-async function enrichParticipantWithAvailabilities(
-  participant: typeof participantsTable.$inferSelect,
-): Promise<ParticipantEnriched> {
-  const availabilities = await getAvailabilitiesByParticipant(participant.id);
-  return {
-    ...participant,
-    availabilities: availabilities,
-  };
-}
+  if (existing.length >= MAX_PARTICIPANTS) {
+    return failure(`This poll is full (${MAX_PARTICIPANTS} people max).`);
+  }
+  if (
+    nameIsTaken(
+      name,
+      existing.map((person) => person.name),
+    )
+  ) {
+    return failure(
+      `Someone already answered as "${name}". Pick that name from the list, or use a different one.`,
+    );
+  }
 
-async function enrichPoll(
-  poll: typeof pollsTable.$inferSelect,
-): Promise<PollEnriched> {
-  const participants = await getParticipantsByPollId(poll.id);
-  const participantsEnriched = await Promise.all(
-    participants.map(async (part) => enrichParticipantWithAvailabilities(part)),
-  );
-  return {
-    ...poll,
-    participants: participantsEnriched,
-  };
-}
-
-export async function getPolls() {
-  const polls = await db.select().from(pollsTable);
-
-  const pollsEnriched = await Promise.all(
-    polls.map(async (poll) => {
-      return enrichPoll(poll);
-    }),
-  );
-
-  return pollsEnriched;
-}
-
-export async function getPollById(id: number) {
-  const [poll] = await db
-    .select()
-    .from(pollsTable)
-    .where(eq(pollsTable.id, id));
-  return poll ?? null;
-}
-export async function getPollBySlug(slug: string) {
-  const [poll] = await db
-    .select()
-    .from(pollsTable)
-    .where(eq(pollsTable.slug, slug));
-  return poll ?? null;
-}
-
-export async function deletePoll(id: number) {
-  const deleted = await db
-    .delete(pollsTable)
-    .where(eq(pollsTable.id, id))
+  const [participant] = await db
+    .insert(participantsTable)
+    .values({ pollId: poll.id, name })
     .returning();
+
   refresh();
-  return deleted;
+  return { ok: true, participantId: participant.id };
+}
+
+export type SaveAvailabilityResult = ActionResult<{ dates: string[] }>;
+
+/**
+ * Replaces a participant's answer wholesale. Last write wins, which is what
+ * the toggling UI wants — it always sends the participant's complete set.
+ */
+export async function saveAvailability(
+  slug: string,
+  participantId: number,
+  rawDates: string[],
+): Promise<SaveAvailabilityResult> {
+  const poll = await getPollWithTokenBySlug(slug);
+  if (!poll) {
+    return failure("That poll no longer exists.");
+  }
+
+  const [participant] = await db
+    .select({ id: participantsTable.id })
+    .from(participantsTable)
+    .where(
+      and(
+        eq(participantsTable.id, participantId),
+        eq(participantsTable.pollId, poll.id),
+      ),
+    )
+    .limit(1);
+
+  if (!participant) {
+    return failure("That person isn't part of this poll.");
+  }
+
+  // Only dates the organizer actually proposed can be answered.
+  const proposed = new Set(poll.dates);
+  const dates = normalizeDateKeys(rawDates).filter((date) =>
+    proposed.has(date),
+  );
+
+  await db
+    .insert(availabilitiesTable)
+    .values({ participantId: participant.id, dates })
+    .onConflictDoUpdate({
+      target: availabilitiesTable.participantId,
+      set: { dates, updatedAt: new Date() },
+    });
+
+  await touchPoll(poll.id);
+  refresh();
+  return { ok: true, dates };
+}
+
+export type FinalizePollResult = ActionResult<{ finalizedDate: string | null }>;
+
+/** Locks in the chosen day (or reopens the poll when `date` is null). */
+export async function finalizePoll(
+  slug: string,
+  adminToken: string,
+  date: string | null,
+): Promise<FinalizePollResult> {
+  const owned = await requireOwnedPoll(slug, adminToken);
+  if (!owned.ok) return failure(owned.error);
+
+  if (date !== null && !owned.poll.dates.includes(date)) {
+    return failure("That date isn't one of the options on this poll.");
+  }
+
+  await db
+    .update(pollsTable)
+    .set({ finalizedDate: date, updatedAt: new Date() })
+    .where(eq(pollsTable.id, owned.poll.id));
+
+  refresh();
+  return { ok: true, finalizedDate: date };
+}
+
+export type DeletePollResult = { ok: true } | ActionFailure;
+
+export async function deletePoll(
+  slug: string,
+  adminToken: string,
+): Promise<DeletePollResult> {
+  const owned = await requireOwnedPoll(slug, adminToken);
+  if (!owned.ok) return failure(owned.error);
+
+  // Cleared explicitly rather than relying on ON DELETE CASCADE, which SQLite
+  // only honours when `PRAGMA foreign_keys` is on for the connection.
+  const participants = await db
+    .select({ id: participantsTable.id })
+    .from(participantsTable)
+    .where(eq(participantsTable.pollId, owned.poll.id));
+
+  for (const participant of participants) {
+    await db
+      .delete(availabilitiesTable)
+      .where(eq(availabilitiesTable.participantId, participant.id));
+  }
+  await db
+    .delete(participantsTable)
+    .where(eq(participantsTable.pollId, owned.poll.id));
+  await db.delete(pollsTable).where(eq(pollsTable.id, owned.poll.id));
+
+  refresh();
+  return { ok: true };
+}
+
+type OwnershipCheck = { ok: false; error: string } | { ok: true; poll: Poll };
+
+async function requireOwnedPoll(
+  slug: string,
+  adminToken: string,
+): Promise<OwnershipCheck> {
+  const poll = await getPollWithTokenBySlug(slug);
+  if (!poll) {
+    return { ok: false, error: "That poll no longer exists." };
+  }
+  if (!adminToken || poll.adminToken !== adminToken) {
+    return {
+      ok: false,
+      error: "Only the person who created this poll can do that.",
+    };
+  }
+  return { ok: true, poll };
+}
+
+/** Keeps the poll's `updatedAt` meaningful when a child row changes. */
+async function touchPoll(pollId: number) {
+  await db
+    .update(pollsTable)
+    .set({ updatedAt: new Date() })
+    .where(eq(pollsTable.id, pollId));
+}
+
+function readJsonArray(value: FormDataEntryValue | null): unknown[] {
+  if (typeof value !== "string") return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Read used by the "my polls" list. It's an action rather than a query because
+ * the browser is the only thing that knows which polls it has seen — and it
+ * can only ever ask for slugs it already holds, which are the share secrets.
+ */
+export async function loadMyPolls(slugs: string[]): Promise<PollSummaryRow[]> {
+  const wanted = slugs
+    .filter((slug): slug is string => typeof slug === "string")
+    .slice(0, 100);
+  return getPollsBySlugs(wanted);
 }

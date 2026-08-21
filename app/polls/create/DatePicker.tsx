@@ -3,73 +3,22 @@ import {
   MonthCaption,
   type MonthCaptionProps,
 } from "@daypicker/react";
-import type { SVGProps } from "react";
+import { MinusIcon, PlusIcon } from "@/components/icons";
+import { startOfToday } from "@/lib/date-keys";
 import "@daypicker/react/style.css";
 
-function PlusIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M12 5v14M5 12h14"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+/** Months shown at once; the strip scrolls horizontally beyond the viewport. */
+const MONTHS_SHOWN = 6;
 
-function MinusIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M5 12h14"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function removeDatesOfMonthFromDatesArray({
-  dates,
-  month,
-}: {
-  dates: Date[];
-  month: number;
-}) {
-  const selectedFiltered = dates.filter((el) => el.getMonth() !== month);
-  return selectedFiltered;
-}
-
-function getLastDateOfMonth({ month, year }: { month: number; year: number }) {
-  return new Date(year, month + 1, 0);
-}
-
-function getDatesOfMonth({ month, year }: { month: number; year: number }) {
-  const dates: Date[] = [];
-  const lastDate = getLastDateOfMonth({ month, year });
-
-  // i = 1 because that is the first day of the month
-  for (let i = 1; i <= lastDate.getDate(); i++) {
-    dates.push(new Date(year, month, i));
-  }
-
-  return dates;
-}
+const DAY_BUTTON = [
+  "h-9 w-9 rounded-md text-sm font-semibold transition",
+  "text-ink hover:bg-cloud",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky",
+  "disabled:cursor-not-allowed disabled:text-silver disabled:hover:bg-transparent",
+  "in-data-[today=true]:ring-1 in-data-[today=true]:ring-sky",
+  "in-data-[selected=true]:bg-sky in-data-[selected=true]:text-white",
+  "in-data-[selected=true]:hover:bg-sky-light",
+].join(" ");
 
 export function DatePicker({
   selected,
@@ -78,29 +27,14 @@ export function DatePicker({
   selected: Date[];
   onSelect: (dates: Date[]) => void;
 }) {
-  const selectEntireMonth = (date: Date) => {
-    const month = date.getMonth();
-    const filtered = removeDatesOfMonthFromDatesArray({
-      dates: selected,
-      month,
-    });
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const datesOfMonth = getDatesOfMonth({
-      month: month,
-      year: date.getFullYear(),
-    }).filter((d) => d >= today);
-    onSelect(filtered.concat(datesOfMonth));
+  const selectEntireMonth = (month: Date) => {
+    const today = startOfToday();
+    const daysToAdd = datesInMonth(month).filter((date) => date >= today);
+    onSelect([...withoutMonth(selected, month), ...daysToAdd]);
   };
 
-  const deselectEntireMonth = (date: Date) => {
-    const monthNum = date.getMonth();
-    const filtered = removeDatesOfMonthFromDatesArray({
-      dates: selected,
-      month: monthNum,
-    });
-
-    onSelect(filtered);
+  const deselectEntireMonth = (month: Date) => {
+    onSelect(withoutMonth(selected, month));
   };
 
   return (
@@ -109,23 +43,31 @@ export function DatePicker({
         animate
         mode="multiple"
         selected={selected}
-        onSelect={onSelect}
-        required
-        disabled={{ before: new Date() }}
+        onSelect={(next) => onSelect(next ?? [])}
+        // Compared against local midnight, not "now" — otherwise today itself
+        // becomes unpickable from midday onwards.
+        disabled={{ before: startOfToday() }}
         hideNavigation
         showWeekNumber
-        numberOfMonths={6}
+        numberOfMonths={MONTHS_SHOWN}
         classNames={{
           months: "flex w-max flex-row gap-4",
           month: "rounded-md border border-line bg-white p-3 shadow-soft",
           month_caption: "mb-3",
           weekdays: "text-mist",
           weekday: "text-xs font-bold",
-          day_button:
-            "h-9 w-9 rounded-md text-sm font-semibold text-ink hover:bg-cloud focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky",
-          selected: "bg-sky text-white hover:bg-sky-light",
-          today: "border border-sky",
           week_number: "px-1.5 text-xs font-bold text-mist",
+          // Day state lives on the button, driven by the cell's data
+          // attributes. Putting it on the cell instead pits `text-white`
+          // against the button's own `text-ink` at equal specificity, where
+          // the winner comes down to stylesheet order rather than intent.
+          // Overriding a key replaces its default `rdp-*` class outright, so
+          // the semantic names are re-declared here for readable markup.
+          day: "rdp-day p-0",
+          day_button: DAY_BUTTON,
+          selected: "rdp-selected",
+          today: "rdp-today",
+          disabled: "rdp-disabled",
         }}
         components={{
           MonthCaption: ({
@@ -168,4 +110,29 @@ export function DatePicker({
       />
     </div>
   );
+}
+
+/**
+ * Year matters as well as month: the strip spans six months, so it regularly
+ * shows the same month number in two different years.
+ */
+function withoutMonth(dates: Date[], month: Date): Date[] {
+  return dates.filter(
+    (date) =>
+      date.getMonth() !== month.getMonth() ||
+      date.getFullYear() !== month.getFullYear(),
+  );
+}
+
+function datesInMonth(month: Date): Date[] {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  // Day 0 of the next month is the last day of this one.
+  const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+
+  const dates: Date[] = [];
+  for (let day = 1; day <= lastDay; day++) {
+    dates.push(new Date(year, monthIndex, day));
+  }
+  return dates;
 }
