@@ -1,10 +1,15 @@
-import Link from "next/link";
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
 import { CalendarIcon, CheckIcon } from "@/components/icons";
+import { Link } from "@/i18n/navigation";
 import { formatDateKeyLong } from "@/lib/date-keys";
 import type { PollSummaryRow } from "@/lib/db/queries";
-import { formatRelative, pluralize } from "@/lib/format";
+import { formatRelative } from "@/lib/format";
 
 export function PollCard({ poll }: { poll: PollSummaryRow }) {
+  const t = useTranslations("PollCard");
+  const locale = useLocale();
   const everyoneAnswered =
     poll.participantCount > 0 && poll.respondedCount === poll.participantCount;
 
@@ -28,7 +33,7 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
           {poll.finalizedDate && (
             <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-green-tint px-3 py-1 text-xs font-extrabold text-green-deep">
               <CheckIcon className="h-3.5 w-3.5" />
-              Decided
+              {t("decided")}
             </span>
           )}
         </div>
@@ -36,12 +41,12 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
         {poll.finalizedDate ? (
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-green-tint px-3 py-1 text-xs font-extrabold text-green-deep">
             <CalendarIcon className="h-3.5 w-3.5" />
-            {formatDateKeyLong(poll.finalizedDate)}
+            {formatDateKeyLong(poll.finalizedDate, locale)}
           </p>
         ) : (
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-tint px-3 py-1 text-xs font-extrabold text-sky-deep">
-              {poll.dates.length} {pluralize(poll.dates.length, "date")}
+              {t("dateCount", { count: poll.dates.length })}
             </span>
             <span
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold ${
@@ -50,13 +55,16 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
                   : "bg-cloud text-slate"
               }`}
             >
-              {poll.respondedCount}/{poll.participantCount} answered
+              {t("answeredCount", {
+                answered: poll.respondedCount,
+                total: poll.participantCount,
+              })}
             </span>
           </div>
         )}
 
         <p className="mt-4 border-t border-line pt-3 text-xs font-bold text-mist">
-          Updated {formatRelative(poll.updatedAt)}
+          {t("updated", { relative: formatRelative(poll.updatedAt, locale) })}
         </p>
       </Link>
     </li>

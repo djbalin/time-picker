@@ -1,35 +1,20 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { finalizePoll } from "@/app/actions/polls";
-import { SpinnerIcon, TrophyIcon } from "@/components/icons";
+import { useLocale, useTranslations } from "next-intl";
+import { TrophyIcon } from "@/components/icons";
 import { formatDateKeyLong } from "@/lib/date-keys";
-import { pluralize } from "@/lib/format";
 import type { DateSummary, PollSummary } from "@/lib/poll-summary";
-import { buttonClass } from "@/lib/ui";
 
 /** How many runners-up to list under the winner. */
 const RUNNERS_UP = 3;
 
 /**
  * Answers the question the poll exists to answer: which date wins, and who
- * can't make it. Only the creator's device sees the "Lock this in" buttons —
- * `adminToken` is null for everyone else.
+ * can't make it.
  */
-export function ResultsPanel({
-  summary,
-  finalizedDate,
-  slug,
-  adminToken,
-}: {
-  summary: PollSummary;
-  finalizedDate: string | null;
-  slug: string;
-  adminToken: string | null;
-}) {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
-  const [lockingDate, setLockingDate] = useState<string | null>(null);
+export function ResultsPanel({ summary }: { summary: PollSummary }) {
+  const t = useTranslations("ResultsPanel");
+  const locale = useLocale();
 
   const ranked = [...summary.byDate].sort(
     (a, b) => b.yesCount - a.yesCount || a.date.localeCompare(b.date),
@@ -39,24 +24,14 @@ export function ResultsPanel({
     .filter((day) => day.date !== winner?.date && day.yesCount > 0)
     .slice(0, RUNNERS_UP);
 
-  function lockIn(date: string) {
-    if (!adminToken) return;
-    setLockingDate(date);
-    startTransition(async () => {
-      const result = await finalizePoll(slug, adminToken, date);
-      setLockingDate(null);
-      setError(result.ok ? null : result.message);
-    });
-  }
-
   if (summary.respondedCount === 0) {
     return (
       <section className="rounded-lg border border-dashed border-line bg-white p-6 text-center">
         <p className="font-display text-base font-semibold text-ink">
-          No answers yet
+          {t("noAnswersTitle")}
         </p>
         <p className="mt-1 text-sm font-semibold text-slate">
-          Share the link above — the best date shows up here as replies come in.
+          {t("noAnswersBody")}
         </p>
       </section>
     );
@@ -65,11 +40,16 @@ export function ResultsPanel({
   return (
     <section className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="font-display text-lg font-semibold text-ink">Results</h2>
+        <h2 className="font-display text-lg font-semibold text-ink">
+          {t("heading")}
+        </h2>
         <p className="text-xs font-bold text-mist">
-          {summary.respondedCount} of {summary.totalCount} answered
+          {t("respondedCount", {
+            answered: summary.respondedCount,
+            total: summary.totalCount,
+          })}
           {summary.respondedCount < summary.totalCount &&
-            ` · waiting on ${summary.totalCount - summary.respondedCount}`}
+            ` · ${t("waitingOn", { count: summary.totalCount - summary.respondedCount })}`}
         </p>
       </div>
 
@@ -83,43 +63,31 @@ export function ResultsPanel({
             />
             <span className="text-xs font-extrabold uppercase tracking-wide text-slate">
               {summary.topDates.length > 1
-                ? `${summary.topDates.length} dates tied for best`
+                ? t("tiedForBest", { count: summary.topDates.length })
                 : winner.worksForEveryone
-                  ? "Works for everyone"
-                  : "Best so far"}
+                  ? t("worksForEveryone")
+                  : t("bestSoFar")}
             </span>
           </div>
 
           <p className="mt-2 font-display text-xl font-semibold text-ink">
-            {formatDateKeyLong(winner.date)}
+            {formatDateKeyLong(winner.date, locale)}
           </p>
           <p className="mt-0.5 text-sm font-semibold text-slate">
-            {winner.yesCount} of {winner.totalCount}{" "}
-            {pluralize(winner.totalCount, "person", "people")} available
+            {t("availableCount", {
+              available: winner.yesCount,
+              total: winner.totalCount,
+            })}
           </p>
 
           <Attendance day={winner} />
-
-          {adminToken && finalizedDate !== winner.date && (
-            <button
-              type="button"
-              onClick={() => lockIn(winner.date)}
-              disabled={pending}
-              className={buttonClass({ variant: "accent", className: "mt-4" })}
-            >
-              {pending && lockingDate === winner.date && (
-                <SpinnerIcon className="h-4 w-4" />
-              )}
-              Lock in this date
-            </button>
-          )}
         </div>
       )}
 
       {runnersUp.length > 0 && (
         <div className="mt-5">
           <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate">
-            Other options
+            {t("otherOptions")}
           </h3>
           <ul className="mt-2 divide-y divide-line">
             {runnersUp.map((day) => (
@@ -128,55 +96,35 @@ export function ResultsPanel({
                 className="flex flex-wrap items-center justify-between gap-2 py-2.5"
               >
                 <span className="text-sm font-extrabold text-ink">
-                  {formatDateKeyLong(day.date)}
+                  {formatDateKeyLong(day.date, locale)}
                 </span>
-                <span className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-mist">
-                    {day.yesCount}/{day.totalCount}
-                  </span>
-                  {adminToken && finalizedDate !== day.date && (
-                    <button
-                      type="button"
-                      onClick={() => lockIn(day.date)}
-                      disabled={pending}
-                      className={buttonClass({
-                        variant: "secondary",
-                        size: "sm",
-                      })}
-                    >
-                      Lock in
-                    </button>
-                  )}
+                <span className="text-xs font-bold text-mist">
+                  {day.yesCount}/{day.totalCount}
                 </span>
               </li>
             ))}
           </ul>
         </div>
       )}
-
-      {error && (
-        <p className="mt-4 text-xs font-bold text-red-deep" role="alert">
-          {error}
-        </p>
-      )}
     </section>
   );
 }
 
 function Attendance({ day }: { day: DateSummary }) {
+  const t = useTranslations("ResultsPanel");
   return (
     <dl className="mt-4 grid gap-2 text-sm">
       <NameRow
-        label="Can make it"
+        label={t("canMakeIt")}
         names={day.available}
         tone="text-green-deep"
       />
       <NameRow
-        label="Can't make it"
+        label={t("cantMakeIt")}
         names={day.unavailable}
         tone="text-red-deep"
       />
-      <NameRow label="Haven't answered" names={day.pending} tone="text-mist" />
+      <NameRow label={t("notAnswered")} names={day.pending} tone="text-mist" />
     </dl>
   );
 }

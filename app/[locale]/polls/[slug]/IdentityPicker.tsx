@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { type KeyboardEvent, useState, useTransition } from "react";
 import { joinPoll } from "@/app/actions/polls";
 import { PlusIcon, SpinnerIcon } from "@/components/icons";
@@ -22,6 +23,7 @@ export function IdentityPicker({
   onSelect: (participantId: number) => void;
   onJoined: (participant: PollParticipant) => void;
 }) {
+  const t = useTranslations("IdentityPicker");
   const [adding, setAdding] = useState(participants.length === 0);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -64,12 +66,10 @@ export function IdentityPicker({
   return (
     <section className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
       <h2 className="font-display text-lg font-semibold text-ink">
-        Which one are you?
+        {t("heading")}
       </h2>
       <p className="mt-1 text-sm font-semibold text-slate">
-        {participants.length > 0
-          ? "Pick your name to fill in your availability."
-          : "Add your name to get started."}
+        {participants.length > 0 ? t("subtitlePick") : t("subtitleAdd")}
       </p>
 
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -92,7 +92,7 @@ export function IdentityPicker({
                 {participant.name}
               </span>
               <span className="text-[11px] font-bold text-mist">
-                {participant.hasResponded ? "Answered" : "Not answered yet"}
+                {participant.hasResponded ? t("answered") : t("notAnsweredYet")}
               </span>
             </button>
           );
@@ -108,7 +108,7 @@ export function IdentityPicker({
               <PlusIcon className="h-5 w-5" />
             </span>
             <span className="text-sm font-extrabold text-slate">
-              I'm not listed
+              {t("notListed")}
             </span>
           </button>
         )}
@@ -120,7 +120,7 @@ export function IdentityPicker({
             className="mb-1.5 block text-xs font-extrabold text-slate"
             htmlFor="new-participant-name"
           >
-            Your name
+            {t("yourNameLabel")}
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
             <input
@@ -131,7 +131,7 @@ export function IdentityPicker({
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g. Freja"
+              placeholder={t("namePlaceholder")}
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "new-participant-error" : undefined}
               className={fieldClass(Boolean(error))}
@@ -144,7 +144,7 @@ export function IdentityPicker({
                 className={buttonClass({ className: "flex-1 sm:flex-none" })}
               >
                 {pending && <SpinnerIcon className="h-4 w-4" />}
-                {pending ? "Adding…" : "That's me"}
+                {pending ? t("adding") : t("thatsMe")}
               </button>
               {participants.length > 0 && (
                 <button
@@ -156,7 +156,7 @@ export function IdentityPicker({
                   }}
                   className={buttonClass({ variant: "secondary" })}
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
               )}
             </div>

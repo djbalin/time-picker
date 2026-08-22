@@ -1,30 +1,36 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/lib/ui";
 import { MyPolls } from "./MyPolls";
 
-export const metadata: Metadata = {
-  title: "Your polls · Time Picker",
-  description: "Every scheduling poll you've created or opened on this device.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("PollsPage");
+  return {
+    title: t("heading"),
+    description: t("subtitle"),
+  };
+}
 
-export default function PollsPage() {
+export default async function PollsPage() {
+  const t = await getTranslations("PollsPage");
+
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-extrabold uppercase tracking-wide text-mist">
-            Time Picker
+            {t("eyebrow")}
           </p>
           <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
-            Your polls
+            {t("heading")}
           </h1>
           <p className="mt-1 text-sm font-semibold text-slate">
-            Polls you've created or opened on this device.
+            {t("subtitle")}
           </p>
         </div>
         <Link href="/polls/create" className={buttonClass({ size: "md" })}>
-          Create poll
+          {t("createPoll")}
         </Link>
       </header>
 

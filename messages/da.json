@@ -1,0 +1,159 @@
+{
+  "Metadata": {
+    "title": "Time Picker",
+    "description": "Find et tidspunkt, der passer alle."
+  },
+  "SiteHeader": {
+    "brand": "Time Picker",
+    "polls": "Afstemninger",
+    "newPoll": "Ny afstemning"
+  },
+  "LanguageSwitcher": {
+    "label": "Sprog"
+  },
+  "Home": {
+    "badge": "Planlægning gjort simpelt",
+    "heading": "Find et tidspunkt, alle er glade for.",
+    "lead": "Foreslå en håndfuld datoer, del afstemningen, og lad gruppen vælge den, der passer. Ikke mere evig frem-og-tilbage.",
+    "createPoll": "Opret en afstemning",
+    "viewPolls": "Se afstemninger",
+    "feature1Title": "Foreslå datoer",
+    "feature1Body": "Vælg alle de datoer, der kunne fungere, i en overskuelig kalender over flere måneder.",
+    "feature2Title": "Del afstemningen",
+    "feature2Body": "Send et link til alle, du prøver at finde et tidspunkt med. Ingen oprettelse nødvendig.",
+    "feature3Title": "Se, hvad der fungerer",
+    "feature3Body": "Følg svarene, mens de kommer ind, og find den dato, der passer hele gruppen.",
+    "ctaHeading": "Klar til at låse en dato fast?",
+    "ctaBody": "Opret en afstemning på under et minut.",
+    "ctaButton": "Kom i gang"
+  },
+  "NotFound": {
+    "title": "Vi kunne ikke finde den",
+    "body": "Afstemningen er måske blevet slettet, eller der kan være en tastefejl i linket. Dobbelttjek linket med den, der delte det.",
+    "yourPolls": "Dine afstemninger",
+    "createPoll": "Opret en afstemning"
+  },
+  "ErrorPage": {
+    "title": "Noget gik galt",
+    "body": "Det er vores skyld. Prøv igen — hvis det bliver ved, er databasen måske utilgængelig.",
+    "retry": "Prøv igen"
+  },
+  "PollsPage": {
+    "eyebrow": "Time Picker",
+    "heading": "Dine afstemninger",
+    "subtitle": "Afstemninger, du har oprettet eller åbnet på denne enhed.",
+    "createPoll": "Opret afstemning"
+  },
+  "MyPolls": {
+    "loading": "Henter dine afstemninger…",
+    "failedTitle": "Kunne ikke hente dine afstemninger",
+    "failedBody": "Noget gik galt med at nå serveren. Genindlæs siden for at prøve igen.",
+    "emptyTitle": "Ingen afstemninger endnu",
+    "emptyBody": "Afstemninger, du opretter eller åbner, dukker op her. De huskes i denne browser, så åbn et afstemningslink på denne enhed for at føje det til listen.",
+    "emptyCreatePoll": "Opret din første afstemning"
+  },
+  "PollCard": {
+    "decided": "Besluttet",
+    "dateCount": "{count, plural, one {# dato} other {# datoer}}",
+    "answeredCount": "{answered}/{total} har svaret",
+    "updated": "Opdateret {relative}"
+  },
+  "PollPage": {
+    "notFound": "Afstemning ikke fundet",
+    "defaultDescription": "Vælg de datoer, der passer dig: {title}",
+    "backLink": "← Alle afstemninger"
+  },
+  "CreatePollPage": {
+    "heading": "Opret afstemning",
+    "subtitle": "Tilføj hvem der kommer, og alle de datoer, der kunne fungere. Du får et link at dele, når den er oprettet.",
+    "backLink": "← Tilbage til alle afstemninger"
+  },
+  "CreatePollForm": {
+    "titleLabel": "Titel",
+    "titlePlaceholder": "f.eks. Team-udflugt",
+    "descriptionLabel": "Beskrivelse",
+    "descriptionOptional": "(valgfri)",
+    "descriptionPlaceholder": "Hvad handler afstemningen om?",
+    "participantsLabel": "Deltagere",
+    "participantsPlaceholder": "Tilføj et navn, og tryk Enter",
+    "participantsAriaLabel": "Deltagernavn",
+    "duplicateName": "Det navn er allerede på listen.",
+    "add": "Tilføj",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "editParticipant": "Rediger {name}",
+    "removeParticipant": "Fjern {name}",
+    "editNameTitle": "Rediger navn",
+    "removeParticipantTitle": "Fjern deltager",
+    "datesLabel": "Foreslåede datoer",
+    "datesSelectedCount": "{count, plural, one {# valgt} other {# valgt}}",
+    "submit": "Opret afstemning",
+    "submitting": "Opretter…"
+  },
+  "DatePicker": {
+    "selectMonth": "Vælg hele måneden",
+    "deselectMonth": "Fravælg hele måneden"
+  },
+  "IdentityPicker": {
+    "heading": "Hvem er du?",
+    "subtitlePick": "Vælg dit navn for at udfylde din tilgængelighed.",
+    "subtitleAdd": "Tilføj dit navn for at komme i gang.",
+    "answered": "Har svaret",
+    "notAnsweredYet": "Har ikke svaret endnu",
+    "notListed": "Jeg er ikke på listen",
+    "yourNameLabel": "Dit navn",
+    "namePlaceholder": "f.eks. Freja",
+    "adding": "Tilføjer…",
+    "thatsMe": "Det er mig",
+    "cancel": "Annuller"
+  },
+  "ShareCard": {
+    "label": "Del link",
+    "copy": "Kopiér",
+    "copied": "Kopieret",
+    "copiedAnnounce": "Link kopieret til udklipsholder"
+  },
+  "PollWorkspace": {
+    "emptyPollTitle": "Ingen datoer endnu",
+    "emptyPollBody": "Den, der oprettede afstemningen, har ikke foreslået nogen datoer.",
+    "loadingAnswers": "Henter dine svar…",
+    "saving": "Gemmer…",
+    "saved": "Gemt",
+    "saveError": "Kunne ikke gemme."
+  },
+  "AvailabilityGrid": {
+    "answeringAs": "Svarer som",
+    "switchPerson": "Ikke dig? Skift person",
+    "caption": "Tilgængelighed pr. deltager for hver foreslået dato. Kun din egen kolonne kan redigeres.",
+    "dateColumn": "Dato",
+    "countColumn": "Antal",
+    "locked": "låst",
+    "everyone": "Alle",
+    "you": "(dig)",
+    "yourAvailabilityAria": "Din tilgængelighed for {date}",
+    "readonlyAvailabilityAria": "{name}s tilgængelighed for {date} (skrivebeskyttet)"
+  },
+  "ResultsPanel": {
+    "heading": "Resultater",
+    "respondedCount": "{answered}/{total} har svaret",
+    "waitingOn": "venter på {count}",
+    "noAnswersTitle": "Ingen svar endnu",
+    "noAnswersBody": "Del linket ovenfor — den bedste dato dukker op her, efterhånden som svarene kommer ind.",
+    "tiedForBest": "{count} datoer deler førstepladsen",
+    "worksForEveryone": "Passer alle",
+    "bestSoFar": "Bedst indtil videre",
+    "availableCount": "{available}/{total} {available, plural, one {person} other {personer}} kan",
+    "otherOptions": "Andre muligheder",
+    "canMakeIt": "Kan godt",
+    "cantMakeIt": "Kan ikke",
+    "notAnswered": "Har ikke svaret"
+  },
+  "OwnerTools": {
+    "heading": "Du oprettede denne afstemning",
+    "subtitle": "Disse kontroller vises kun på denne enhed.",
+    "deleteConfirm": "Slet “{title}” for alle?",
+    "yesDelete": "Ja, slet den",
+    "keepIt": "Behold den",
+    "deletePoll": "Slet afstemning"
+  }
+}

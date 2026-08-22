@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "next/form";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   type KeyboardEvent,
   useActionState,
@@ -12,6 +12,7 @@ import {
 } from "react";
 import { createPoll } from "@/app/actions/polls";
 import { PencilIcon, SpinnerIcon, TrashIcon } from "@/components/icons";
+import { useRouter } from "@/i18n/navigation";
 import { toDateKey } from "@/lib/date-keys";
 import { rememberPoll, setAdminToken } from "@/lib/local-store";
 import { participantColor } from "@/lib/participant-colors";
@@ -25,6 +26,7 @@ import {
 import { DatePicker } from "./DatePicker";
 
 export function CreatePollForm() {
+  const t = useTranslations("CreatePollForm");
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createPoll, null);
   const [dates, setDates] = useState<Date[]>([]);
@@ -104,12 +106,12 @@ export function CreatePollForm() {
           className="mb-1.5 block text-xs font-extrabold text-slate"
           htmlFor="title"
         >
-          Title
+          {t("titleLabel")}
         </label>
         <input
           id="title"
           name="title"
-          placeholder="e.g. Team offsite"
+          placeholder={t("titlePlaceholder")}
           onChange={() => clearError("title")}
           aria-invalid={Boolean(errors.title)}
           aria-describedby={errors.title ? "title-error" : undefined}
@@ -123,12 +125,15 @@ export function CreatePollForm() {
           className="mb-1.5 block text-xs font-extrabold text-slate"
           htmlFor="description"
         >
-          Description <span className="font-bold text-mist">(optional)</span>
+          {t("descriptionLabel")}{" "}
+          <span className="font-bold text-mist">
+            {t("descriptionOptional")}
+          </span>
         </label>
         <input
           id="description"
           name="description"
-          placeholder="What's this poll for?"
+          placeholder={t("descriptionPlaceholder")}
           onChange={() => clearError("description")}
           aria-invalid={Boolean(errors.description)}
           aria-describedby={
@@ -141,7 +146,7 @@ export function CreatePollForm() {
 
       <div>
         <span className="mb-1.5 block text-xs font-extrabold text-slate">
-          Participants
+          {t("participantsLabel")}
         </span>
         <ParticipantsInput
           participants={participants}
@@ -160,10 +165,10 @@ export function CreatePollForm() {
 
       <div>
         <span className="mb-1.5 block text-xs font-extrabold text-slate">
-          Proposed dates{" "}
+          {t("datesLabel")}{" "}
           {dates.length > 0 && (
             <span className="font-bold text-sky-deep">
-              · {dates.length} selected
+              · {t("datesSelectedCount", { count: dates.length })}
             </span>
           )}
         </span>
@@ -179,7 +184,7 @@ export function CreatePollForm() {
           className={buttonClass({ size: "md" })}
         >
           {pending && <SpinnerIcon className="h-4 w-4" />}
-          {pending ? "Creating…" : "Create poll"}
+          {pending ? t("submitting") : t("submit")}
         </button>
         {formError && (
           <span className="text-sm font-bold text-red-deep" role="alert">
@@ -209,13 +214,14 @@ function ParticipantsInput({
   onChange: (next: string[]) => void;
   error: string | undefined;
 }) {
+  const t = useTranslations("CreatePollForm");
   const [draft, setDraft] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [duplicate, setDuplicate] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const trimmed = draft.trim();
-  const message = duplicate ? "That name is already on the list." : error;
+  const message = duplicate ? t("duplicateName") : error;
 
   function commit() {
     if (!trimmed) return;
@@ -280,8 +286,8 @@ function ParticipantsInput({
             setDuplicate(false);
           }}
           onKeyDown={handleKeyDown}
-          placeholder="Add a name, then press Enter"
-          aria-label="Participant name"
+          placeholder={t("participantsPlaceholder")}
+          aria-label={t("participantsAriaLabel")}
           aria-invalid={Boolean(message)}
           aria-describedby={message ? "participants-error" : undefined}
           className={fieldClass(Boolean(message))}
@@ -293,7 +299,7 @@ function ParticipantsInput({
             disabled={!trimmed}
             className={buttonClass({ className: "flex-1 sm:flex-none" })}
           >
-            {editingIndex !== null ? "Save" : "Add"}
+            {editingIndex !== null ? t("save") : t("add")}
           </button>
           {editingIndex !== null && (
             <button
@@ -301,7 +307,7 @@ function ParticipantsInput({
               onClick={cancelEdit}
               className={buttonClass({ variant: "secondary" })}
             >
-              Cancel
+              {t("cancel")}
             </button>
           )}
         </div>
@@ -337,6 +343,7 @@ function ParticipantBadge({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const t = useTranslations("CreatePollForm");
   const { bg, text } = participantColor(index);
   return (
     <span
@@ -346,8 +353,8 @@ function ParticipantBadge({
       <button
         type="button"
         onClick={onEdit}
-        aria-label={`Edit ${name}`}
-        title="Edit name"
+        aria-label={t("editParticipant", { name })}
+        title={t("editNameTitle")}
         className="inline-flex h-6 w-6 items-center justify-center rounded-full transition hover:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
       >
         <PencilIcon className="h-3.5 w-3.5" />
@@ -355,8 +362,8 @@ function ParticipantBadge({
       <button
         type="button"
         onClick={onDelete}
-        aria-label={`Remove ${name}`}
-        title="Remove participant"
+        aria-label={t("removeParticipant", { name })}
+        title={t("removeParticipantTitle")}
         className="inline-flex h-6 w-6 items-center justify-center rounded-full transition hover:bg-white/60 hover:text-red-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
       >
         <TrashIcon className="h-3.5 w-3.5" />

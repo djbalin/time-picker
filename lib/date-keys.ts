@@ -43,27 +43,42 @@ export function isPastDateKey(key: string): boolean {
   return fromDateKey(key) < startOfToday();
 }
 
-export function formatDateKey(key: string): string {
-  return fromDateKey(key).toLocaleDateString(undefined, {
+/**
+ * Every formatter below takes the app's current locale explicitly — get it
+ * from `useLocale()` (client components) or `getLocale()` (server
+ * components), both from `next-intl`. `toLocaleDateString(undefined, ...)`
+ * would instead follow the visitor's OS/browser locale, which usually
+ * matches the page language but can silently disagree with it.
+ */
+
+export function formatDateKey(key: string, locale: string): string {
+  return fromDateKey(key).toLocaleDateString(locale, {
     weekday: "short",
     month: "short",
     day: "numeric",
   });
 }
 
-export function formatDateKeyLong(key: string): string {
-  return fromDateKey(key).toLocaleDateString(undefined, {
+/** Full weekday name — "Sunday" — for the grid's fixed-width day column. */
+export function formatWeekdayLong(key: string, locale: string): string {
+  const weekDay = fromDateKey(key).toLocaleDateString(locale, {
+    weekday: "long",
+  });
+  // Capitalize first letter
+  return weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+}
+
+/** "MM/DD", zero-padded, for the grid's fixed-width date column. */
+export function formatDateShort(key: string): string {
+  const [, month, day] = key.split("-");
+  return `${month}/${day}`;
+}
+
+export function formatDateKeyLong(key: string, locale: string): string {
+  return fromDateKey(key).toLocaleDateString(locale, {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-  });
-}
-
-/** "Sep 2026" — used to group a long date list into month sections. */
-export function formatMonthLabel(key: string): string {
-  return fromDateKey(key).toLocaleDateString(undefined, {
-    month: "long",
-    year: "numeric",
   });
 }

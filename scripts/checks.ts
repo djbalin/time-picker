@@ -4,7 +4,7 @@ import {
   isDateKey,
   toDateKey,
 } from "../lib/date-keys";
-import { formatRelative, pluralize } from "../lib/format";
+import { formatRelative } from "../lib/format";
 import { generateAdminToken, generateSlug } from "../lib/ids";
 import { summarizePoll } from "../lib/poll-summary";
 import {
@@ -187,13 +187,14 @@ check("adminToken hex", /^[0-9a-f]{32}$/.test(generateAdminToken()), true);
 const now = new Date(2026, 7, 21, 12, 0, 0);
 check(
   "relative just now",
-  formatRelative(new Date(2026, 7, 21, 11, 59, 30), now),
-  "just now",
+  formatRelative(new Date(2026, 7, 21, 11, 59, 30), "en", now),
+  "now",
 );
-check("pluralize 1", pluralize(1, "date"), "date");
-check("pluralize 2", pluralize(2, "date"), "dates");
-check("pluralize custom", pluralize(3, "person", "people"), "people");
-check("formatDateKey nonempty", formatDateKey("2026-09-04").length > 0, true);
+check(
+  "formatDateKey nonempty",
+  formatDateKey("2026-09-04", "en").length > 0,
+  true,
+);
 
 console.log(
   failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`,

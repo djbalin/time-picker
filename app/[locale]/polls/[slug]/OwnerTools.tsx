@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { deletePoll, finalizePoll } from "@/app/actions/polls";
+import { deletePoll } from "@/app/actions/polls";
 import { SpinnerIcon, TrashIcon } from "@/components/icons";
+import { useRouter } from "@/i18n/navigation";
 import { forgetPoll } from "@/lib/local-store";
 import { buttonClass } from "@/lib/ui";
 
@@ -16,24 +17,16 @@ export function OwnerTools({
   slug,
   adminToken,
   title,
-  finalizedDate,
 }: {
   slug: string;
   adminToken: string;
   title: string;
-  finalizedDate: string | null;
 }) {
+  const t = useTranslations("OwnerTools");
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-
-  function reopen() {
-    startTransition(async () => {
-      const result = await finalizePoll(slug, adminToken, null);
-      setError(result.ok ? null : result.message);
-    });
-  }
 
   function remove() {
     startTransition(async () => {
@@ -50,28 +43,15 @@ export function OwnerTools({
   return (
     <section className="rounded-lg border border-line bg-paper p-5">
       <h2 className="text-xs font-extrabold uppercase tracking-wide text-slate">
-        You created this poll
+        {t("heading")}
       </h2>
-      <p className="mt-1 text-sm font-semibold text-mist">
-        These controls only appear on this device.
-      </p>
+      <p className="mt-1 text-sm font-semibold text-mist">{t("subtitle")}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        {finalizedDate && (
-          <button
-            type="button"
-            onClick={reopen}
-            disabled={pending}
-            className={buttonClass({ variant: "secondary", size: "sm" })}
-          >
-            Reopen poll
-          </button>
-        )}
-
         {confirming ? (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-extrabold text-ink">
-              Delete “{title}” for everyone?
+              {t("deleteConfirm", { title })}
             </span>
             <button
               type="button"
@@ -80,7 +60,7 @@ export function OwnerTools({
               className={buttonClass({ variant: "danger", size: "sm" })}
             >
               {pending && <SpinnerIcon className="h-4 w-4" />}
-              Yes, delete it
+              {t("yesDelete")}
             </button>
             <button
               type="button"
@@ -88,7 +68,7 @@ export function OwnerTools({
               disabled={pending}
               className={buttonClass({ variant: "quiet", size: "sm" })}
             >
-              Keep it
+              {t("keepIt")}
             </button>
           </div>
         ) : (
@@ -98,7 +78,7 @@ export function OwnerTools({
             className={buttonClass({ variant: "danger", size: "sm" })}
           >
             <TrashIcon className="h-4 w-4" />
-            Delete poll
+            {t("deletePoll")}
           </button>
         )}
       </div>

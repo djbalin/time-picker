@@ -3,9 +3,13 @@ import {
   MonthCaption,
   type MonthCaptionProps,
 } from "@daypicker/react";
-import { MinusIcon, PlusIcon } from "@/components/icons";
-import { startOfToday } from "@/lib/date-keys";
+import { da, enUS } from "@daypicker/react/locale";
+import { useLocale, useTranslations } from "next-intl";
+import { CheckIcon, PlusIcon } from "@/components/icons";
+import { startOfToday, toDateKey } from "@/lib/date-keys";
 import "@daypicker/react/style.css";
+
+const CALENDAR_LOCALES = { en: enUS, da };
 
 /** Months shown at once; the strip scrolls horizontally beyond the viewport. */
 const MONTHS_SHOWN = 6;
@@ -27,6 +31,9 @@ export function DatePicker({
   selected: Date[];
   onSelect: (dates: Date[]) => void;
 }) {
+  const t = useTranslations("DatePicker");
+  const locale = useLocale();
+
   const selectEntireMonth = (month: Date) => {
     const today = startOfToday();
     const daysToAdd = datesInMonth(month).filter((date) => date >= today);
@@ -37,11 +44,25 @@ export function DatePicker({
     onSelect(withoutMonth(selected, month));
   };
 
+  /**
+   * True once every selectable (not-yet-past) day in the month is checked —
+   * the point at which clicking the toggle should remove them instead of
+   * adding the rest.
+   */
+  const isMonthFullySelected = (month: Date) => {
+    const today = startOfToday();
+    const remaining = datesInMonth(month).filter((date) => date >= today);
+    if (remaining.length === 0) return false;
+    const selectedKeys = new Set(selected.map(toDateKey));
+    return remaining.every((date) => selectedKeys.has(toDateKey(date)));
+  };
+
   return (
     <div className="w-full overflow-x-auto overflow-y-hidden py-1">
       <DayPicker
         animate
         mode="multiple"
+        locale={CALENDAR_LOCALES[locale as keyof typeof CALENDAR_LOCALES]}
         selected={selected}
         onSelect={(next) => onSelect(next ?? [])}
         // Compared against local midnight, not "now" — otherwise today itself
@@ -74,38 +95,41 @@ export function DatePicker({
             calendarMonth,
             children,
             ...props
-          }: MonthCaptionProps) => (
-            <MonthCaption {...props} calendarMonth={calendarMonth}>
-              <div className="flex flex-col gap-2">
-                <div className="text-center font-display text-sm font-semibold text-ink">
-                  {children}
-                </div>
-                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-md border border-line bg-cloud px-2 py-1">
-                  <button
-                    type="button"
-                    onClick={() => deselectEntireMonth(calendarMonth.date)}
-                    className="inline-flex h-7 w-7 items-center justify-center justify-self-end rounded-full text-slate transition hover:bg-sky-tint hover:text-sky-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
-                    aria-label="Deselect entire month"
-                    title="Deselect entire month"
-                  >
-                    <MinusIcon className="h-4 w-4" />
-                  </button>
-                  <div className="text-center text-xs font-extrabold uppercase tracking-wide text-slate">
-                    Entire month
+          }: MonthCaptionProps) => {
+            const fullySelected = isMonthFullySelected(calendarMonth.date);
+            return (
+              <MonthCaption {...props} calendarMonth={calendarMonth}>
+                <div className="flex flex-col gap-2">
+                  <div className="text-center font-display text-sm font-semibold text-ink">
+                    {children}
                   </div>
                   <button
                     type="button"
-                    onClick={() => selectEntireMonth(calendarMonth.date)}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate transition hover:bg-sky-tint hover:text-sky-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
-                    aria-label="Select entire month"
-                    title="Select entire month"
+                    onClick={() =>
+                      fullySelected
+                        ? deselectEntireMonth(calendarMonth.date)
+                        : selectEntireMonth(calendarMonth.date)
+                    }
+                    // Labelled by what the click is about to do, not the
+                    // current state, so there's no ambiguity about which
+                    // way the toggle is about to go.
+                    className={`flex w-full items-center justify-center gap-1.5 rounded-md border px-2 py-1 text-xs font-extrabold uppercase tracking-wide transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky ${
+                      fullySelected
+                        ? "border-line bg-cloud text-slate hover:bg-silver/30"
+                        : "border-sky/30 bg-sky-tint text-sky-deep hover:bg-sky-tint/70"
+                    }`}
                   >
-                    <PlusIcon className="h-4 w-4" />
+                    {fullySelected ? (
+                      <CheckIcon className="h-3.5 w-3.5" />
+                    ) : (
+                      <PlusIcon className="h-3.5 w-3.5" />
+                    )}
+                    {fullySelected ? t("deselectMonth") : t("selectMonth")}
                   </button>
                 </div>
-              </div>
-            </MonthCaption>
-          ),
+              </MonthCaption>
+            );
+          },
         }}
       />
     </div>

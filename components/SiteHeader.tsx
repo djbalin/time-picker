@@ -1,9 +1,13 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const t = await getTranslations("SiteHeader");
+
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-2.5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-2">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="grid h-8 w-8 place-items-center rounded-sm bg-sky shadow-soft">
             <svg
@@ -21,7 +25,7 @@ export function SiteHeader() {
             </svg>
           </div>
           <span className="font-display text-base font-semibold tracking-tight text-ink">
-            Time Picker
+            {t("brand")}
           </span>
         </Link>
 
@@ -30,14 +34,15 @@ export function SiteHeader() {
             href="/polls"
             className="text-sm font-extrabold text-slate transition hover:text-ink"
           >
-            Polls
+            {t("polls")}
           </Link>
           <Link
             href="/polls/create"
             className="inline-flex items-center justify-center rounded-full bg-ink px-4 py-1.5 text-sm font-extrabold text-paper shadow-soft transition hover:bg-graphite"
           >
-            New poll
+            {t("newPoll")}
           </Link>
+          <LanguageSwitcher />
         </nav>
       </div>
     </header>

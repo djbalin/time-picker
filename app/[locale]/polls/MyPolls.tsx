@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { loadMyPolls } from "@/app/actions/polls";
 import { SpinnerIcon } from "@/components/icons";
+import { Link } from "@/i18n/navigation";
 import type { PollSummaryRow } from "@/lib/db/queries";
 import { getKnownPolls } from "@/lib/local-store";
 import { buttonClass } from "@/lib/ui";
@@ -15,6 +16,7 @@ import { PollCard } from "./PollCard";
  * details on the server — which is also why this can't be a Server Component.
  */
 export function MyPolls() {
+  const t = useTranslations("MyPolls");
   const [polls, setPolls] = useState<PollSummaryRow[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -49,32 +51,27 @@ export function MyPolls() {
   }, []);
 
   if (failed) {
-    return (
-      <Notice title="Couldn't load your polls">
-        Something went wrong reaching the server. Reload the page to try again.
-      </Notice>
-    );
+    return <Notice title={t("failedTitle")}>{t("failedBody")}</Notice>;
   }
 
   if (polls === null) {
     return (
       <div className="rounded-lg border border-line bg-white p-10 text-center text-sm font-bold text-mist shadow-soft">
         <SpinnerIcon className="mx-auto mb-2 h-5 w-5" />
-        Loading your polls…
+        {t("loading")}
       </div>
     );
   }
 
   if (polls.length === 0) {
     return (
-      <Notice title="No polls yet">
-        Polls you create or open show up here. They're remembered in this
-        browser, so open a poll link on this device to add it to the list.
+      <Notice title={t("emptyTitle")}>
+        {t("emptyBody")}
         <Link
           href="/polls/create"
           className={buttonClass({ className: "mt-5" })}
         >
-          Create your first poll
+          {t("emptyCreatePoll")}
         </Link>
       </Notice>
     );

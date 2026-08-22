@@ -1,0 +1,159 @@
+{
+  "Metadata": {
+    "title": "Time Picker",
+    "description": "Find a time that works for everyone."
+  },
+  "SiteHeader": {
+    "brand": "Time Picker",
+    "polls": "Polls",
+    "newPoll": "New poll"
+  },
+  "LanguageSwitcher": {
+    "label": "Language"
+  },
+  "Home": {
+    "badge": "Scheduling made simple",
+    "heading": "Find a time everyone loves.",
+    "lead": "Propose a handful of dates, share the poll, and let your group pick the one that works. No more endless back-and-forth.",
+    "createPoll": "Create a poll",
+    "viewPolls": "View polls",
+    "feature1Title": "Propose dates",
+    "feature1Body": "Pick every date that could work on a friendly, multi-month calendar.",
+    "feature2Title": "Share the poll",
+    "feature2Body": "Send a link to everyone you're trying to schedule with. No sign-up needed.",
+    "feature3Title": "See what works",
+    "feature3Body": "Watch responses roll in and spot the date that works for the whole group.",
+    "ctaHeading": "Ready to lock in a date?",
+    "ctaBody": "Create a poll in under a minute.",
+    "ctaButton": "Get started"
+  },
+  "NotFound": {
+    "title": "We couldn't find that",
+    "body": "The poll may have been deleted, or the link might have a typo in it. Double-check the link with whoever shared it.",
+    "yourPolls": "Your polls",
+    "createPoll": "Create a poll"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "body": "That's on us. Try again — if it keeps happening, the database may be unreachable.",
+    "retry": "Try again"
+  },
+  "PollsPage": {
+    "eyebrow": "Time Picker",
+    "heading": "Your polls",
+    "subtitle": "Polls you've created or opened on this device.",
+    "createPoll": "Create poll"
+  },
+  "MyPolls": {
+    "loading": "Loading your polls…",
+    "failedTitle": "Couldn't load your polls",
+    "failedBody": "Something went wrong reaching the server. Reload the page to try again.",
+    "emptyTitle": "No polls yet",
+    "emptyBody": "Polls you create or open show up here. They're remembered in this browser, so open a poll link on this device to add it to the list.",
+    "emptyCreatePoll": "Create your first poll"
+  },
+  "PollCard": {
+    "decided": "Decided",
+    "dateCount": "{count, plural, one {# date} other {# dates}}",
+    "answeredCount": "{answered}/{total} answered",
+    "updated": "Updated {relative}"
+  },
+  "PollPage": {
+    "notFound": "Poll not found",
+    "defaultDescription": "Pick the dates that work for you: {title}",
+    "backLink": "← All polls"
+  },
+  "CreatePollPage": {
+    "heading": "Create poll",
+    "subtitle": "Add who's coming and every date that could work. You'll get a link to share once it's created.",
+    "backLink": "← Back to all polls"
+  },
+  "CreatePollForm": {
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Team offsite",
+    "descriptionLabel": "Description",
+    "descriptionOptional": "(optional)",
+    "descriptionPlaceholder": "What's this poll for?",
+    "participantsLabel": "Participants",
+    "participantsPlaceholder": "Add a name, then press Enter",
+    "participantsAriaLabel": "Participant name",
+    "duplicateName": "That name is already on the list.",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "editParticipant": "Edit {name}",
+    "removeParticipant": "Remove {name}",
+    "editNameTitle": "Edit name",
+    "removeParticipantTitle": "Remove participant",
+    "datesLabel": "Proposed dates",
+    "datesSelectedCount": "{count, plural, one {# selected} other {# selected}}",
+    "submit": "Create poll",
+    "submitting": "Creating…"
+  },
+  "DatePicker": {
+    "selectMonth": "Select entire month",
+    "deselectMonth": "Deselect entire month"
+  },
+  "IdentityPicker": {
+    "heading": "Which one are you?",
+    "subtitlePick": "Pick your name to fill in your availability.",
+    "subtitleAdd": "Add your name to get started.",
+    "answered": "Answered",
+    "notAnsweredYet": "Not answered yet",
+    "notListed": "I'm not listed",
+    "yourNameLabel": "Your name",
+    "namePlaceholder": "e.g. Freja",
+    "adding": "Adding…",
+    "thatsMe": "That's me",
+    "cancel": "Cancel"
+  },
+  "ShareCard": {
+    "label": "Share link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedAnnounce": "Link copied to clipboard"
+  },
+  "PollWorkspace": {
+    "emptyPollTitle": "No dates yet",
+    "emptyPollBody": "Whoever created this poll hasn't proposed any dates.",
+    "loadingAnswers": "Loading your answers…",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "saveError": "Couldn't save."
+  },
+  "AvailabilityGrid": {
+    "answeringAs": "Answering as",
+    "switchPerson": "Not you? Switch person",
+    "caption": "Availability per participant for each proposed date. Only your own column can be edited.",
+    "dateColumn": "Date",
+    "countColumn": "Count",
+    "locked": "locked",
+    "everyone": "Everyone",
+    "you": "(you)",
+    "yourAvailabilityAria": "Your availability for {date}",
+    "readonlyAvailabilityAria": "{name}'s availability for {date} (read-only)"
+  },
+  "ResultsPanel": {
+    "heading": "Results",
+    "respondedCount": "{answered}/{total} answered",
+    "waitingOn": "waiting on {count}",
+    "noAnswersTitle": "No answers yet",
+    "noAnswersBody": "Share the link above — the best date shows up here as replies come in.",
+    "tiedForBest": "{count} dates tied for best",
+    "worksForEveryone": "Works for everyone",
+    "bestSoFar": "Best so far",
+    "availableCount": "{available}/{total} {available, plural, one {person} other {people}} available",
+    "otherOptions": "Other options",
+    "canMakeIt": "Can make it",
+    "cantMakeIt": "Can't make it",
+    "notAnswered": "Haven't answered"
+  },
+  "OwnerTools": {
+    "heading": "You created this poll",
+    "subtitle": "These controls only appear on this device.",
+    "deleteConfirm": "Delete “{title}” for everyone?",
+    "yesDelete": "Yes, delete it",
+    "keepIt": "Keep it",
+    "deletePoll": "Delete poll"
+  }
+}

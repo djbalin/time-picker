@@ -1,10 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { saveAvailability } from "@/app/actions/polls";
 import { CheckIcon, SpinnerIcon } from "@/components/icons";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
-import { formatRelative, pluralize } from "@/lib/format";
 import {
   getAdminToken,
   getIdentity,
@@ -12,8 +12,7 @@ import {
   setIdentity,
 } from "@/lib/local-store";
 import { summarizePoll } from "@/lib/poll-summary";
-import { AvailabilityBoard } from "./AvailabilityBoard";
-import { FinalizedBanner } from "./FinalizedBanner";
+import { AvailabilityGrid } from "./AvailabilityGrid";
 import { IdentityPicker } from "./IdentityPicker";
 import { OwnerTools } from "./OwnerTools";
 import { ResultsPanel } from "./ResultsPanel";
@@ -32,6 +31,7 @@ export type SaveState = "idle" | "saving" | "saved" | "error";
  * background, so the grid never waits on a round-trip.
  */
 export function PollWorkspace({ poll }: { poll: PollDetail }) {
+  const t = useTranslations("PollWorkspace");
   const [currentId, setCurrentId] = useState<number | null>(null);
   /** Blocks the identify screen until localStorage has been consulted. */
   const [identityChecked, setIdentityChecked] = useState(false);
@@ -135,30 +135,12 @@ export function PollWorkspace({ poll }: { poll: PollDetail }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
-          {poll.title}
-        </h1>
-        {poll.description && (
-          <p className="mt-1 text-sm font-semibold text-slate">
-            {poll.description}
-          </p>
-        )}
-        <p className="mt-2 text-xs font-bold text-mist">
-          {poll.dates.length} {pluralize(poll.dates.length, "date")} proposed ·{" "}
-          {summary.respondedCount} of {summary.totalCount} answered · updated{" "}
-          {formatRelative(poll.updatedAt)}
-        </p>
-      </header>
-
-      {poll.finalizedDate && <FinalizedBanner date={poll.finalizedDate} />}
-
       <ShareCard slug={poll.slug} />
 
       {poll.dates.length === 0 ? (
-        <EmptyPoll />
+        <EmptyPoll title={t("emptyPollTitle")} body={t("emptyPollBody")} />
       ) : !identityChecked ? (
-        <LoadingCard />
+        <LoadingCard label={t("loadingAnswers")} />
       ) : current === null ? (
         <IdentityPicker
           slug={poll.slug}
@@ -167,36 +149,35 @@ export function PollWorkspace({ poll }: { poll: PollDetail }) {
           onJoined={handleJoined}
         />
       ) : (
-        <AvailabilityBoard
-          summary={summary}
-          current={current}
-          participants={participants}
-          myAnswer={myAnswer}
-          onChange={setAnswer}
-          onSwitchIdentity={() => {
-            flush();
-            setCurrentId(null);
-          }}
-          saveState={saveState}
-          saveError={saveError}
-        />
+        <div className="rounded-lg border border-line bg-white p-5 shadow-soft">
+          <AvailabilityGrid
+            dates={poll.dates}
+            participants={participants}
+            currentParticipant={current}
+            availabilityByParticipant={availability}
+            onToggleDate={(dateKey) => {
+              const next = myAnswer.includes(dateKey)
+                ? myAnswer.filter((value) => value !== dateKey)
+                : [...myAnswer, dateKey].sort();
+              setAnswer(next);
+            }}
+            onChangeIdentity={() => {
+              flush();
+              setCurrentId(null);
+            }}
+            saveState={saveState}
+            saveError={saveError}
+          />
+        </div>
       )}
 
-      {poll.dates.length > 0 && (
-        <ResultsPanel
-          summary={summary}
-          finalizedDate={poll.finalizedDate}
-          slug={poll.slug}
-          adminToken={adminToken}
-        />
-      )}
+      {poll.dates.length > 0 && <ResultsPanel summary={summary} />}
 
       {adminToken && (
         <OwnerTools
           slug={poll.slug}
           adminToken={adminToken}
           title={poll.title}
-          finalizedDate={poll.finalizedDate}
         />
       )}
     </div>
@@ -287,12 +268,13 @@ export function SaveIndicator({
   state: SaveState;
   error: string | null;
 }) {
+  const t = useTranslations("PollWorkspace");
   if (state === "idle") return null;
 
   if (state === "error") {
     return (
       <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-red-deep">
-        {error ?? "Couldn't save."}
+        {error ?? t("saveError")}
       </span>
     );
   }
@@ -301,7 +283,7 @@ export function SaveIndicator({
     return (
       <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-mist">
         <SpinnerIcon className="h-3.5 w-3.5" />
-        Saving…
+        {t("saving")}
       </span>
     );
   }
@@ -309,29 +291,25 @@ export function SaveIndicator({
   return (
     <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-green-deep">
       <CheckIcon className="h-3.5 w-3.5" />
-      Saved
+      {t("saved")}
     </span>
   );
 }
 
-function EmptyPoll() {
+function EmptyPoll({ title, body }: { title: string; body: string }) {
   return (
     <div className="rounded-lg border border-dashed border-line bg-white p-10 text-center">
-      <p className="font-display text-lg font-semibold text-ink">
-        No dates yet
-      </p>
-      <p className="mt-2 text-sm font-semibold text-slate">
-        Whoever created this poll hasn't proposed any dates.
-      </p>
+      <p className="font-display text-lg font-semibold text-ink">{title}</p>
+      <p className="mt-2 text-sm font-semibold text-slate">{body}</p>
     </div>
   );
 }
 
-function LoadingCard() {
+function LoadingCard({ label }: { label: string }) {
   return (
     <div className="rounded-lg border border-line bg-white p-10 text-center text-sm font-bold text-mist shadow-soft">
       <SpinnerIcon className="mx-auto mb-2 h-5 w-5" />
-      Loading your answers…
+      {label}
     </div>
   );
 }
