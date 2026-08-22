@@ -1,3 +1,5 @@
+import { toDateKey } from "../date-keys";
+import { generateAdminToken, generateSlug } from "../ids";
 import { db } from "./db";
 import { availabilitiesTable, participantsTable, pollsTable } from "./schema";
 
@@ -34,13 +36,6 @@ const pollTemplates: Pick<PollInsert, "title" | "description">[] = [
     description: "Læng siden gutter",
   },
 ];
-
-function toDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -84,6 +79,8 @@ function generateRandomDates() {
 
 const seedPolls: PollInsert[] = pollTemplates.map((poll) => ({
   ...poll,
+  slug: generateSlug(),
+  adminToken: generateAdminToken(),
   dates: generateRandomDates(),
 }));
 
@@ -108,7 +105,10 @@ const seed = async () => {
       .values(participantObjects)
       .returning();
 
-    const availabilityObjects: AvailabilityInsert[] = newParticipants.map(
+    // Leave the last participant unanswered so the "waiting on someone"
+    // state is visible without having to click around.
+    const responders = newParticipants.slice(0, -1);
+    const availabilityObjects: AvailabilityInsert[] = responders.map(
       (participant) => ({
         participantId: participant.id,
         dates: pickRandomAvailableDates(poll.dates),
@@ -116,7 +116,11 @@ const seed = async () => {
     );
     await db.insert(availabilitiesTable).values(availabilityObjects);
   }
-  console.log("Seeding done");
+
+  console.log("Seeding done. Open one of these polls:");
+  for (const poll of newPolls) {
+    console.log(`  ${poll.title} -> /polls/${poll.slug}`);
+  }
 };
 
 seed().catch((err) => {

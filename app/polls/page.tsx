@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
-import { PollList } from "./PollsList";
+import { buttonClass } from "@/lib/ui";
+import { MyPolls } from "./MyPolls";
+
+export const metadata: Metadata = {
+  title: "Your polls · Time Picker",
+  description: "Every scheduling poll you've created or opened on this device.",
+};
 
 export default function PollsPage() {
   return (
@@ -11,31 +17,18 @@ export default function PollsPage() {
             Time Picker
           </p>
           <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
-            Polls
+            Your polls
           </h1>
           <p className="mt-1 text-sm font-semibold text-slate">
-            All the scheduling polls you've created.
+            Polls you've created or opened on this device.
           </p>
         </div>
-        <Link
-          href="/polls/create"
-          className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-3 text-sm font-extrabold text-paper shadow-raised transition hover:bg-graphite"
-        >
+        <Link href="/polls/create" className={buttonClass({ size: "md" })}>
           Create poll
         </Link>
       </header>
 
-      <Suspense fallback={<Fallback />}>
-        <PollList />
-      </Suspense>
+      <MyPolls />
     </main>
-  );
-}
-
-function Fallback() {
-  return (
-    <div className="rounded-lg border border-line bg-white p-8 text-center text-sm font-bold text-mist shadow-soft">
-      Loading polls...
-    </div>
   );
 }
