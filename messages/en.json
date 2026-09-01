@@ -75,7 +75,7 @@
     "descriptionOptional": "(optional)",
     "descriptionPlaceholder": "What's this poll for?",
     "participantsLabel": "Participants",
-    "participantsPlaceholder": "Add a name, then press Enter",
+    "participantsPlaceholder": "Add a name",
     "participantsAriaLabel": "Participant name",
     "duplicateName": "That name is already on the list.",
     "add": "Add",
