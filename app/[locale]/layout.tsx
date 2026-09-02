@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fredoka, Nunito_Sans } from "next/font/google";
+import { Gabarito, Righteous } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -7,14 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { isAppLocale, routing } from "@/i18n/routing";
 import "./globals.css";
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
+// Meety runs on two Google-hosted faces: Righteous for the 70s display voice
+// (headlines, day numbers, the wordmark — one weight only), Gabarito for
+// everything else. See the design system readme, "Type".
+const righteous = Righteous({
+  variable: "--font-righteous",
+  weight: "400",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const nunitoSans = Nunito_Sans({
-  variable: "--font-nunito-sans",
+const gabarito = Gabarito({
+  variable: "--font-gabarito",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export function generateStaticParams() {
@@ -65,9 +71,9 @@ export default async function RootLayout({ children, params }: LayoutProps) {
   return (
     <html
       lang={locale}
-      className={`${fredoka.variable} ${nunitoSans.variable} h-full antialiased`}
+      className={`${righteous.variable} ${gabarito.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-paper font-sans text-ink">
+      <body className="flex min-h-full flex-col font-sans text-body">
         <NextIntlClientProvider>
           <SiteHeader />
           {children}

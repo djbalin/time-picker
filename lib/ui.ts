@@ -1,27 +1,28 @@
 /**
- * Button styling in one place. The pill button shows up on nearly every screen
- * and had drifted into a dozen near-identical class strings.
+ * Shared button / field class strings for the pre-Meety screens (create
+ * form, identity picker, owner tools, …). New screens should import the
+ * typed components from `@/components/ui` instead; this file keeps the older
+ * call sites on-brand until they migrate.
  */
 
 type Variant = "primary" | "secondary" | "accent" | "quiet" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-full font-extrabold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex items-center justify-center gap-2 rounded-pill font-bold tracking-tight transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-ink text-paper shadow-raised hover:bg-graphite",
-  secondary:
-    "border border-line bg-white text-ink shadow-soft hover:border-silver",
-  accent: "bg-sky text-white shadow-raised hover:bg-sky-light",
-  quiet: "text-slate hover:bg-cloud hover:text-ink",
-  danger: "border border-red/40 bg-white text-red-deep hover:bg-red-tint",
+  primary: "bg-accent text-on-accent shadow-accent hover:bg-accent-hover",
+  secondary: "bg-surface-card text-strong shadow-rest hover:bg-surface-sunken",
+  accent: "bg-support text-on-accent shadow-support hover:bg-support-hover",
+  quiet: "text-support-text hover:bg-support-soft",
+  danger: "bg-no-soft text-no-text hover:bg-no",
 };
 
 const SIZES: Record<Size, string> = {
-  sm: "px-3.5 py-2 text-xs",
-  md: "px-5 py-3 text-sm",
-  lg: "px-6 py-3.5 text-base",
+  sm: "px-4 py-2 text-sm",
+  md: "px-[22px] py-3 text-md",
+  lg: "px-[26px] py-3.5 text-lg",
 };
 
 export function buttonClass({
@@ -36,13 +37,14 @@ export function buttonClass({
   return `${BASE} ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim();
 }
 
+/** Inputs never get borders — a lilac halo marks focus instead. */
 export const inputClass =
-  "w-full rounded-md border bg-paper px-4 py-3 text-sm font-semibold text-ink placeholder:font-semibold placeholder:text-mist focus:bg-white focus:outline-none focus:ring-4";
+  "w-full rounded-pill bg-surface-card px-[18px] py-3.5 text-md font-medium text-strong shadow-rest outline-none transition-shadow duration-[180ms] placeholder:font-medium placeholder:text-muted focus:shadow-[0_0_0_2.5px_var(--color-support-soft),var(--shadow-rest)]";
 
 export function fieldClass(hasError: boolean): string {
   return `${inputClass} ${
     hasError
-      ? "border-red focus:border-red focus:ring-red-tint"
-      : "border-line focus:border-sky focus:ring-sky-tint"
+      ? "shadow-[0_0_0_2.5px_var(--color-no-soft),var(--shadow-rest)] focus:shadow-[0_0_0_2.5px_var(--color-no),var(--shadow-rest)]"
+      : ""
   }`;
 }
