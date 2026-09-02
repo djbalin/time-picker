@@ -16,8 +16,10 @@
  * screens rendering while they migrate to the semantic names.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap");
 @import "tailwindcss";
+
+/* Material Symbols Rounded is loaded via a <link> in the root layout — a
+   remote @import here is stripped by the CSS build. */
 
 @theme {
   /* ── Base palette — pastel 70s ──────────────────────────────── */
@@ -317,6 +319,7 @@ body {
   display: inline-block;
   white-space: nowrap;
   direction: ltr;
+  font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
   font-variation-settings:

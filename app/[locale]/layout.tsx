@@ -73,6 +73,21 @@ export default async function RootLayout({ children, params }: LayoutProps) {
       lang={locale}
       className={`${righteous.variable} ${gabarito.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        {/* Meety's icon set. Loaded here, not via @import in globals.css —
+            the CSS build strips remote imports. The axis ranges keep the
+            FILL/weight toggles in `.ms` working. */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
       <body className="flex min-h-full flex-col font-sans text-body">
         <NextIntlClientProvider>
           <SiteHeader />
