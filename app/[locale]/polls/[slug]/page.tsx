@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getPollBySlug } from "@/lib/db/queries";
-import { PollWorkspace } from "./PollWorkspace";
+import { SelectDatesApp } from "./SelectDatesApp";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -39,25 +39,14 @@ export default async function PollPage({ params }: PageProps) {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-5 px-6 py-4">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
-          {poll.title}
-        </h1>
-        <Link
-          className="shrink-0 text-sm font-extrabold text-slate underline-offset-2 transition hover:text-ink hover:underline"
-          href="/polls"
-        >
-          {t("backLink")}
-        </Link>
-      </header>
-      {poll.description && (
-        <p className="-mt-3 text-sm font-semibold text-slate">
-          {poll.description}
-        </p>
-      )}
-
-      <PollWorkspace poll={poll} />
+    <main className="mx-auto flex w-full max-w-[1360px] flex-1 flex-col gap-4 px-4 py-6 sm:px-8">
+      <Link
+        className="text-xs font-bold text-muted underline-offset-2 transition-colors hover:text-body hover:underline"
+        href="/polls"
+      >
+        {t("backLink")}
+      </Link>
+      <SelectDatesApp poll={poll} />
     </main>
   );
 }
