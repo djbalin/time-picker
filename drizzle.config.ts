@@ -8,4 +8,8 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL as string,
   },
+  // Only ever touch our own tables in `public`. Without this, `drizzle-kit push`
+  // introspects Supabase's managed schemas (auth, storage, realtime, …) and
+  // offers to drop them. Roles are left unmanaged (the default).
+  schemaFilter: ["public"],
 });

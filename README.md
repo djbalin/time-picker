@@ -45,8 +45,9 @@ pnpm dev
 ```
 
 `pnpm dev` runs `scripts/dev.sh`, which starts local Supabase, writes
-`.env.development.local` pointing the app at it, applies migrations, then starts
-Next. The first run pulls Docker images (~1–2 min); later runs just reconnect.
+`.env.development.local` pointing the app at it, syncs the schema
+(`drizzle-kit push`), then starts Next. The first run pulls Docker images
+(~1–2 min); later runs just reconnect.
 
 Then, in another terminal:
 
@@ -61,23 +62,38 @@ delete `.env.development.local`.
 
 ## Configuration
 
-Env files, in Next.js precedence order (later overrides earlier):
+Env files (all gitignored except `.env.example`), in Next.js precedence order —
+later overrides earlier, and `lib/db/load-env.ts` teaches `pnpm db:*` the same
+order:
 
-| File                     | Committed | Used for                                        |
-| ------------------------ | --------- | ----------------------------------------------- |
-| `.env.development`        | yes       | Shared dev defaults (remote DB fallback)        |
-| `.env.production`         | yes       | `pnpm build` / `pnpm start`                     |
-| `.env.development.local`  | no        | Written by `pnpm dev` — the local Supabase DB   |
+| File                    | Used for                                       |
+| ----------------------- | ---------------------------------------------- |
+| `.env.development`       | `pnpm dev:next` fallback (e.g. a remote dev DB) |
+| `.env.production`        | `pnpm build` / `pnpm start`                    |
+| `.env.development.local` | Written by `pnpm dev` — the local Supabase DB  |
 
-| Variable       | Purpose                                                            |
-| -------------- | ----------------------------------------------------------------- |
-| `DATABASE_URL` | Postgres connection string. `pnpm db:*` read the same files.      |
+`DATABASE_URL` is the only variable — a Postgres connection string. On Vercel
+it's a Project env var instead of a file.
+
+## Deploying
+
+The app is on Vercel (`time-picker`, linked to this repo — pushes to `main`
+deploy). To stand up a fresh environment:
+
+1. Set `DATABASE_URL` in the Vercel project (Settings → Environment Variables) to
+   the target Postgres — the Supabase **transaction pooler** string, port 6543.
+2. Apply the schema once: `DATABASE_URL="<that url>" pnpm db:push`.
+3. Redeploy.
+
+There are no migration files — `db:push` diffs `lib/db/schema.ts` against
+whatever `DATABASE_URL` points at. Fine while there's no data to lose; switch to
+`db:generate` + committed migrations before real users arrive.
 
 ## Scripts
 
 | Script                | What it does                                              |
 | --------------------- | -------------------------------------------------------- |
-| `pnpm dev`            | Local Supabase + migrations + Next (`scripts/dev.sh`)     |
+| `pnpm dev`            | Local Supabase + schema push + Next (`scripts/dev.sh`)    |
 | `pnpm dev:next`       | Just `next dev`, against whatever `DATABASE_URL` resolves |
 | `pnpm supabase:start` | Start the local Supabase stack                            |
 | `pnpm supabase:stop`  | Stop it                                                   |
@@ -86,11 +102,10 @@ Env files, in Next.js precedence order (later overrides earlier):
 | `pnpm test`           | Run the logic checks in `scripts/checks.ts`               |
 | `pnpm lint`           | Biome lint + format check                                 |
 | `pnpm format`         | Apply Biome formatting                                    |
-| `pnpm db:generate`    | Generate a migration from `lib/db/schema.ts`              |
-| `pnpm db:migrate`     | Apply pending migrations                                  |
-| `pnpm db:push`        | Push the schema straight to the database (dev shortcut)   |
-| `pnpm db:seed`        | Reset and repopulate the database with sample polls       |
+| `pnpm db:push`        | Diff `lib/db/schema.ts` against the database and apply it |
+| `pnpm db:seed`        | Push the schema, then reset + repopulate with sample polls |
 | `pnpm db:studio`      | Open Drizzle Studio                                       |
+| `pnpm db:generate`    | (dormant) Generate a migration — for once there's real data |
 
 ## Layout
 
@@ -107,9 +122,8 @@ lib/
   validation.ts        Zod schemas shared by client and server
   local-store.ts       localStorage: per-poll identity and admin token
   db/load-env.ts       Loads .env.* for scripts that run outside Next
-drizzle/               Generated migrations
 supabase/              Local Supabase stack config (`config.toml`)
-scripts/dev.sh         `pnpm dev` — local Supabase + migrations + Next
+scripts/dev.sh         `pnpm dev` — local Supabase + schema push + Next
 scripts/checks.ts      Logic checks (`pnpm test`)
 ```
 

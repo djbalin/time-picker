@@ -42,8 +42,8 @@ EOF
 step "Wrote $ENV_FILE"
 
 # --- Schema ---------------------------------------------------------------
-step "Applying migrations"
-pnpm db:migrate
+step "Syncing schema (drizzle-kit push)"
+pnpm db:push --force
 
 STUDIO_URL="$("${SUPABASE[@]}" status -o env 2>/dev/null | sed -n 's/^STUDIO_URL="\(.*\)"$/\1/p')"
 [ -n "$STUDIO_URL" ] && step "Supabase Studio: $STUDIO_URL"
