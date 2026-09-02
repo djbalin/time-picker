@@ -1,16 +1,20 @@
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/postgres-js";
 
 /**
- * Defaults to a local SQLite file so `pnpm db:seed && pnpm dev` works with no
- * setup. Point `DATABASE_URL` at a libsql/Turso URL (plus
- * `DATABASE_AUTH_TOKEN`) to run against a hosted database.
+ * Points at a Postgres connection string — a local Postgres/Supabase instance
+ * for dev, or Supabase's pooled connection string in production. Supabase's
+ * pooler (port 6543, pgbouncer) doesn't support prepared statements, hence
+ * `prepare: false`.
  */
-const url = process.env.DATABASE_URL ?? "file:./db.sqlite";
-const authToken = process.env.DATABASE_AUTH_TOKEN;
+const url = process.env.DATABASE_URL;
+
+if (!url) {
+  throw new Error("DATABASE_URL is not set");
+}
 
 export const db = drizzle({
   connection: {
     url,
-    ...(authToken ? { authToken } : {}),
+    prepare: false,
   },
 });

@@ -35,7 +35,8 @@ has created or opened, not every poll in the database.
 
 ```bash
 pnpm install
-pnpm db:seed     # create the SQLite file, apply the schema, add sample polls
+cp .env.example .env   # fill in DATABASE_URL with your Supabase connection string
+pnpm db:seed            # apply the schema, add sample polls
 pnpm dev
 ```
 
@@ -44,13 +45,9 @@ URLs of the polls it created, so you can jump straight into one.
 
 ## Configuration
 
-Copy `.env.example` to `.env` if you want to point at something other than the
-default local SQLite file:
-
-| Variable              | Default          | Purpose                                        |
-| --------------------- | ---------------- | ---------------------------------------------- |
-| `DATABASE_URL`        | `file:./db.sqlite` | libsql connection string (local file or Turso) |
-| `DATABASE_AUTH_TOKEN` | *(unset)*        | Auth token, required for hosted Turso          |
+| Variable       | Purpose                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
+| `DATABASE_URL` | Postgres connection string (Supabase project settings -> Database) |
 
 ## Scripts
 
@@ -95,5 +92,5 @@ reachable from the network, and each one validates its own input.
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · Drizzle ORM on libsql/SQLite ·
+Next.js 16 (App Router) · React 19 · Drizzle ORM on Postgres (Supabase) ·
 Tailwind CSS v4 · Zod · Biome

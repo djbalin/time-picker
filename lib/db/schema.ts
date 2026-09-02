@@ -1,8 +1,8 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-export const pollsTable = sqliteTable("polls", {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const pollsTable = pgTable("polls", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   /** Public, unguessable id — every poll URL is built from this, never `id`. */
   slug: text().notNull().unique(),
   /** Held only by the creator; required to finalize or delete. Never read out. */
@@ -10,28 +10,25 @@ export const pollsTable = sqliteTable("polls", {
   title: text().notNull(),
   description: text(),
   /** Candidate days as "YYYY-MM-DD" keys, sorted ascending. */
-  dates: text("dates", { mode: "json" })
-    .notNull()
-    .$type<string[]>()
-    .default(sql`(json_array())`),
+  dates: json("dates").notNull().$type<string[]>().default(sql`'[]'::json`),
   /** The day the organizer locked in, or null while the poll is still open. */
   finalizedDate: text(),
-  createdAt: integer({ mode: "timestamp_ms" })
+  createdAt: timestamp({ mode: "date" })
     .notNull()
     .$defaultFn(() => new Date()),
-  updatedAt: integer({ mode: "timestamp_ms" })
+  updatedAt: timestamp({ mode: "date" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
-export const participantsTable = sqliteTable("participants", {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const participantsTable = pgTable("participants", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   pollId: integer()
     .notNull()
     .references(() => pollsTable.id, { onDelete: "cascade" }),
   name: text().notNull(),
-  createdAt: integer({ mode: "timestamp_ms" })
+  createdAt: timestamp({ mode: "date" })
     .notNull()
     .$defaultFn(() => new Date()),
 });
@@ -41,17 +38,14 @@ export const participantsTable = sqliteTable("participants", {
  * with no row here hasn't replied yet, which is a different thing from
  * replying "none of these dates" (a row holding an empty array).
  */
-export const availabilitiesTable = sqliteTable("availabilities", {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const availabilitiesTable = pgTable("availabilities", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   participantId: integer()
     .notNull()
     .unique()
     .references(() => participantsTable.id, { onDelete: "cascade" }),
-  dates: text("dates", { mode: "json" })
-    .notNull()
-    .$type<string[]>()
-    .default(sql`(json_array())`),
-  updatedAt: integer({ mode: "timestamp_ms" })
+  dates: json("dates").notNull().$type<string[]>().default(sql`'[]'::json`),
+  updatedAt: timestamp({ mode: "date" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
