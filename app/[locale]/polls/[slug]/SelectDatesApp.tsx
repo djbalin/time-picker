@@ -11,15 +11,17 @@ import {
 } from "react";
 import { finalizePoll } from "@/app/actions/polls";
 import {
+  Avatar,
   AvatarStack,
   Button,
   buttonClass,
+  Chip,
   IconButton,
   SegmentedControl,
   Wordmark,
 } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { fromDateKey } from "@/lib/date-keys";
+import { formatDateKey, fromDateKey } from "@/lib/date-keys";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
 import { getAdminToken, getIdentity, setIdentity } from "@/lib/local-store";
 import { summarizePoll } from "@/lib/poll-summary";
@@ -55,6 +57,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [showGroup, setShowGroup] = useState(false);
   const [monthDate, setMonthDate] = useState<Date>(() =>
     startMonth(poll.dates),
   );
@@ -181,57 +184,43 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
 
   return (
     <div className="mx-auto w-full max-w-[--width-app]">
-      <div className="grid grid-cols-1 overflow-hidden rounded-sheet shadow-pop [background:var(--grad-page)] md:grid-cols-[250px_1fr]">
+      <div
+        className={`grid grid-cols-1 overflow-hidden rounded-sheet shadow-pop [background:var(--grad-page)] ${
+          current === null ? "" : "md:grid-cols-[250px_1fr]"
+        }`}
+      >
         {/* ── Sidebar ─────────────────────────────────────────── */}
-        <aside className="flex flex-col gap-6 border-b border-white/60 bg-surface-glass p-5 backdrop-blur-lg md:border-b-0">
-          <Wordmark className="px-2 py-1" />
+        {current !== null ? (
+          <aside className="flex flex-col gap-6 border-b border-white/60 bg-surface-glass p-5 backdrop-blur-lg md:border-b-0">
+            <Wordmark className="px-2 py-1" />
 
-          <nav className="flex flex-col gap-1.5">
-            {nav.map((item) => {
-              const on = view === item.value;
-              return (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setView(item.value)}
-                  className={`flex items-center gap-3 rounded-pill px-4 py-3 text-left font-sans text-md font-bold transition-colors ${
-                    on
-                      ? "bg-paper text-accent-text shadow-rest"
-                      : "text-muted hover:text-body"
-                  }`}
-                >
-                  <span
-                    className="ms text-[22px]"
-                    data-fill={on ? "1" : "0"}
-                    aria-hidden="true"
-                  >
-                    {item.icon}
-                  </span>
-                  {item.label}
-                </button>
-              );
-            })}
-            <span className="flex items-center gap-3 rounded-pill px-4 py-3 font-sans text-md font-bold text-muted">
-              <span className="ms text-[22px]" aria-hidden="true">
-                group
+            <nav className="flex flex-col gap-1.5">
+              <button
+                type="button"
+                onClick={() => setShowGroup(true)}
+                className="flex items-center gap-3 rounded-pill px-4 py-3 text-left font-sans text-md font-bold text-muted transition-colors hover:bg-paper hover:text-body hover:shadow-rest"
+              >
+                <span className="ms text-[22px]" aria-hidden="true">
+                  group
+                </span>
+                {t("navGroup", { count: participants.length })}
+              </button>
+            </nav>
+
+            <div className="flex-1" />
+
+            <InviteLink slug={poll.slug} label={t("inviteLink")} />
+            <Link
+              href="/polls/create"
+              className={buttonClass({ variant: "primary", full: true })}
+            >
+              <span className="ms text-[18px]" aria-hidden>
+                add
               </span>
-              {t("navGroup", { count: participants.length })}
-            </span>
-          </nav>
-
-          <div className="flex-1" />
-
-          <InviteLink slug={poll.slug} label={t("inviteLink")} />
-          <Link
-            href="/polls/create"
-            className={buttonClass({ variant: "primary", full: true })}
-          >
-            <span className="ms text-[18px]" aria-hidden>
-              add
-            </span>
-            {t("newProposal")}
-          </Link>
-        </aside>
+              {t("newProposal")}
+            </Link>
+          </aside>
+        ) : null}
 
         {/* ── Main ────────────────────────────────────────────── */}
         <div className="flex min-w-0 flex-col gap-[18px] p-6 md:p-[28px_30px]">
@@ -256,7 +245,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
                     {t("question")}
                   </h1>
-                  <p className="mt-2 text-md text-body">{t("lead")}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg">
                   <AvatarStack
@@ -367,14 +355,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   ) : null}
                 </div>
 
-                <SelectionRail
-                  day={selectedDay}
-                  locale={locale}
-                  canAnswer
-                  mineYes={selectedDate ? mineDates.has(selectedDate) : false}
-                  onToggleMine={() => selectedDate && toggleMine(selectedDate)}
-                  onPickIdentity={() => setCurrentId(null)}
-                />
+                <SelectionRail day={selectedDay} locale={locale} />
               </div>
             </>
           )}
@@ -390,6 +371,97 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
           />
         </div>
       ) : null}
+
+      {showGroup ? (
+        <GroupStats
+          participants={participants}
+          respondedIds={respondedIds}
+          availability={availability}
+          dates={poll.dates}
+          locale={locale}
+          onClose={() => setShowGroup(false)}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function GroupStats({
+  participants,
+  respondedIds,
+  availability,
+  dates,
+  locale,
+  onClose,
+}: {
+  participants: PollParticipant[];
+  respondedIds: Set<number>;
+  availability: Record<number, string[]>;
+  dates: string[];
+  locale: string;
+  onClose: () => void;
+}) {
+  const t = useTranslations("SelectDates");
+  const proposed = new Set(dates);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        aria-label={t("close")}
+        onClick={onClose}
+        className="absolute inset-0 bg-ink-900/40 backdrop-blur-sm"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="relative max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-sheet bg-surface-card p-6 shadow-pop"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-2xl tracking-display text-strong">
+            {t("groupHeading", { count: participants.length })}
+          </h2>
+          <IconButton
+            icon="close"
+            label={t("close")}
+            size="sm"
+            onClick={onClose}
+          />
+        </div>
+        <div className="mt-4 flex flex-col gap-3">
+          {participants.map((p) => {
+            const answered = respondedIds.has(p.id);
+            const yesDates = (availability[p.id] ?? [])
+              .filter((d) => proposed.has(d))
+              .sort();
+            return (
+              <div key={p.id} className="rounded-md bg-paper-2 p-4 shadow-rest">
+                <div className="flex items-center gap-3">
+                  <Avatar name={p.name} size="md" />
+                  <span className="flex-1 font-sans text-md font-bold text-strong">
+                    {p.name}
+                  </span>
+                  <Chip tone={answered ? "yes" : "accent"}>
+                    {answered ? t("statAnswered") : t("statNotAnswered")}
+                  </Chip>
+                </div>
+                {answered ? (
+                  <p className="mt-2 text-xs text-body">
+                    {yesDates.length > 0
+                      ? t("statYesDates", {
+                          count: yesDates.length,
+                          dates: yesDates
+                            .map((d) => formatDateKey(d, locale))
+                            .join(", "),
+                        })
+                      : t("statNoDates")}
+                  </p>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

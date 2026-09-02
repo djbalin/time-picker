@@ -66,7 +66,10 @@ export function NightsList({
           >
             <button
               type="button"
-              onClick={() => onSelect(night.dateKey)}
+              onClick={() => {
+                onSelect(night.dateKey);
+                if (canAnswer) onToggleMine(night.dateKey);
+              }}
               aria-pressed={selected}
               className="col-span-2 grid cursor-pointer grid-cols-subgrid items-center gap-5 text-left"
             >
