@@ -40,17 +40,21 @@
   },
   "PollsPage": {
     "eyebrow": "Time Picker",
-    "heading": "Your polls",
-    "subtitle": "Polls you've created or opened on this device.",
+    "heading": "My polls",
+    "subtitle": "Enter the email you created your polls with to see them.",
     "createPoll": "Create poll"
   },
   "MyPolls": {
-    "loading": "Loading your polls…",
-    "failedTitle": "Couldn't load your polls",
-    "failedBody": "Something went wrong reaching the server. Reload the page to try again.",
-    "emptyTitle": "No polls yet",
-    "emptyBody": "Polls you create or open show up here. They're remembered in this browser, so open a poll link on this device to add it to the list.",
-    "emptyCreatePoll": "Create your first poll"
+    "emailLabel": "Your email",
+    "emailPlaceholder": "you@example.com",
+    "lookup": "Show my polls",
+    "disclaimer": "No verification yet — anyone who enters this email can see these polls. Real sign-in is coming.",
+    "resultsFor": "Polls created by {email}",
+    "allPolls": "ALL POLLS (dev)",
+    "allPollsHeading": "Every poll in the database",
+    "emptyTitle": "No polls found",
+    "emptyBody": "Nothing was created with that email yet.",
+    "emptyCreatePoll": "Create a poll"
   },
   "PollCard": {
     "decided": "Decided",
@@ -74,6 +78,9 @@
     "descriptionLabel": "Description",
     "descriptionOptional": "(optional)",
     "descriptionPlaceholder": "What's this poll for?",
+    "emailLabel": "Your email",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "Used to group the polls you create so you can find them again later.",
     "participantsLabel": "Participants",
     "participantsPlaceholder": "Add a name",
     "participantsAriaLabel": "Participant name",

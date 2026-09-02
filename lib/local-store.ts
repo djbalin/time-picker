@@ -1,23 +1,15 @@
 /**
- * The app has no accounts, so the browser is the only place that knows who you
- * are and which polls are yours. Every access is guarded: storage throws
- * outright in some privacy modes, and a failure here must never take a page
- * down with it.
+ * Per-poll secrets the browser holds because there are no accounts yet: which
+ * participant you answered as, and (on the creating device) the admin token.
+ * Every access is guarded: storage throws outright in some privacy modes, and
+ * a failure here must never take a page down with it.
  *
  * Callers must only reach these from effects or event handlers — reading
  * during render would make the server and client markup disagree.
  */
 
-const KNOWN_POLLS_KEY = "time-picker:polls";
 const identityKey = (slug: string) => `time-picker:identity:${slug}`;
 const adminKey = (slug: string) => `time-picker:admin:${slug}`;
-
-export type KnownPoll = {
-  slug: string;
-  title: string;
-  /** Epoch ms of the last visit, newest first in `getKnownPolls`. */
-  seenAt: number;
-};
 
 function read(key: string): string | null {
   try {
@@ -43,37 +35,8 @@ function remove(key: string): void {
   }
 }
 
-export function getKnownPolls(): KnownPoll[] {
-  const raw = read(KNOWN_POLLS_KEY);
-  if (!raw) return [];
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter(
-        (entry): entry is KnownPoll =>
-          typeof entry === "object" &&
-          entry !== null &&
-          typeof (entry as KnownPoll).slug === "string" &&
-          typeof (entry as KnownPoll).title === "string" &&
-          typeof (entry as KnownPoll).seenAt === "number",
-      )
-      .sort((a, b) => b.seenAt - a.seenAt);
-  } catch {
-    return [];
-  }
-}
-
-/** Records a visit, moving the poll to the top of the list. */
-export function rememberPoll(slug: string, title: string): void {
-  const others = getKnownPolls().filter((poll) => poll.slug !== slug);
-  const next: KnownPoll[] = [{ slug, title, seenAt: Date.now() }, ...others];
-  write(KNOWN_POLLS_KEY, JSON.stringify(next.slice(0, 100)));
-}
-
+/** Wipes everything this device remembered about a poll, e.g. after deleting it. */
 export function forgetPoll(slug: string): void {
-  const next = getKnownPolls().filter((poll) => poll.slug !== slug);
-  write(KNOWN_POLLS_KEY, JSON.stringify(next));
   remove(identityKey(slug));
   remove(adminKey(slug));
 }

@@ -77,10 +77,13 @@ function generateRandomDates() {
   return [...dateSet].sort();
 }
 
+const SEED_CREATOR_EMAIL = "seed@example.com";
+
 const seedPolls: PollInsert[] = pollTemplates.map((poll) => ({
   ...poll,
   slug: generateSlug(),
   adminToken: generateAdminToken(),
+  creatorEmail: SEED_CREATOR_EMAIL,
   dates: generateRandomDates(),
 }));
 
@@ -117,10 +120,12 @@ const seed = async () => {
     await db.insert(availabilitiesTable).values(availabilityObjects);
   }
 
-  console.log("Seeding done. Open one of these polls:");
+  console.log(`Seeding done. "My polls" email: ${SEED_CREATOR_EMAIL}`);
+  console.log("Open one of these polls:");
   for (const poll of newPolls) {
     console.log(`  ${poll.title} -> /polls/${poll.slug}`);
   }
+  process.exit(0);
 };
 
 seed().catch((err) => {

@@ -4,7 +4,8 @@ import { and, eq } from "drizzle-orm";
 import { refresh } from "next/cache";
 import { db } from "@/lib/db/db";
 import {
-  getPollsBySlugs,
+  getAllPolls,
+  getPollsByCreatorEmail,
   getPollWithTokenBySlug,
   type PollSummaryRow,
 } from "@/lib/db/queries";
@@ -19,6 +20,7 @@ import {
   type CreatePollFieldErrors,
   createPollSchema,
   dedupeNames,
+  emailSchema,
   firstFieldErrors,
   MAX_PARTICIPANTS,
   nameIsTaken,
@@ -61,6 +63,7 @@ export async function createPoll(
   const parsed = createPollSchema.safeParse({
     title: formData.get("title") ?? "",
     description: formData.get("description") ?? "",
+    creatorEmail: formData.get("creatorEmail") ?? "",
     dates: readJsonArray(formData.get("dates")),
     participants: readJsonArray(formData.get("participants")),
   });
@@ -69,7 +72,7 @@ export async function createPoll(
     return failure("Some details need fixing.", firstFieldErrors(parsed.error));
   }
 
-  const { title, description } = parsed.data;
+  const { title, description, creatorEmail } = parsed.data;
   const dates = normalizeDateKeys(parsed.data.dates);
   const participants = dedupeNames(parsed.data.participants);
 
@@ -89,7 +92,7 @@ export async function createPoll(
 
   const [poll] = await db
     .insert(pollsTable)
-    .values({ slug, adminToken, title, description, dates })
+    .values({ slug, adminToken, title, description, creatorEmail, dates })
     .returning();
 
   await db.insert(participantsTable).values(
@@ -290,14 +293,29 @@ function readJsonArray(value: FormDataEntryValue | null): unknown[] {
   }
 }
 
+export type LoadPollsResult = ActionResult<{ polls: PollSummaryRow[] }>;
+
 /**
- * Read used by the "my polls" list. It's an action rather than a query because
- * the browser is the only thing that knows which polls it has seen — and it
- * can only ever ask for slugs it already holds, which are the share secrets.
+ * Read used by the "My polls" screen: the creator types their email and gets
+ * every poll created under it. This is intentionally not an access control —
+ * real auth will gate it later.
  */
-export async function loadMyPolls(slugs: string[]): Promise<PollSummaryRow[]> {
-  const wanted = slugs
-    .filter((slug): slug is string => typeof slug === "string")
-    .slice(0, 100);
-  return getPollsBySlugs(wanted);
+export async function loadPollsByEmail(
+  rawEmail: string,
+): Promise<LoadPollsResult> {
+  const parsed = emailSchema.safeParse(rawEmail);
+  if (!parsed.success) {
+    return failure(parsed.error.issues[0]?.message ?? "Enter a valid email.");
+  }
+  const polls = await getPollsByCreatorEmail(parsed.data);
+  return { ok: true, polls };
+}
+
+/** Dev-only: every poll in the database, for the "ALL POLLS" button. */
+export async function loadAllPolls(): Promise<LoadPollsResult> {
+  if (process.env.NODE_ENV === "production") {
+    return failure("Not available.");
+  }
+  const polls = await getAllPolls();
+  return { ok: true, polls };
 }

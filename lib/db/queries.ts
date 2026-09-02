@@ -16,8 +16,11 @@ import {
  * database. Server Components import these directly.
  */
 
-/** A poll as it is safe to send to any visitor — `adminToken` is stripped. */
-export type PublicPoll = Omit<Poll, "adminToken">;
+/**
+ * A poll as it is safe to send to any visitor — `adminToken` and
+ * `creatorEmail` are stripped.
+ */
+export type PublicPoll = Omit<Poll, "adminToken" | "creatorEmail">;
 
 export type PollParticipant = {
   id: number;
@@ -37,7 +40,11 @@ export type PollSummaryRow = PublicPoll & {
 };
 
 function toPublicPoll(poll: Poll): PublicPoll {
-  const { adminToken: _adminToken, ...rest } = poll;
+  const {
+    adminToken: _adminToken,
+    creatorEmail: _creatorEmail,
+    ...rest
+  } = poll;
   return rest;
 }
 
@@ -87,20 +94,37 @@ export async function getPollBySlug(slug: string): Promise<PollDetail | null> {
 }
 
 /**
- * Backs the "my polls" list. The browser remembers which slugs it has seen, so
- * a visitor only ever gets back polls they already hold links to.
+ * Backs the "my polls" list. There are no accounts yet, so the creator just
+ * types their email and gets every poll created under it — this is deliberately
+ * not an access control, and will be gated behind real auth later.
  */
-export async function getPollsBySlugs(
-  slugs: string[],
+export async function getPollsByCreatorEmail(
+  email: string,
 ): Promise<PollSummaryRow[]> {
-  if (slugs.length === 0) return [];
-
   const polls = await db
     .select()
     .from(pollsTable)
-    .where(inArray(pollsTable.slug, slugs))
+    .where(eq(pollsTable.creatorEmail, email))
     .orderBy(desc(pollsTable.createdAt));
 
+  return withParticipantCounts(polls);
+}
+
+/**
+ * Every poll in the database. Dev-only convenience for the "ALL POLLS" button —
+ * callers must guard on the environment before exposing this.
+ */
+export async function getAllPolls(): Promise<PollSummaryRow[]> {
+  const polls = await db
+    .select()
+    .from(pollsTable)
+    .orderBy(desc(pollsTable.createdAt));
+
+  return withParticipantCounts(polls);
+}
+
+/** Attaches participant / responded counts to a set of polls in one extra query. */
+async function withParticipantCounts(polls: Poll[]): Promise<PollSummaryRow[]> {
   if (polls.length === 0) return [];
 
   const pollIds = polls.map((poll) => poll.id);

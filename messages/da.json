@@ -40,17 +40,21 @@
   },
   "PollsPage": {
     "eyebrow": "Time Picker",
-    "heading": "Dine afstemninger",
-    "subtitle": "Afstemninger, du har oprettet eller åbnet på denne enhed.",
+    "heading": "Mine afstemninger",
+    "subtitle": "Indtast den e-mail, du oprettede dine afstemninger med, for at se dem.",
     "createPoll": "Opret afstemning"
   },
   "MyPolls": {
-    "loading": "Henter dine afstemninger…",
-    "failedTitle": "Kunne ikke hente dine afstemninger",
-    "failedBody": "Noget gik galt med at nå serveren. Genindlæs siden for at prøve igen.",
-    "emptyTitle": "Ingen afstemninger endnu",
-    "emptyBody": "Afstemninger, du opretter eller åbner, dukker op her. De huskes i denne browser, så åbn et afstemningslink på denne enhed for at føje det til listen.",
-    "emptyCreatePoll": "Opret din første afstemning"
+    "emailLabel": "Din e-mail",
+    "emailPlaceholder": "dig@eksempel.dk",
+    "lookup": "Vis mine afstemninger",
+    "disclaimer": "Ingen verificering endnu — alle, der indtaster denne e-mail, kan se afstemningerne. Rigtig login er på vej.",
+    "resultsFor": "Afstemninger oprettet af {email}",
+    "allPolls": "ALLE AFSTEMNINGER (dev)",
+    "allPollsHeading": "Alle afstemninger i databasen",
+    "emptyTitle": "Ingen afstemninger fundet",
+    "emptyBody": "Der er endnu ikke oprettet noget med den e-mail.",
+    "emptyCreatePoll": "Opret en afstemning"
   },
   "PollCard": {
     "decided": "Besluttet",
@@ -74,6 +78,9 @@
     "descriptionLabel": "Beskrivelse",
     "descriptionOptional": "(valgfri)",
     "descriptionPlaceholder": "",
+    "emailLabel": "Din e-mail",
+    "emailPlaceholder": "dig@eksempel.dk",
+    "emailHint": "Bruges til at gruppere de afstemninger, du opretter, så du kan finde dem igen senere.",
     "participantsLabel": "Deltagere",
     "participantsPlaceholder": "Tilføj en person",
     "participantsAriaLabel": "Deltagernavn",

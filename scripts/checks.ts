@@ -10,6 +10,7 @@ import { summarizePoll } from "../lib/poll-summary";
 import {
   createPollSchema,
   dedupeNames,
+  emailSchema,
   nameIsTaken,
   normalizeDateKeys,
 } from "../lib/validation";
@@ -57,17 +58,36 @@ check(
 check("nameIsTaken", nameIsTaken(" IDA ", ["Ida"]), true);
 check("nameIsTaken negative", nameIsTaken("Bo", ["Ida"]), false);
 
+// --- email ---
+check(
+  "emailSchema trims + lowercases",
+  emailSchema.safeParse("  Freja@Example.COM "),
+  { success: true, data: "freja@example.com" },
+);
+check(
+  "emailSchema rejects garbage",
+  emailSchema.safeParse("nope").success,
+  false,
+);
+
 // --- create poll schema ---
 const good = createPollSchema.safeParse({
   title: "  Offsite  ",
   description: "",
+  creatorEmail: "Ida@Example.com",
   dates: ["2026-09-04"],
   participants: ["Ida"],
 });
 check("schema accepts + trims", good.success && good.data.title, "Offsite");
+check(
+  "schema lowercases creatorEmail",
+  good.success && good.data.creatorEmail,
+  "ida@example.com",
+);
 const noDates = createPollSchema.safeParse({
   title: "x",
   description: "",
+  creatorEmail: "ida@example.com",
   dates: [],
   participants: ["Ida"],
 });
@@ -75,13 +95,23 @@ check("schema rejects empty dates", noDates.success, false);
 const noTitle = createPollSchema.safeParse({
   title: "   ",
   description: "",
+  creatorEmail: "ida@example.com",
   dates: ["2026-09-04"],
   participants: ["Ida"],
 });
 check("schema rejects blank title", noTitle.success, false);
+const noEmail = createPollSchema.safeParse({
+  title: "x",
+  description: "",
+  creatorEmail: "",
+  dates: ["2026-09-04"],
+  participants: ["Ida"],
+});
+check("schema rejects missing email", noEmail.success, false);
 const badDate = createPollSchema.safeParse({
   title: "x",
   description: "",
+  creatorEmail: "ida@example.com",
   dates: ["2026-02-31"],
   participants: ["Ida"],
 });

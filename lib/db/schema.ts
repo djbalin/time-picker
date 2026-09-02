@@ -9,6 +9,8 @@ export const pollsTable = pgTable("polls", {
   adminToken: text().notNull(),
   title: text().notNull(),
   description: text(),
+  /** The creator's email. No real auth yet — anyone who types it sees their polls. */
+  creatorEmail: text().notNull(),
   /** Candidate days as "YYYY-MM-DD" keys, sorted ascending. */
   dates: json("dates").notNull().$type<string[]>().default(sql`'[]'::json`),
   /** The day the organizer locked in, or null while the poll is still open. */

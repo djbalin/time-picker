@@ -17,6 +17,13 @@ export const participantNameSchema = z
   .min(1, "Enter a name.")
   .max(MAX_NAME_LENGTH, `Keep names under ${MAX_NAME_LENGTH} characters.`);
 
+/** Used both when creating a poll and when looking up "my polls" by email. */
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email("Enter a valid email address."));
+
 export const createPollSchema = z.object({
   title: z
     .string()
@@ -34,6 +41,7 @@ export const createPollSchema = z.object({
       `Keep the description under ${MAX_DESCRIPTION_LENGTH} characters.`,
     )
     .default(""),
+  creatorEmail: emailSchema,
   dates: z
     .array(dateKeySchema)
     .min(1, "Pick at least one date.")
@@ -60,6 +68,7 @@ export function firstFieldErrors(
   return {
     title: fieldErrors.title?.[0],
     description: fieldErrors.description?.[0],
+    creatorEmail: fieldErrors.creatorEmail?.[0],
     dates: fieldErrors.dates?.[0],
     participants: fieldErrors.participants?.[0],
   };

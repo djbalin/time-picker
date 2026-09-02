@@ -5,12 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { saveAvailability } from "@/app/actions/polls";
 import { CheckIcon, SpinnerIcon } from "@/components/icons";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
-import {
-  getAdminToken,
-  getIdentity,
-  rememberPoll,
-  setIdentity,
-} from "@/lib/local-store";
+import { getAdminToken, getIdentity, setIdentity } from "@/lib/local-store";
 import { summarizePoll } from "@/lib/poll-summary";
 import { AvailabilityGrid } from "./AvailabilityGrid";
 import { IdentityPicker } from "./IdentityPicker";
@@ -86,9 +81,8 @@ export function PollWorkspace({ poll }: { poll: PollDetail }) {
   });
 
   useEffect(() => {
-    rememberPoll(poll.slug, poll.title);
     setAdminTokenState(getAdminToken(poll.slug));
-  }, [poll.slug, poll.title]);
+  }, [poll.slug]);
 
   // Resolve the remembered identity once the participant list is known, so a
   // stale id (their row was deleted) falls back to the picker instead of

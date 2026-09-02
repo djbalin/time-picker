@@ -14,7 +14,7 @@ import { createPoll } from "@/app/actions/polls";
 import { PencilIcon, SpinnerIcon, TrashIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
 import { toDateKey } from "@/lib/date-keys";
-import { rememberPoll, setAdminToken } from "@/lib/local-store";
+import { setAdminToken } from "@/lib/local-store";
 import { participantColor } from "@/lib/participant-colors";
 import { buttonClass, fieldClass } from "@/lib/ui";
 import {
@@ -40,7 +40,6 @@ export function CreatePollForm() {
   useEffect(() => {
     if (!state?.ok) return;
     setAdminToken(state.slug, state.adminToken);
-    rememberPoll(state.slug, state.title);
     router.push(`/polls/${state.slug}`);
   }, [state, router]);
 
@@ -79,6 +78,7 @@ export function CreatePollForm() {
     const result = createPollSchema.safeParse({
       title: formData.get("title") ?? "",
       description: formData.get("description") ?? "",
+      creatorEmail: formData.get("creatorEmail") ?? "",
       dates: dateKeys,
       participants,
     });
@@ -142,6 +142,32 @@ export function CreatePollForm() {
           className={fieldClass(Boolean(errors.description))}
         />
         <FieldError id="description-error" message={errors.description} />
+      </div>
+
+      <div>
+        <label
+          className="mb-1.5 block text-xs font-extrabold text-slate"
+          htmlFor="creatorEmail"
+        >
+          {t("emailLabel")}
+        </label>
+        <input
+          id="creatorEmail"
+          name="creatorEmail"
+          type="email"
+          autoComplete="email"
+          placeholder={t("emailPlaceholder")}
+          onChange={() => clearError("creatorEmail")}
+          aria-invalid={Boolean(errors.creatorEmail)}
+          aria-describedby={
+            errors.creatorEmail ? "creatorEmail-error" : undefined
+          }
+          className={fieldClass(Boolean(errors.creatorEmail))}
+        />
+        <FieldError id="creatorEmail-error" message={errors.creatorEmail} />
+        <p className="mt-1.5 text-xs font-semibold text-mist">
+          {t("emailHint")}
+        </p>
       </div>
 
       <div>
