@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Gabarito, Righteous } from "next/font/google";
+import { Arimo, Righteous } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -8,8 +8,8 @@ import { isAppLocale, routing } from "@/i18n/routing";
 import "./globals.css";
 
 // Meety runs on two Google-hosted faces: Righteous for the 70s display voice
-// (headlines, day numbers, the wordmark — one weight only), Gabarito for
-// everything else. See the design system readme, "Type".
+// (headlines, day numbers, the wordmark — one weight only), Arimo (a classic
+// Helvetica/Arial-metric grotesque) for everything else.
 const righteous = Righteous({
   variable: "--font-righteous",
   weight: "400",
@@ -17,7 +17,7 @@ const righteous = Righteous({
   display: "swap",
 });
 
-const gabarito = Gabarito({
+const gabarito = Arimo({
   variable: "--font-gabarito",
   subsets: ["latin"],
   display: "swap",

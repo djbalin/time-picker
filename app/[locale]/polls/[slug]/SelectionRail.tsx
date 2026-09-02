@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Avatar, Button, Chip, Icon } from "@/components/ui";
+import { Avatar, Chip, Icon } from "@/components/ui";
 import { formatDateKey, formatDateKeyLong } from "@/lib/date-keys";
 import type { DateSummary } from "@/lib/poll-summary";
 
@@ -12,17 +12,9 @@ import type { DateSummary } from "@/lib/poll-summary";
 export function SelectionRail({
   day,
   locale,
-  canAnswer,
-  mineYes,
-  onToggleMine,
-  onPickIdentity,
 }: {
   day: DateSummary | null;
   locale: string;
-  canAnswer: boolean;
-  mineYes: boolean;
-  onToggleMine: () => void;
-  onPickIdentity: () => void;
 }) {
   const t = useTranslations("SelectDates");
 
@@ -91,23 +83,6 @@ export function SelectionRail({
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-5">
-        {canAnswer ? (
-          <Button variant="primary" full icon="edit" onClick={onToggleMine}>
-            {mineYes ? t("cantMakeThis") : t("iCanMakeThis")}
-          </Button>
-        ) : (
-          <Button
-            variant="primary"
-            full
-            icon="how_to_reg"
-            onClick={onPickIdentity}
-          >
-            {t("answerThese")}
-          </Button>
-        )}
       </div>
     </div>
   );

@@ -165,7 +165,6 @@
   },
   "SelectDates": {
     "question": "Hvilke datoer kan du?",
-    "lead": "Tryk på en dato for at se, hvem der kan.",
     "viewLabel": "Kalendervisning",
     "viewMonth": "Måned",
     "viewNights": "Datoer",
@@ -191,11 +190,14 @@
     "railEmpty": "Tryk på en dato for at se, hvem der kan.",
     "whosIn": "Hvem kan",
     "canCount": "{yes} af {total} kan",
-    "iCanMakeThis": "Jeg kan denne",
-    "cantMakeThis": "Jeg kan ikke denne",
-    "answerThese": "Svar på datoerne",
     "settleOn": "Vælg {date}",
     "reopen": "Genåbn afstemningen",
-    "itsHappening": "Det sker"
+    "itsHappening": "Det sker",
+    "groupHeading": "{count, plural, one {# person} other {# personer}} i gruppen",
+    "close": "Luk",
+    "statAnswered": "Har svaret",
+    "statNotAnswered": "Ikke svaret",
+    "statYesDates": "{count, plural, one {Kan 1 dato} other {Kan # datoer}}: {dates}",
+    "statNoDates": "Har ikke sagt ja til nogen dato endnu"
   }
 }

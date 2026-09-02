@@ -165,7 +165,6 @@
   },
   "SelectDates": {
     "question": "Which dates can you make?",
-    "lead": "Tap a night to see who's in.",
     "viewLabel": "Calendar view",
     "viewMonth": "Month",
     "viewNights": "Nights",
@@ -191,11 +190,14 @@
     "railEmpty": "Tap a night to see who's in.",
     "whosIn": "Who's in",
     "canCount": "{yes} of {total} can",
-    "iCanMakeThis": "I can make this",
-    "cantMakeThis": "I can't make this",
-    "answerThese": "Answer these dates",
     "settleOn": "Settle on {date}",
     "reopen": "Reopen the poll",
-    "itsHappening": "It's happening"
+    "itsHappening": "It's happening",
+    "groupHeading": "{count, plural, one {# person} other {# people}} in the group",
+    "close": "Close",
+    "statAnswered": "Answered",
+    "statNotAnswered": "Not answered",
+    "statYesDates": "{count, plural, one {Can make 1 date} other {Can make # dates}}: {dates}",
+    "statNoDates": "Hasn't said yes to any date yet"
   }
 }

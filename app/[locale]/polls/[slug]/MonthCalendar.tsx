@@ -9,7 +9,7 @@ import { toDateKey } from "@/lib/date-keys";
 /**
  * Screen 2a — the month. Every proposed night sits in the calendar coloured
  * by how many of the group can play; the rest of the month is muted. Tap a
- * night to see who's in.
+ * night to toggle your own availability and see who else is in.
  */
 export function MonthCalendar({
   monthDate,
@@ -110,9 +110,14 @@ export function MonthCalendar({
             <div key={cell.key} className="relative">
               <button
                 type="button"
-                onClick={() => onSelect(dateKey)}
-                aria-pressed={selected}
-                aria-label={dateKey}
+                onClick={() => {
+                  onSelect(dateKey);
+                  if (canAnswer) onToggleMine(dateKey);
+                }}
+                aria-pressed={canAnswer ? mine : selected}
+                aria-label={
+                  canAnswer ? t("yourAnswerFor", { date: dateKey }) : dateKey
+                }
                 className={`flex min-h-[84px] w-full flex-col justify-between gap-2 rounded-md p-2.5 text-left transition-[background-color,box-shadow,transform] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 ${heat.bg} ${heat.fg} ${
                   selected
                     ? "shadow-lift ring-2 ring-inset ring-accent"
@@ -127,19 +132,16 @@ export function MonthCalendar({
                 </span>
               </button>
               {canAnswer ? (
-                <button
-                  type="button"
-                  aria-pressed={mine}
-                  aria-label={t("yourAnswerFor", { date: dateKey })}
-                  onClick={() => onToggleMine(dateKey)}
-                  className={`absolute right-2.5 top-2.5 grid h-[19px] w-[19px] place-items-center rounded-full transition-colors ${
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute right-2.5 top-2.5 grid h-[19px] w-[19px] place-items-center rounded-full transition-colors ${
                     mine
                       ? "bg-accent text-on-accent"
-                      : "bg-white/55 text-transparent hover:bg-white/80"
+                      : "bg-white/55 text-transparent"
                   }`}
                 >
                   <Icon name="check" size={13} color="currentColor" />
-                </button>
+                </span>
               ) : null}
             </div>
           );
