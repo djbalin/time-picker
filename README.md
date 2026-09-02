@@ -16,7 +16,7 @@ the invitation.
 
 ### Who can do what
 
-There are no user accounts. Two things live in the browser's `localStorage`:
+There are no user accounts yet. Two things live in the browser's `localStorage`:
 
 - **Your identity for a poll** — so you don't have to re-pick your name on every
   visit.
@@ -24,46 +24,73 @@ There are no user accounts. Two things live in the browser's `localStorage`:
   device. Finalizing and deleting a poll require it, and it is never included in
   a poll read, so people you share the link with can't delete your poll.
 
-The list at `/polls` is likewise device-local: it shows the polls this browser
-has created or opened, not every poll in the database.
+To create a poll you give an **email**. The "My polls" screen (`/polls`) lists
+every poll created under an email you type in. This is deliberately unguarded —
+there's no verification yet — and will be gated behind real sign-in later. In
+development there's also an **ALL POLLS** button that dumps the whole table.
 
 > **Note on the trust model:** anyone holding a poll's link can answer as any
-> name on it. That's the intended trade-off for a zero-signup tool — the link is
-> the shared secret. Don't use it for anything you'd need real auth for.
+> name on it, and anyone who types a creator's email sees their polls. That's the
+> intended trade-off for the current zero-signup stage — don't use it for
+> anything you'd need real auth for.
 
 ## Getting started
 
+You need [Docker](https://docs.docker.com/get-docker/) running — the local
+database is a Supabase stack in containers.
+
 ```bash
 pnpm install
-cp .env.example .env   # fill in DATABASE_URL with your Supabase connection string
-pnpm db:seed            # apply the schema, add sample polls
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). `pnpm db:seed` prints the
-URLs of the polls it created, so you can jump straight into one.
+`pnpm dev` runs `scripts/dev.sh`, which starts local Supabase, writes
+`.env.development.local` pointing the app at it, applies migrations, then starts
+Next. The first run pulls Docker images (~1–2 min); later runs just reconnect.
+
+Then, in another terminal:
+
+```bash
+pnpm db:seed   # populate sample polls — prints their URLs and the "My polls" email
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+To run against the remote database instead, use `pnpm dev:next` directly and
+delete `.env.development.local`.
 
 ## Configuration
 
-| Variable       | Purpose                                                                 |
-| -------------- | ------------------------------------------------------------------------ |
-| `DATABASE_URL` | Postgres connection string (Supabase project settings -> Database) |
+Env files, in Next.js precedence order (later overrides earlier):
+
+| File                     | Committed | Used for                                        |
+| ------------------------ | --------- | ----------------------------------------------- |
+| `.env.development`        | yes       | Shared dev defaults (remote DB fallback)        |
+| `.env.production`         | yes       | `pnpm build` / `pnpm start`                     |
+| `.env.development.local`  | no        | Written by `pnpm dev` — the local Supabase DB   |
+
+| Variable       | Purpose                                                            |
+| -------------- | ----------------------------------------------------------------- |
+| `DATABASE_URL` | Postgres connection string. `pnpm db:*` read the same files.      |
 
 ## Scripts
 
-| Script             | What it does                                              |
-| ------------------ | --------------------------------------------------------- |
-| `pnpm dev`         | Start the dev server                                       |
-| `pnpm build`       | Production build (does not need a reachable database)      |
-| `pnpm start`       | Serve the production build                                 |
-| `pnpm test`        | Run the logic checks in `scripts/checks.ts`                |
-| `pnpm lint`        | Biome lint + format check                                  |
-| `pnpm format`      | Apply Biome formatting                                     |
-| `pnpm db:generate` | Generate a migration from `lib/db/schema.ts`               |
-| `pnpm db:migrate`  | Apply pending migrations                                   |
-| `pnpm db:push`     | Push the schema straight to the database (dev shortcut)    |
-| `pnpm db:seed`     | Reset and repopulate the database with sample polls        |
-| `pnpm db:studio`   | Open Drizzle Studio                                        |
+| Script                | What it does                                              |
+| --------------------- | -------------------------------------------------------- |
+| `pnpm dev`            | Local Supabase + migrations + Next (`scripts/dev.sh`)     |
+| `pnpm dev:next`       | Just `next dev`, against whatever `DATABASE_URL` resolves |
+| `pnpm supabase:start` | Start the local Supabase stack                            |
+| `pnpm supabase:stop`  | Stop it                                                   |
+| `pnpm build`          | Production build (does not need a reachable database)     |
+| `pnpm start`          | Serve the production build                                |
+| `pnpm test`           | Run the logic checks in `scripts/checks.ts`               |
+| `pnpm lint`           | Biome lint + format check                                 |
+| `pnpm format`         | Apply Biome formatting                                    |
+| `pnpm db:generate`    | Generate a migration from `lib/db/schema.ts`              |
+| `pnpm db:migrate`     | Apply pending migrations                                  |
+| `pnpm db:push`        | Push the schema straight to the database (dev shortcut)   |
+| `pnpm db:seed`        | Reset and repopulate the database with sample polls       |
+| `pnpm db:studio`      | Open Drizzle Studio                                       |
 
 ## Layout
 
@@ -78,8 +105,11 @@ lib/
   db/queries.ts        Reads, imported directly by Server Components
   poll-summary.ts      Availability rollup — pure, unit-tested
   validation.ts        Zod schemas shared by client and server
-  local-store.ts       localStorage: identity, known polls, admin tokens
+  local-store.ts       localStorage: per-poll identity and admin token
+  db/load-env.ts       Loads .env.* for scripts that run outside Next
 drizzle/               Generated migrations
+supabase/              Local Supabase stack config (`config.toml`)
+scripts/dev.sh         `pnpm dev` — local Supabase + migrations + Next
 scripts/checks.ts      Logic checks (`pnpm test`)
 ```
 

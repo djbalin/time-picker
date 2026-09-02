@@ -1,3 +1,4 @@
+import "./load-env";
 import { toDateKey } from "../date-keys";
 import { generateAdminToken, generateSlug } from "../ids";
 import { db } from "./db";
