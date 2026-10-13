@@ -170,80 +170,79 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   const answered = summary.respondedCount;
 
   return (
-    <div className="mx-auto w-full max-w-[--width-app]">
-      <div className="flex flex-col gap-[18px] overflow-hidden rounded-sheet p-6 shadow-pop [background:var(--grad-page)] md:p-[28px_30px]">
-        <InviteLink
+    <div className="flex  w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
+      <InviteLink
+        slug={poll.slug}
+        label={t("inviteLink")}
+        hint={t("inviteHint")}
+      />
+
+      {poll.dates.length === 0 ? (
+        <Empty title={t("emptyTitle")} body={t("emptyBody")} />
+      ) : !identityChecked ? (
+        <Empty title={t("loading")} body="" />
+      ) : current === null ? (
+        <IdentityPicker
           slug={poll.slug}
-          label={t("inviteLink")}
-          hint={t("inviteHint")}
+          participants={participants}
+          onSelect={chooseIdentity}
+          onJoined={handleJoined}
         />
-
-        {poll.dates.length === 0 ? (
-          <Empty title={t("emptyTitle")} body={t("emptyBody")} />
-        ) : !identityChecked ? (
-          <Empty title={t("loading")} body="" />
-        ) : current === null ? (
-          <IdentityPicker
-            slug={poll.slug}
-            participants={participants}
-            onSelect={chooseIdentity}
-            onJoined={handleJoined}
-          />
-        ) : (
-          <>
-            <header className="flex flex-wrap items-end justify-between gap-6">
-              <div className="min-w-0">
-                <div className="text-2xs font-semibold uppercase tracking-label text-muted">
-                  {poll.title}
-                </div>
-                <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
-                  {t.rich("greeting", {
-                    name: current.name,
-                    pill: (chunks) => (
-                      <NamePill
-                        colorIndex={participants.indexOf(current)}
-                        label={t("switchPerson")}
-                        onClick={() => {
-                          flush();
-                          setCurrentId(null);
-                        }}
-                      >
-                        {chunks}
-                      </NamePill>
-                    ),
-                  })}
-                </h1>
+      ) : (
+        <>
+          <header className="flex flex-wrap items-end justify-between gap-6">
+            <div className="min-w-0">
+              <div className="text-2xs font-semibold uppercase tracking-label text-muted">
+                {poll.title}
               </div>
-              <button
-                type="button"
-                onClick={() => setShowGroup(true)}
-                aria-label={t("groupHeading", { count: participants.length })}
-                className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
-              >
-                <AvatarStack
-                  names={participants.map((p) => p.name)}
-                  size="md"
-                />
-                <span className="whitespace-nowrap text-xs font-semibold text-body">
-                  {t("answeredCount", {
-                    answered,
-                    total: participants.length,
-                  })}
-                </span>
-              </button>
-            </header>
+              <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
+                {t.rich("greeting", {
+                  name: current.name,
+                  pill: (chunks) => (
+                    <NamePill
+                      colorIndex={participants.indexOf(current)}
+                      label={t("switchPerson")}
+                      onClick={() => {
+                        flush();
+                        setCurrentId(null);
+                      }}
+                    >
+                      {chunks}
+                    </NamePill>
+                  ),
+                })}
+              </h1>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowGroup(true)}
+              aria-label={t("groupHeading", { count: participants.length })}
+              className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
+            >
+              <AvatarStack names={participants.map((p) => p.name)} size="md" />
+              <span className="whitespace-nowrap text-xs font-semibold text-body">
+                {t("answeredCount", {
+                  answered,
+                  total: participants.length,
+                })}
+              </span>
+            </button>
+          </header>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-pill border border-white bg-surface-glass p-[9px_12px] shadow-rest backdrop-blur-lg">
-              <div className="flex items-center gap-1.5">
+          {/* The rail shares the calendar's row, so it stretches to the
+                calendar's height and scrolls past it instead of growing. */}
+          <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
+            <div className="min-w-0 rounded-sheet bg-surface-card p-3 shadow-sheet sm:p-[18px]">
+              <div className="mb-3 flex items-center justify-between gap-2">
                 {view === "month" ? (
-                  <>
+                  <div className="flex min-w-0 items-center gap-1">
                     <IconButton
                       icon="arrow_back"
                       label={t("prevMonth")}
                       size="sm"
                       onClick={() => setMonthDate(shiftMonth(monthDate, -1))}
                     />
-                    <span className="min-w-[180px] text-center font-display text-xl tracking-display text-strong">
+                    <span className="truncate text-center font-display text-lg tracking-display text-strong first-letter:uppercase sm:min-w-[170px] sm:text-xl">
                       {monthLabel(monthDate, locale)}
                     </span>
                     <IconButton
@@ -252,103 +251,73 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                       size="sm"
                       onClick={() => setMonthDate(shiftMonth(monthDate, 1))}
                     />
-                  </>
+                  </div>
                 ) : (
-                  <span className="px-3 font-display text-xl tracking-display text-strong">
+                  <span className="px-1 font-display text-lg tracking-display text-strong sm:text-xl">
                     {t("allNights", { count: poll.dates.length })}
                   </span>
                 )}
-              </div>
-              <div className="flex items-center gap-4">
-                <Legend />
                 <SegmentedControl
                   options={nav}
                   value={view}
                   onChange={setView}
+                  iconOnly
                   aria-label={t("viewLabel")}
                 />
               </div>
-            </div>
 
-            {/* The rail shares the calendar's row, so it stretches to the
-                calendar's height and scrolls past it instead of growing. */}
-            <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
-              <div className="min-w-0">
-                {view === "month" ? (
-                  <MonthCalendar
-                    monthDate={monthDate}
-                    locale={locale}
-                    proposed={proposed}
-                    days={dayByDate}
-                    totalParticipants={participants.length}
-                    mineDates={mineDates}
-                    canAnswer
-                    onToggleMine={toggleMine}
-                  />
-                ) : (
-                  <NightsList
-                    nights={summary.byDate.map((day) => ({
-                      dateKey: day.date,
-                      yes: day.yesCount,
-                    }))}
-                    locale={locale}
-                    totalParticipants={participants.length}
-                    mineDates={mineDates}
-                    canAnswer
-                    onToggleMine={toggleMine}
-                  />
-                )}
-              </div>
-
-              <div className="min-w-0 lg:relative">
-                <BestDates
+              {view === "month" ? (
+                <MonthCalendar
+                  monthDate={monthDate}
+                  locale={locale}
+                  proposed={proposed}
+                  days={dayByDate}
+                  totalParticipants={participants.length}
+                  mineDates={mineDates}
+                  canAnswer
+                  onToggleMine={toggleMine}
+                />
+              ) : (
+                <NightsList
                   days={summary.byDate}
                   locale={locale}
-                  className="max-h-96 lg:absolute lg:inset-0 lg:max-h-none"
+                  totalParticipants={participants.length}
+                  mineDates={mineDates}
+                  canAnswer
+                  onToggleMine={toggleMine}
                 />
-              </div>
+              )}
 
-              <div className="min-w-0 lg:col-start-1">
-                <div className="flex justify-end px-1">
-                  <SaveIndicator state={saveState} error={saveError} />
-                </div>
-
-                {adminToken ? (
-                  <SettleBar
-                    finalizedDate={poll.finalizedDate}
-                    topDate={topDate}
-                    locale={locale}
-                    busy={finalizing}
-                    onSettle={() => settle(topDate)}
-                    onReopen={() => settle(null)}
-                  />
-                ) : null}
-              </div>
+              <Legend />
             </div>
-          </>
-        )}
-      </div>
 
-      {adminToken ? (
-        <div className="mt-4">
-          <OwnerTools
-            slug={poll.slug}
-            adminToken={adminToken}
-            title={poll.title}
-          />
-        </div>
-      ) : null}
+            <div className="min-w-0 lg:relative">
+              <BestDates
+                days={summary.byDate}
+                locale={locale}
+                className="max-h-96 lg:absolute lg:inset-0 lg:max-h-none"
+              />
+            </div>
 
-      {showGroup ? (
-        <GroupStats
-          participants={participants}
-          respondedIds={respondedIds}
-          availability={availability}
-          dates={poll.dates}
-          locale={locale}
-          onClose={() => setShowGroup(false)}
-        />
-      ) : null}
+            <div className="min-w-0 lg:col-start-1">
+              <div className="flex justify-end px-1">
+                <SaveIndicator state={saveState} error={saveError} />
+              </div>
+
+              {adminToken ? (
+                <SettleBar
+                  finalizedDate={poll.finalizedDate}
+                  topDate={topDate}
+                  locale={locale}
+                  busy={finalizing}
+                  onSettle={() => settle(topDate)}
+                  onReopen={() => settle(null)}
+                />
+              ) : null}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -371,15 +340,9 @@ function NamePill({
       type="button"
       onClick={onClick}
       title={label}
-      className={`group/pill inline-flex items-center gap-1.5 rounded-full px-3.5 py-0.5 align-baseline font-display transition-[filter] hover:brightness-95 ${bg} ${text}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-0.5 align-baseline font-display transition-[filter] hover:brightness-95 ${bg} ${text}`}
     >
       {children}
-      <span
-        className="ms text-[0.6em] opacity-60 transition-opacity group-hover/pill:opacity-100"
-        aria-hidden="true"
-      >
-        swap_horiz
-      </span>
       <span className="sr-only">{label}</span>
     </button>
   );
@@ -473,7 +436,7 @@ function Legend() {
     ["bg-coral-300", t("legendFew")],
   ];
   return (
-    <div className="hidden items-center gap-3.5 xl:flex">
+    <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1">
       {items.map(([dot, label]) => (
         <span
           key={label}

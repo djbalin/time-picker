@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { buttonClass, Wordmark } from "@/components/ui";
+import { Icon, Wordmark } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -22,9 +22,11 @@ export async function SiteHeader() {
           </Link>
           <Link
             href="/polls/create"
-            className={buttonClass({ variant: "primary", size: "sm" })}
+            aria-label={t("newPoll")}
+            title={t("newPoll")}
+            className="grid h-9 w-9 place-items-center rounded-full bg-accent text-on-accent shadow-accent transition-colors hover:bg-accent-hover"
           >
-            {t("newPoll")}
+            <Icon name="add" size={22} />
           </Link>
           <LanguageSwitcher />
         </nav>

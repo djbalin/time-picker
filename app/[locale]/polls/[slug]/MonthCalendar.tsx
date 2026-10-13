@@ -1,11 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { Icon } from "@/components/ui";
 import { heatTokens } from "@/lib/availability-heat";
-import { formatDateKey, toDateKey } from "@/lib/date-keys";
+import { toDateKey } from "@/lib/date-keys";
 import type { DateSummary } from "@/lib/poll-summary";
+import { ResponsesChip } from "./ResponsesChip";
 
 /**
  * Screen 2a — the month. Every proposed night sits in the calendar coloured
@@ -33,31 +34,9 @@ export function MonthCalendar({
   onToggleMine: (dateKey: string) => void;
 }) {
   const t = useTranslations("SelectDates");
-  // The count whose responses are pinned open — how touch reaches them.
-  const [openDate, setOpenDate] = useState<string | null>(null);
-  const pointerType = useRef("");
-
-  useEffect(() => {
-    if (openDate === null) return;
-    function onPointerDown(e: PointerEvent) {
-      if (!(e.target as Element).closest(`[data-responses="${openDate}"]`)) {
-        setOpenDate(null);
-      }
-    }
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpenDate(null);
-    }
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [openDate]);
-
   const weekdays = useMemo(() => {
-    // A fixed reference week starting Sunday, formatted in the page locale.
-    const base = new Date(2024, 8, 1); // Sun 1 Sep 2024
+    // A fixed reference week starting Monday, formatted in the page locale.
+    const base = new Date(2024, 8, 2); // Mon 2 Sep 2024
     const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
     return Array.from({ length: 7 }, (_, i) =>
       fmt.format(new Date(base.getFullYear(), base.getMonth(), 1 + i)),
@@ -67,7 +46,8 @@ export function MonthCalendar({
   const cells = useMemo(() => {
     const year = monthDate.getFullYear();
     const month = monthDate.getMonth();
-    const firstWeekday = new Date(year, month, 1).getDay();
+    // getDay() counts from Sunday; shift so the week starts on Monday.
+    const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const out: ({ key: string; dateKey: string | null } & Record<
@@ -88,8 +68,8 @@ export function MonthCalendar({
   }, [monthDate]);
 
   return (
-    <div className="rounded-sheet bg-surface-card p-[18px] pb-5 shadow-sheet">
-      <div className="grid grid-cols-7 gap-2 px-1 pb-2.5">
+    <div>
+      <div className="grid grid-cols-7 gap-1 px-1 pb-2.5 sm:gap-2">
         {weekdays.map((label) => (
           <span
             key={label}
@@ -100,7 +80,7 @@ export function MonthCalendar({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {cells.map((cell, index) => {
           if (!cell.dateKey) return <span key={cell.key} />;
 
@@ -111,9 +91,9 @@ export function MonthCalendar({
             return (
               <div
                 key={cell.key}
-                className="min-h-[84px] rounded-md bg-paper-2 p-2.5 text-ink-300"
+                className="min-h-[68px] rounded-md bg-paper-2 p-1.5 text-center text-ink-300 sm:min-h-[84px] sm:p-2.5 sm:text-left"
               >
-                <span className="font-display text-xl leading-none">
+                <span className="font-display text-base leading-none sm:text-xl">
                   {cell.num as number}
                 </span>
               </div>
@@ -124,7 +104,6 @@ export function MonthCalendar({
           const yes = day?.yesCount ?? 0;
           const heat = heatTokens(yes, totalParticipants);
           const mine = mineDates.has(dateKey);
-          const open = openDate === dateKey;
           const activate = () => {
             if (canAnswer) onToggleMine(dateKey);
           };
@@ -142,16 +121,16 @@ export function MonthCalendar({
                 aria-label={
                   canAnswer ? t("yourAnswerFor", { date: dateKey }) : dateKey
                 }
-                className={`flex min-h-[84px] w-full flex-col justify-between gap-2 rounded-md p-2.5 text-left transition-[background-color,box-shadow,transform] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-rest hover:-translate-y-0.5 ${heat.bg} ${heat.fg}`}
+                className={`flex min-h-[68px] w-full flex-col items-center gap-2 rounded-md p-1.5 transition-[background-color,box-shadow,transform] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-rest hover:-translate-y-0.5 sm:min-h-[84px] sm:items-start sm:p-2.5 ${heat.bg} ${heat.fg}`}
               >
-                <span className="font-display text-xl leading-none">
+                <span className="font-display text-base leading-none sm:text-xl">
                   {cell.num as number}
                 </span>
               </button>
               {canAnswer ? (
                 <span
                   aria-hidden="true"
-                  className={`pointer-events-none absolute right-2.5 top-2.5 grid h-[19px] w-[19px] place-items-center rounded-full transition-colors ${
+                  className={`pointer-events-none absolute left-1/2 top-1/2 grid h-[19px] w-[19px] -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:right-2.5 sm:top-2.5 sm:translate-x-0 sm:translate-y-0 place-items-center rounded-full transition-colors ${
                     mine
                       ? "bg-blue-100 text-blue-600"
                       : "bg-white/55 text-transparent"
@@ -160,36 +139,15 @@ export function MonthCalendar({
                   <Icon name="check" size={13} color="currentColor" />
                 </span>
               ) : null}
-              <button
-                type="button"
-                data-responses={dateKey}
-                onPointerDown={(e) => {
-                  pointerType.current = e.pointerType;
-                }}
-                onClick={() => {
-                  // A mouse already sees the responses on hover, so a click
-                  // stays a click on the tile. Touch and keyboard pin them.
-                  if (pointerType.current === "mouse") activate();
-                  else setOpenDate(open ? null : dateKey);
-                  pointerType.current = "";
-                }}
-                aria-expanded={open}
-                aria-describedby={`responses-${dateKey}`}
-                aria-label={t("responsesFor", {
-                  date: formatDateKey(dateKey, locale),
-                })}
-                className={`peer/count absolute bottom-1.5 right-1.5 inline-flex cursor-help items-center gap-0.5 rounded-pill py-0.5 pl-1 pr-1.5 text-xs font-bold shadow-rest transition-colors hover:bg-white ${heat.count} ${
-                  open ? "bg-white" : "bg-white/55"
-                }`}
-              >
-                <Icon name="group" size={13} color="currentColor" />
-                {yes}/{totalParticipants}
-              </button>
               {day ? (
-                <DayResponses
-                  id={`responses-${dateKey}`}
+                <ResponsesChip
                   day={day}
-                  className={`${open ? "block" : "hidden peer-hover/count:block"} ${
+                  total={totalParticipants}
+                  countClass={heat.count}
+                  hideIconOnMobile
+                  onMouseClick={activate}
+                  className="absolute bottom-1 left-1/2 -translate-x-1/2 px-1 py-0.5 text-[10px] sm:bottom-1.5 sm:left-auto sm:right-1.5 sm:translate-x-0 sm:pr-1.5 sm:text-xs"
+                  popoverClassName={`${
                     opensUp ? "bottom-full mb-1.5" : "top-full mt-1.5"
                   } ${
                     column < 3
@@ -205,57 +163,6 @@ export function MonthCalendar({
         })}
       </div>
     </div>
-  );
-}
-
-function DayResponses({
-  id,
-  day,
-  className,
-}: {
-  id: string;
-  day: DateSummary;
-  className: string;
-}) {
-  const t = useTranslations("SelectDates");
-  const people = [
-    ...day.available.map((p) => ({ ...p, mark: "yes" as const })),
-    ...day.unavailable.map((p) => ({ ...p, mark: "no" as const })),
-    ...day.pending.map((p) => ({ ...p, mark: "pending" as const })),
-  ];
-  const MARK = {
-    yes: { icon: "check", color: "var(--color-yes)", label: t("responseYes") },
-    no: { icon: "close", color: "var(--color-no)", label: t("responseNo") },
-    pending: {
-      icon: "schedule",
-      color: "var(--color-ink-200)",
-      label: t("responsePending"),
-    },
-  };
-
-  return (
-    <span
-      id={id}
-      role="tooltip"
-      className={`pointer-events-none absolute z-30 w-max min-w-[140px] max-w-[220px] rounded-md bg-surface-card p-2.5 shadow-pop ${className}`}
-    >
-      {people.map((person) => {
-        const mark = MARK[person.mark];
-        return (
-          <span key={person.id} className="flex items-center gap-2 py-0.5">
-            <span
-              className={`min-w-0 flex-1 truncate text-xs font-semibold ${
-                person.mark === "pending" ? "text-muted" : "text-strong"
-              }`}
-            >
-              {person.name}
-            </span>
-            <Icon name={mark.icon} size={16} color={mark.color} />
-            <span className="sr-only">{mark.label}</span>
-          </span>
-        );
-      })}
-    </span>
   );
 }
 
