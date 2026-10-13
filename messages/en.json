@@ -164,13 +164,11 @@
     "deletePoll": "Delete poll"
   },
   "SelectDates": {
-    "question": "Which dates can you make?",
+    "greeting": "Hi <pill>{name}</pill>. Which dates can you make?",
     "viewLabel": "Calendar view",
     "viewMonth": "Month",
     "viewNights": "Nights",
-    "navGroup": "{count, plural, one {# in the group} other {# in the group}}",
     "inviteLink": "Invite link",
-    "newProposal": "New poll",
     "answeredCount": "{answered}/{total} answered",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
@@ -182,14 +180,10 @@
     "everyone": "All in",
     "canPlayCount": "{yes} of {total} can",
     "yourAnswerFor": "Your answer for {date}",
-    "answeringAs": "You're {name}",
-    "switchPerson": "not you?",
+    "switchPerson": "Not you? Switch person",
     "emptyTitle": "No dates yet",
     "emptyBody": "Whoever created this poll hasn't proposed any dates.",
     "loading": "Loading your answers…",
-    "railEmpty": "Tap a night to see who's in.",
-    "whosIn": "Who's in",
-    "canCount": "{yes} of {total} can",
     "settleOn": "Settle on {date}",
     "reopen": "Reopen the poll",
     "itsHappening": "It's happening",
@@ -198,6 +192,13 @@
     "statAnswered": "Answered",
     "statNotAnswered": "Not answered",
     "statYesDates": "{count, plural, one {Can make 1 date} other {Can make # dates}}: {dates}",
-    "statNoDates": "Hasn't said yes to any date yet"
+    "statNoDates": "Hasn't said yes to any date yet",
+    "inviteHint": "Share it with the group",
+    "bestDates": "Best dates",
+    "bestDatesEmpty": "No date works for most of the group yet.",
+    "responsesFor": "How everyone answered for {date}",
+    "responseYes": "Can",
+    "responseNo": "Can't",
+    "responsePending": "Hasn't answered"
   }
 }

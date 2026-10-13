@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -14,32 +15,29 @@ import {
   Avatar,
   AvatarStack,
   Button,
-  buttonClass,
   Chip,
   IconButton,
   SegmentedControl,
-  Wordmark,
 } from "@/components/ui";
-import { Link } from "@/i18n/navigation";
 import { formatDateKey, fromDateKey } from "@/lib/date-keys";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
 import { getAdminToken, getIdentity, setIdentity } from "@/lib/local-store";
-import { summarizePoll } from "@/lib/poll-summary";
+import { participantColor } from "@/lib/participant-colors";
+import { type DateSummary, summarizePoll } from "@/lib/poll-summary";
+import { BestDates } from "./BestDates";
 import { IdentityPicker } from "./IdentityPicker";
 import { InviteLink } from "./InviteLink";
 import { MonthCalendar, monthLabel } from "./MonthCalendar";
 import { NightsList } from "./NightsList";
 import { OwnerTools } from "./OwnerTools";
 import { SaveIndicator } from "./SaveIndicator";
-import { SelectionRail } from "./SelectionRail";
 import { type SaveState, useDebouncedSave } from "./useDebouncedSave";
 
 type View = "month" | "nights";
 
 /**
- * The Select Dates screen — the design team's app shell around the poll:
- * a sidebar, the month (2a) or the ranked nights (2b), and a rail that
- * says who's in for the night you've picked.
+ * The Select Dates screen: the invite link up top, then the month (2a) or
+ * the ranked nights (2b), with the best dates in a rail beside them.
  */
 export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   const t = useTranslations("SelectDates");
@@ -56,7 +54,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   );
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showGroup, setShowGroup] = useState(false);
   const [monthDate, setMonthDate] = useState<Date>(() =>
     startMonth(poll.dates),
@@ -96,9 +93,9 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   );
 
   const proposed = useMemo(() => new Set(poll.dates), [poll.dates]);
-  const yesCountByDate = useMemo(() => {
-    const out: Record<string, number> = {};
-    for (const day of summary.byDate) out[day.date] = day.yesCount;
+  const dayByDate = useMemo(() => {
+    const out: Record<string, DateSummary> = {};
+    for (const day of summary.byDate) out[day.date] = day;
     return out;
   }, [summary]);
 
@@ -123,14 +120,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
     if (stillExists) setCurrentId(remembered);
     setIdentityChecked(true);
   }, [poll.slug, poll.participants]);
-
-  // Land on the best date once answers are in; otherwise the first option.
-  useEffect(() => {
-    setSelectedDate((prev) => {
-      if (prev && proposed.has(prev)) return prev;
-      return summary.topDates[0]?.date ?? poll.dates[0] ?? null;
-    });
-  }, [summary.topDates, poll.dates, proposed]);
 
   const chooseIdentity = useCallback(
     (participantId: number) => {
@@ -177,53 +166,18 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
     { value: "nights" as const, label: t("viewNights"), icon: "list" },
   ];
 
-  const selectedDay =
-    summary.byDate.find((d) => d.date === selectedDate) ?? null;
   const topDate = summary.topDates[0]?.date ?? null;
   const answered = summary.respondedCount;
 
   return (
     <div className="mx-auto w-full max-w-[--width-app]">
-      <div
-        className={`grid grid-cols-1 overflow-hidden rounded-sheet shadow-pop [background:var(--grad-page)] ${
-          current === null ? "" : "md:grid-cols-[250px_1fr]"
-        }`}
-      >
-        {/* ── Sidebar ─────────────────────────────────────────── */}
-        {current !== null ? (
-          <aside className="flex flex-col gap-6 border-b border-white/60 bg-surface-glass p-5 backdrop-blur-lg md:border-b-0">
-            <Wordmark className="px-2 py-1" />
+      <div className="flex flex-col gap-[18px] overflow-hidden rounded-sheet p-6 shadow-pop [background:var(--grad-page)] md:p-[28px_30px]">
+        <InviteLink
+          slug={poll.slug}
+          label={t("inviteLink")}
+          hint={t("inviteHint")}
+        />
 
-            <nav className="flex flex-col gap-1.5">
-              <button
-                type="button"
-                onClick={() => setShowGroup(true)}
-                className="flex items-center gap-3 rounded-pill px-4 py-3 text-left font-sans text-md font-bold text-muted transition-colors hover:bg-paper hover:text-body hover:shadow-rest"
-              >
-                <span className="ms text-[22px]" aria-hidden="true">
-                  group
-                </span>
-                {t("navGroup", { count: participants.length })}
-              </button>
-            </nav>
-
-            <div className="flex-1" />
-
-            <InviteLink slug={poll.slug} label={t("inviteLink")} />
-            <Link
-              href="/polls/create"
-              className={buttonClass({ variant: "primary", full: true })}
-            >
-              <span className="ms text-[18px]" aria-hidden>
-                add
-              </span>
-              {t("newProposal")}
-            </Link>
-          </aside>
-        ) : null}
-
-        {/* ── Main ────────────────────────────────────────────── */}
-        {/* <div className="flex min-w-0 bg-red-100 flex-col gap-[18px] md:p-[28px_30px]"> */}
         {poll.dates.length === 0 ? (
           <Empty title={t("emptyTitle")} body={t("emptyBody")} />
         ) : !identityChecked ? (
@@ -243,10 +197,29 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   {poll.title}
                 </div>
                 <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
-                  {t("question")}
+                  {t.rich("greeting", {
+                    name: current.name,
+                    pill: (chunks) => (
+                      <NamePill
+                        colorIndex={participants.indexOf(current)}
+                        label={t("switchPerson")}
+                        onClick={() => {
+                          flush();
+                          setCurrentId(null);
+                        }}
+                      >
+                        {chunks}
+                      </NamePill>
+                    ),
+                  })}
                 </h1>
               </div>
-              <div className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg">
+              <button
+                type="button"
+                onClick={() => setShowGroup(true)}
+                aria-label={t("groupHeading", { count: participants.length })}
+                className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
+              >
                 <AvatarStack
                   names={participants.map((p) => p.name)}
                   size="md"
@@ -257,7 +230,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                     total: participants.length,
                   })}
                 </span>
-              </div>
+              </button>
             </header>
 
             <div className="flex flex-wrap items-center justify-between gap-4 rounded-pill border border-white bg-surface-glass p-[9px_12px] shadow-rest backdrop-blur-lg">
@@ -297,49 +270,46 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
               </div>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_322px] lg:items-start">
+            {/* The rail shares the calendar's row, so it stretches to the
+                calendar's height and scrolls past it instead of growing. */}
+            <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
               <div className="min-w-0">
                 {view === "month" ? (
                   <MonthCalendar
                     monthDate={monthDate}
                     locale={locale}
                     proposed={proposed}
-                    yesCountByDate={yesCountByDate}
+                    days={dayByDate}
                     totalParticipants={participants.length}
                     mineDates={mineDates}
-                    selectedDate={selectedDate}
                     canAnswer
-                    onSelect={setSelectedDate}
                     onToggleMine={toggleMine}
                   />
                 ) : (
                   <NightsList
-                    nights={poll.dates.map((dateKey) => ({
-                      dateKey,
-                      yes: yesCountByDate[dateKey] ?? 0,
+                    nights={summary.byDate.map((day) => ({
+                      dateKey: day.date,
+                      yes: day.yesCount,
                     }))}
                     locale={locale}
                     totalParticipants={participants.length}
                     mineDates={mineDates}
-                    selectedDate={selectedDate}
                     canAnswer
-                    onSelect={setSelectedDate}
                     onToggleMine={toggleMine}
                   />
                 )}
+              </div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      flush();
-                      setCurrentId(null);
-                    }}
-                    className="text-xs font-bold text-muted underline-offset-2 transition-colors hover:text-body hover:underline"
-                  >
-                    {t("answeringAs", { name: current.name })} ·{" "}
-                    {t("switchPerson")}
-                  </button>
+              <div className="min-w-0 lg:relative">
+                <BestDates
+                  days={summary.byDate}
+                  locale={locale}
+                  className="max-h-96 lg:absolute lg:inset-0 lg:max-h-none"
+                />
+              </div>
+
+              <div className="min-w-0 lg:col-start-1">
+                <div className="flex justify-end px-1">
                   <SaveIndicator state={saveState} error={saveError} />
                 </div>
 
@@ -354,12 +324,9 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   />
                 ) : null}
               </div>
-
-              <SelectionRail day={selectedDay} locale={locale} />
             </div>
           </>
         )}
-        {/* </div> */}
       </div>
 
       {adminToken ? (
@@ -383,6 +350,38 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
         />
       ) : null}
     </div>
+  );
+}
+
+/** You, in your participant colour. Tapping it lets you switch person. */
+function NamePill({
+  colorIndex,
+  label,
+  onClick,
+  children,
+}: {
+  colorIndex: number;
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  const { bg, text } = participantColor(colorIndex);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      className={`group/pill inline-flex items-center gap-1.5 rounded-full px-3.5 py-0.5 align-baseline font-display transition-[filter] hover:brightness-95 ${bg} ${text}`}
+    >
+      {children}
+      <span
+        className="ms text-[0.6em] opacity-60 transition-opacity group-hover/pill:opacity-100"
+        aria-hidden="true"
+      >
+        swap_horiz
+      </span>
+      <span className="sr-only">{label}</span>
+    </button>
   );
 }
 

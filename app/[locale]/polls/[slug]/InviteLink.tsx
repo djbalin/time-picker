@@ -2,16 +2,24 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@/components/ui";
+import { Button, Icon } from "@/components/ui";
 
 const COPIED_RESET_MS = 2000;
 
 /**
- * The share link in the sidebar — the only way anyone else reaches this
- * poll. The URL is read from `window` (the server can't know the host the
- * visitor typed); the whole card copies it.
+ * The share link, up top — the only way anyone else reaches this poll. The
+ * URL is read from `window` (the server can't know the host the visitor
+ * typed).
  */
-export function InviteLink({ slug, label }: { slug: string; label: string }) {
+export function InviteLink({
+  slug,
+  label,
+  hint,
+}: {
+  slug: string;
+  label: string;
+  hint: string;
+}) {
   const t = useTranslations("ShareCard");
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
@@ -41,24 +49,27 @@ export function InviteLink({ slug, label }: { slug: string; label: string }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={copy}
-      className="rounded-md bg-paper p-4 text-left shadow-rest transition-colors hover:bg-paper-2"
-    >
-      <span className="flex items-center justify-between gap-2">
-        <span className="text-2xs font-semibold uppercase tracking-label text-muted">
-          {label}
+    <div className="flex flex-wrap items-center gap-3 rounded-sheet border border-white bg-surface-glass p-3 pl-4 shadow-rest backdrop-blur-lg">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-support-soft">
+        <Icon name="link" size={20} color="var(--color-support-text)" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-2xs font-semibold uppercase tracking-label text-muted">
+          {label} · {hint}
         </span>
-        <Icon
-          name={copied ? "check" : "content_copy"}
-          size={14}
-          color="var(--color-support-text)"
-        />
+        <span className="mt-0.5 block select-all truncate text-md font-bold text-support-text">
+          {url.replace(/^https?:\/\//, "") || "…"}
+        </span>
       </span>
-      <span className="mt-1.5 block truncate text-xs font-bold text-support-text">
-        {copied ? t("copied") : url.replace(/^https?:\/\//, "") || "…"}
-      </span>
-    </button>
+      <Button
+        variant="support"
+        size="sm"
+        icon={copied ? "check" : "content_copy"}
+        onClick={copy}
+        disabled={!url}
+      >
+        {copied ? t("copied") : t("copy")}
+      </Button>
+    </div>
   );
 }

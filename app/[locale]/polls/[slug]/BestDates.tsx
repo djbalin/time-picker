@@ -1,0 +1,119 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Chip, Icon } from "@/components/ui";
+import { heatLevel, heatTokens } from "@/lib/availability-heat";
+import { formatDateKey, fromDateKey } from "@/lib/date-keys";
+import type { DateSummary } from "@/lib/poll-summary";
+
+/**
+ * The right rail: every night that works for everyone or most of the group.
+ * All-in nights first, then the most people, then the nearest night. Scrolls
+ * on its own once it outgrows the calendar beside it.
+ */
+export function BestDates({
+  days,
+  locale,
+  className = "",
+}: {
+  days: DateSummary[];
+  locale: string;
+  className?: string;
+}) {
+  const t = useTranslations("SelectDates");
+
+  const best = days
+    .map((day) => ({ day, level: heatLevel(day.yesCount, day.totalCount) }))
+    .filter(({ level }) => level !== "few")
+    .sort(
+      (a, b) =>
+        Number(b.level === "everyone") - Number(a.level === "everyone") ||
+        b.day.yesCount - a.day.yesCount ||
+        a.day.date.localeCompare(b.day.date),
+    );
+
+  return (
+    <div
+      className={`flex flex-col rounded-sheet bg-surface-card shadow-sheet ${className}`}
+    >
+      <p className="px-6 pb-2.5 pt-6 text-2xs font-semibold uppercase tracking-label text-muted">
+        {t("bestDates")}
+      </p>
+
+      {best.length === 0 ? (
+        <div className="px-6 pb-6 text-center">
+          <Icon
+            name="event"
+            size="lg"
+            className="mx-auto mb-2 mt-2 block text-muted"
+          />
+          <p className="text-sm text-body">{t("bestDatesEmpty")}</p>
+        </div>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto px-4 pb-4">
+          {best.map(({ day, level }) => {
+            const heat = heatTokens(day.yesCount, day.totalCount);
+            return (
+              <div
+                key={day.date}
+                className="flex shrink-0 items-center gap-3 rounded-row p-2.5"
+              >
+                <span
+                  className={`grid h-[38px] w-[38px] shrink-0 place-items-center rounded-sm font-display text-lg ${heat.tileBg} ${heat.tileFg}`}
+                >
+                  {fromDateKey(day.date).getDate()}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-sans text-md font-bold text-strong">
+                    {formatDateKey(day.date, locale)}
+                  </span>
+                  {level === "everyone" ? (
+                    <span className="mt-0.5 block truncate text-xs text-muted">
+                      {t("canPlayCount", {
+                        yes: day.yesCount,
+                        total: day.totalCount,
+                      })}
+                    </span>
+                  ) : (
+                    <MissingPeople day={day} />
+                  )}
+                </span>
+                {level === "everyone" ? (
+                  <Chip tone="yes" size="sm" className="shrink-0">
+                    {t("everyone")}
+                  </Chip>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Who's missing on a "most" night: can't in red, not answered yet in grey. */
+function MissingPeople({ day }: { day: DateSummary }) {
+  const t = useTranslations("SelectDates");
+  return (
+    <span className="mt-1 flex flex-wrap gap-1">
+      {day.unavailable.map((person) => (
+        <span
+          key={person.id}
+          className="rounded-pill bg-no-soft px-2 py-px text-[11px] font-bold text-no-text"
+        >
+          {person.name}
+        </span>
+      ))}
+      {day.pending.map((person) => (
+        <span
+          key={person.id}
+          title={t("responsePending")}
+          className="rounded-pill bg-paper-2 px-2 py-px text-[11px] font-bold text-muted"
+        >
+          {person.name}
+        </span>
+      ))}
+    </span>
+  );
+}

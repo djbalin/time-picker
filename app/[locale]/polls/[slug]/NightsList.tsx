@@ -19,18 +19,14 @@ export function NightsList({
   locale,
   totalParticipants,
   mineDates,
-  selectedDate,
   canAnswer,
-  onSelect,
   onToggleMine,
 }: {
   nights: RankedNight[];
   locale: string;
   totalParticipants: number;
   mineDates: Set<string>;
-  selectedDate: string | null;
   canAnswer: boolean;
-  onSelect: (dateKey: string) => void;
   onToggleMine: (dateKey: string) => void;
 }) {
   const t = useTranslations("SelectDates");
@@ -49,7 +45,6 @@ export function NightsList({
 
       {ranked.map((night) => {
         const heat = heatTokens(night.yes, totalParticipants);
-        const selected = selectedDate === night.dateKey;
         const everyone =
           totalParticipants > 0 && night.yes >= totalParticipants;
         const date = fromDateKey(night.dateKey);
@@ -58,19 +53,14 @@ export function NightsList({
         return (
           <div
             key={night.dateKey}
-            className={`grid grid-cols-[minmax(0,1fr)_100px_34px] items-center gap-5 rounded-row p-[15px_18px] transition-[background-color,box-shadow] duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              selected
-                ? "shadow-lift ring-2 ring-inset ring-accent [background:var(--grad-selected)]"
-                : "bg-surface-card shadow-rest hover:shadow-lift"
-            }`}
+            className={`grid grid-cols-[minmax(0,1fr)_100px_34px] items-center gap-5 rounded-row p-[15px_18px] transition-[background-color,box-shadow] duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] bg-surface-card shadow-rest hover:shadow-lift`}
           >
             <button
               type="button"
               onClick={() => {
-                onSelect(night.dateKey);
                 if (canAnswer) onToggleMine(night.dateKey);
               }}
-              aria-pressed={selected}
+              aria-pressed={canAnswer && mineDates.has(night.dateKey)}
               className="col-span-2 grid cursor-pointer grid-cols-subgrid items-center gap-5 text-left"
             >
               <span className="flex min-w-0 items-center gap-3">
@@ -109,6 +99,7 @@ export function NightsList({
                 value={canAnswer && mineDates.has(night.dateKey) ? "yes" : null}
                 onChange={() => onToggleMine(night.dateKey)}
                 mode="binary"
+                yesClassName="bg-blue-100 text-blue-600"
                 size={34}
                 label={t("yourAnswerFor", {
                   date: formatDateKey(night.dateKey, locale),

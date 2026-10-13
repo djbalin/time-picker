@@ -32,6 +32,7 @@ export function SlotToggle({
   mode = "binary",
   size = 32,
   label,
+  yesClassName,
 }: {
   value?: SlotValue;
   onChange: (value: SlotValue) => void;
@@ -39,8 +40,12 @@ export function SlotToggle({
   size?: number;
   /** Accessible name — e.g. "Your answer for Saturday 12". */
   label?: string;
+  /** Recolours the "yes" state, e.g. when it marks your own answer. */
+  yesClassName?: string;
 }) {
   const state = value ? STATES[value] : null;
+  const stateClass =
+    value === "yes" && yesClassName ? yesClassName : state?.className;
 
   function next(event: React.MouseEvent) {
     // The toggle often lives inside a clickable row; its own click shouldn't
@@ -59,7 +64,7 @@ export function SlotToggle({
       aria-label={label ?? value ?? "not answered"}
       className={`grid shrink-0 place-items-center rounded-full border-none cursor-pointer transition-[background-color,color,transform] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
         state
-          ? `${state.className} scale-100`
+          ? `${stateClass} scale-100`
           : "bg-surface-sunken text-transparent scale-[0.94]"
       }`}
       style={{ width: size, height: size }}

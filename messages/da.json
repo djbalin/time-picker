@@ -164,13 +164,11 @@
     "deletePoll": "Slet afstemning"
   },
   "SelectDates": {
-    "question": "Hvilke datoer kan du?",
+    "greeting": "Hej <pill>{name}</pill>. Hvilke datoer kan du?",
     "viewLabel": "Kalendervisning",
     "viewMonth": "Måned",
     "viewNights": "Datoer",
-    "navGroup": "{count, plural, one {# i gruppen} other {# i gruppen}}",
     "inviteLink": "Invitationslink",
-    "newProposal": "Ny afstemning",
     "answeredCount": "{answered}/{total} har svaret",
     "prevMonth": "Forrige måned",
     "nextMonth": "Næste måned",
@@ -182,14 +180,10 @@
     "everyone": "Alle kan",
     "canPlayCount": "{yes} af {total} kan",
     "yourAnswerFor": "Dit svar for {date}",
-    "answeringAs": "Du er {name}",
-    "switchPerson": "ikke dig?",
+    "switchPerson": "Ikke dig? Skift person",
     "emptyTitle": "Ingen datoer endnu",
     "emptyBody": "Den, der oprettede afstemningen, har ikke foreslået nogen datoer.",
     "loading": "Henter dine svar…",
-    "railEmpty": "Tryk på en dato for at se, hvem der kan.",
-    "whosIn": "Hvem kan",
-    "canCount": "{yes} af {total} kan",
     "settleOn": "Vælg {date}",
     "reopen": "Genåbn afstemningen",
     "itsHappening": "Det sker",
@@ -198,6 +192,13 @@
     "statAnswered": "Har svaret",
     "statNotAnswered": "Ikke svaret",
     "statYesDates": "{count, plural, one {Kan 1 dato} other {Kan # datoer}}: {dates}",
-    "statNoDates": "Har ikke sagt ja til nogen dato endnu"
+    "statNoDates": "Har ikke sagt ja til nogen dato endnu",
+    "inviteHint": "Del det med gruppen",
+    "bestDates": "Bedste datoer",
+    "bestDatesEmpty": "Ingen dato passer for de fleste i gruppen endnu.",
+    "responsesFor": "Hvad alle har svaret for {date}",
+    "responseYes": "Kan",
+    "responseNo": "Kan ikke",
+    "responsePending": "Har ikke svaret"
   }
 }
