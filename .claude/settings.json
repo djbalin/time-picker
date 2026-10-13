@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm ui:shots *)",
+      "Bash(pnpm ui:shots)",
+      "Bash(pnpm test:layout *)",
+      "Bash(pnpm test:layout)",
+      "Bash(pnpm test:a11y *)",
+      "Bash(pnpm test:a11y)",
+      "Bash(pnpm test:e2e *)",
+      "Bash(pnpm test:e2e)",
+      "Bash(pnpm test:audit)",
+      "Bash(pnpm exec playwright test *)"
+    ]
+  }
+}
