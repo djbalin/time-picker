@@ -106,6 +106,43 @@ whatever `DATABASE_URL` points at. Fine while there's no data to lose; switch to
 | `pnpm db:seed`        | Push the schema, then reset + repopulate with sample polls |
 | `pnpm db:studio`      | Open Drizzle Studio                                       |
 | `pnpm db:generate`    | (dormant) Generate a migration — for once there's real data |
+| `pnpm test:e2e`       | All UI checks: layout, accessibility, visual baselines    |
+| `pnpm test:layout`    | Just the layout checks (also `test:a11y`, `test:visual`)  |
+| `pnpm test:visual:update` | Accept the current look as the new visual baseline    |
+| `pnpm test:report`    | Open the HTML report of the last UI test run              |
+| `pnpm test:audit`     | Self-test of the layout-measuring code (no server needed) |
+| `pnpm ui:shots`       | Screenshot every screen for AI review (`ui-review/shots/`) |
+
+## UI testing
+
+Playwright renders every screen state in `e2e/screens.ts` at four widths —
+360 and 393 (phones), 820 (tablet), 1440 (desktop) — in English and Danish,
+against fixture polls (`e2e/fixtures/polls.ts`) that global setup recreates
+in your dev database. Only rows with a `ui-` slug are touched.
+
+The tests need the app running and never start it themselves:
+
+```bash
+pnpm dev                                   # terminal 1
+pnpm exec playwright install chromium      # once
+pnpm test:e2e                              # terminal 2
+```
+
+Three layers, from strict to subjective:
+
+1. **Layout checks** (`e2e/layout.spec.ts` + `e2e/audit.ts`) measure the
+   page and fail on objective breakage: sideways scroll, off-screen or
+   clipped content, overlapping controls, tap targets under 24px, console or
+   hydration errors.
+2. **Accessibility and visual baselines** — axe-core (serious/critical
+   violations fail), and pixel diffs against `e2e/__screenshots__/`. The
+   first run writes the baselines; commit them.
+3. **AI design review** — in Claude Code, run `/ui-review` (optionally with a
+   scope, e.g. `/ui-review poll page on mobile`). It shoots the screens,
+   grades them against `.claude/skills/ui-review/rubric.md` (what "cramped"
+   means here, concretely), fixes the worst one to three issues, re-shoots
+   to prove the fix, and stops for you to check. Edit the rubric to teach
+   it your taste.
 
 ## Layout
 
