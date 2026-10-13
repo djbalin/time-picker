@@ -84,13 +84,13 @@ export function IdentityPicker({
             >
               <span
                 aria-hidden="true"
-                className={`grid h-12 w-12 place-items-center rounded-full text-lg font-extrabold ${bg} ${text}`}
+                className={`grid h-auto w-auto px-4 py-2 place-items-center rounded-full text-lg font-extrabold ${bg} ${text}`}
               >
-                {participant.name.charAt(0).toUpperCase()}
-              </span>
-              <span className="text-center text-sm font-extrabold text-ink">
                 {participant.name}
               </span>
+              {/* <span className="text-center text-sm font-extrabold text-ink">
+                {participant.name}
+              </span> */}
               <span className="text-[11px] font-bold text-mist">
                 {participant.hasResponded ? t("answered") : t("notAnsweredYet")}
               </span>

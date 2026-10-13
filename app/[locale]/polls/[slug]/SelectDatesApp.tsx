@@ -223,143 +223,143 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
         ) : null}
 
         {/* ── Main ────────────────────────────────────────────── */}
-        <div className="flex min-w-0 flex-col gap-[18px] p-6 md:p-[28px_30px]">
-          {poll.dates.length === 0 ? (
-            <Empty title={t("emptyTitle")} body={t("emptyBody")} />
-          ) : !identityChecked ? (
-            <Empty title={t("loading")} body="" />
-          ) : current === null ? (
-            <IdentityPicker
-              slug={poll.slug}
-              participants={participants}
-              onSelect={chooseIdentity}
-              onJoined={handleJoined}
-            />
-          ) : (
-            <>
-              <header className="flex flex-wrap items-end justify-between gap-6">
-                <div className="min-w-0">
-                  <div className="text-2xs font-semibold uppercase tracking-label text-muted">
-                    {poll.title}
-                  </div>
-                  <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
-                    {t("question")}
-                  </h1>
+        {/* <div className="flex min-w-0 bg-red-100 flex-col gap-[18px] md:p-[28px_30px]"> */}
+        {poll.dates.length === 0 ? (
+          <Empty title={t("emptyTitle")} body={t("emptyBody")} />
+        ) : !identityChecked ? (
+          <Empty title={t("loading")} body="" />
+        ) : current === null ? (
+          <IdentityPicker
+            slug={poll.slug}
+            participants={participants}
+            onSelect={chooseIdentity}
+            onJoined={handleJoined}
+          />
+        ) : (
+          <>
+            <header className="flex flex-wrap items-end justify-between gap-6">
+              <div className="min-w-0">
+                <div className="text-2xs font-semibold uppercase tracking-label text-muted">
+                  {poll.title}
                 </div>
-                <div className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg">
-                  <AvatarStack
-                    names={participants.map((p) => p.name)}
-                    size="md"
-                  />
-                  <span className="whitespace-nowrap text-xs font-semibold text-body">
-                    {t("answeredCount", {
-                      answered,
-                      total: participants.length,
-                    })}
-                  </span>
-                </div>
-              </header>
+                <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
+                  {t("question")}
+                </h1>
+              </div>
+              <div className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg">
+                <AvatarStack
+                  names={participants.map((p) => p.name)}
+                  size="md"
+                />
+                <span className="whitespace-nowrap text-xs font-semibold text-body">
+                  {t("answeredCount", {
+                    answered,
+                    total: participants.length,
+                  })}
+                </span>
+              </div>
+            </header>
 
-              <div className="flex flex-wrap items-center justify-between gap-4 rounded-pill border border-white bg-surface-glass p-[9px_12px] shadow-rest backdrop-blur-lg">
-                <div className="flex items-center gap-1.5">
-                  {view === "month" ? (
-                    <>
-                      <IconButton
-                        icon="arrow_back"
-                        label={t("prevMonth")}
-                        size="sm"
-                        onClick={() => setMonthDate(shiftMonth(monthDate, -1))}
-                      />
-                      <span className="min-w-[180px] text-center font-display text-xl tracking-display text-strong">
-                        {monthLabel(monthDate, locale)}
-                      </span>
-                      <IconButton
-                        icon="arrow_forward"
-                        label={t("nextMonth")}
-                        size="sm"
-                        onClick={() => setMonthDate(shiftMonth(monthDate, 1))}
-                      />
-                    </>
-                  ) : (
-                    <span className="px-3 font-display text-xl tracking-display text-strong">
-                      {t("allNights", { count: poll.dates.length })}
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-pill border border-white bg-surface-glass p-[9px_12px] shadow-rest backdrop-blur-lg">
+              <div className="flex items-center gap-1.5">
+                {view === "month" ? (
+                  <>
+                    <IconButton
+                      icon="arrow_back"
+                      label={t("prevMonth")}
+                      size="sm"
+                      onClick={() => setMonthDate(shiftMonth(monthDate, -1))}
+                    />
+                    <span className="min-w-[180px] text-center font-display text-xl tracking-display text-strong">
+                      {monthLabel(monthDate, locale)}
                     </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-4">
-                  <Legend />
-                  <SegmentedControl
-                    options={nav}
-                    value={view}
-                    onChange={setView}
-                    aria-label={t("viewLabel")}
+                    <IconButton
+                      icon="arrow_forward"
+                      label={t("nextMonth")}
+                      size="sm"
+                      onClick={() => setMonthDate(shiftMonth(monthDate, 1))}
+                    />
+                  </>
+                ) : (
+                  <span className="px-3 font-display text-xl tracking-display text-strong">
+                    {t("allNights", { count: poll.dates.length })}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                <Legend />
+                <SegmentedControl
+                  options={nav}
+                  value={view}
+                  onChange={setView}
+                  aria-label={t("viewLabel")}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_322px] lg:items-start">
+              <div className="min-w-0">
+                {view === "month" ? (
+                  <MonthCalendar
+                    monthDate={monthDate}
+                    locale={locale}
+                    proposed={proposed}
+                    yesCountByDate={yesCountByDate}
+                    totalParticipants={participants.length}
+                    mineDates={mineDates}
+                    selectedDate={selectedDate}
+                    canAnswer
+                    onSelect={setSelectedDate}
+                    onToggleMine={toggleMine}
                   />
-                </div>
-              </div>
+                ) : (
+                  <NightsList
+                    nights={poll.dates.map((dateKey) => ({
+                      dateKey,
+                      yes: yesCountByDate[dateKey] ?? 0,
+                    }))}
+                    locale={locale}
+                    totalParticipants={participants.length}
+                    mineDates={mineDates}
+                    selectedDate={selectedDate}
+                    canAnswer
+                    onSelect={setSelectedDate}
+                    onToggleMine={toggleMine}
+                  />
+                )}
 
-              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_322px] lg:items-start">
-                <div className="min-w-0">
-                  {view === "month" ? (
-                    <MonthCalendar
-                      monthDate={monthDate}
-                      locale={locale}
-                      proposed={proposed}
-                      yesCountByDate={yesCountByDate}
-                      totalParticipants={participants.length}
-                      mineDates={mineDates}
-                      selectedDate={selectedDate}
-                      canAnswer
-                      onSelect={setSelectedDate}
-                      onToggleMine={toggleMine}
-                    />
-                  ) : (
-                    <NightsList
-                      nights={poll.dates.map((dateKey) => ({
-                        dateKey,
-                        yes: yesCountByDate[dateKey] ?? 0,
-                      }))}
-                      locale={locale}
-                      totalParticipants={participants.length}
-                      mineDates={mineDates}
-                      selectedDate={selectedDate}
-                      canAnswer
-                      onSelect={setSelectedDate}
-                      onToggleMine={toggleMine}
-                    />
-                  )}
-
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        flush();
-                        setCurrentId(null);
-                      }}
-                      className="text-xs font-bold text-muted underline-offset-2 transition-colors hover:text-body hover:underline"
-                    >
-                      {t("answeringAs", { name: current.name })} ·{" "}
-                      {t("switchPerson")}
-                    </button>
-                    <SaveIndicator state={saveState} error={saveError} />
-                  </div>
-
-                  {adminToken ? (
-                    <SettleBar
-                      finalizedDate={poll.finalizedDate}
-                      topDate={topDate}
-                      locale={locale}
-                      busy={finalizing}
-                      onSettle={() => settle(topDate)}
-                      onReopen={() => settle(null)}
-                    />
-                  ) : null}
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      flush();
+                      setCurrentId(null);
+                    }}
+                    className="text-xs font-bold text-muted underline-offset-2 transition-colors hover:text-body hover:underline"
+                  >
+                    {t("answeringAs", { name: current.name })} ·{" "}
+                    {t("switchPerson")}
+                  </button>
+                  <SaveIndicator state={saveState} error={saveError} />
                 </div>
 
-                <SelectionRail day={selectedDay} locale={locale} />
+                {adminToken ? (
+                  <SettleBar
+                    finalizedDate={poll.finalizedDate}
+                    topDate={topDate}
+                    locale={locale}
+                    busy={finalizing}
+                    onSettle={() => settle(topDate)}
+                    onReopen={() => settle(null)}
+                  />
+                ) : null}
               </div>
-            </>
-          )}
-        </div>
+
+              <SelectionRail day={selectedDay} locale={locale} />
+            </div>
+          </>
+        )}
+        {/* </div> */}
       </div>
 
       {adminToken ? (
