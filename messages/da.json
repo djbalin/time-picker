@@ -97,6 +97,12 @@
     "submit": "Opret afstemning",
     "submitting": "Opretter…"
   },
+  "EmojiPicker": {
+    "open": "Tilføj emoji",
+    "search": "Søg efter emoji…",
+    "loading": "Indlæser…",
+    "empty": "Ingen emoji fundet"
+  },
   "DatePicker": {
     "selectMonth": "Vælg hele måneden",
     "deselectMonth": "Fravælg hele måneden"

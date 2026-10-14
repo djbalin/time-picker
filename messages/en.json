@@ -97,6 +97,12 @@
     "submit": "Create poll",
     "submitting": "Creating…"
   },
+  "EmojiPicker": {
+    "open": "Add emoji",
+    "search": "Search emoji…",
+    "loading": "Loading…",
+    "empty": "No emoji found"
+  },
   "DatePicker": {
     "selectMonth": "Select entire month",
     "deselectMonth": "Deselect entire month"

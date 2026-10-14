@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { createPoll } from "@/app/actions/polls";
+import { EmojiInputButton } from "@/components/EmojiInputButton";
 import { PencilIcon, SpinnerIcon, TrashIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
 import { setAdminToken } from "@/lib/local-store";
@@ -26,6 +27,9 @@ import { DatePicker, type DatesUpdate } from "./DatePicker";
 
 const LABEL = "mb-2 block text-sm font-bold text-strong";
 
+/** Right padding that keeps typed text clear of the emoji button. */
+const EMOJI_PAD = "pr-12!";
+
 export function CreatePollForm() {
   const t = useTranslations("CreatePollForm");
   const router = useRouter();
@@ -33,6 +37,8 @@ export function CreatePollForm() {
   const [dateKeys, setDateKeys] = useState<string[]>([]);
   const [participants, setParticipants] = useState<string[]>([]);
   const [errors, setErrors] = useState<CreatePollFieldErrors>({});
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
 
   // The poll's admin token comes back exactly once, so it has to be stored
   // before navigating — it is the only proof this device created the poll.
@@ -104,15 +110,19 @@ export function CreatePollForm() {
         <label className={LABEL} htmlFor="title">
           {t("titleLabel")}
         </label>
-        <input
-          id="title"
-          name="title"
-          placeholder={t("titlePlaceholder")}
-          onChange={() => clearError("title")}
-          aria-invalid={Boolean(errors.title)}
-          aria-describedby={errors.title ? "title-error" : undefined}
-          className={fieldClass(Boolean(errors.title))}
-        />
+        <div className="relative">
+          <input
+            ref={titleRef}
+            id="title"
+            name="title"
+            placeholder={t("titlePlaceholder")}
+            onChange={() => clearError("title")}
+            aria-invalid={Boolean(errors.title)}
+            aria-describedby={errors.title ? "title-error" : undefined}
+            className={`${fieldClass(Boolean(errors.title))} ${EMOJI_PAD}`}
+          />
+          <EmojiInputButton inputRef={titleRef} />
+        </div>
         <FieldError id="title-error" message={errors.title} />
       </div>
 
@@ -123,17 +133,21 @@ export function CreatePollForm() {
             {t("descriptionOptional")}
           </span>
         </label>
-        <input
-          id="description"
-          name="description"
-          placeholder={t("descriptionPlaceholder")}
-          onChange={() => clearError("description")}
-          aria-invalid={Boolean(errors.description)}
-          aria-describedby={
-            errors.description ? "description-error" : undefined
-          }
-          className={fieldClass(Boolean(errors.description))}
-        />
+        <div className="relative">
+          <input
+            ref={descriptionRef}
+            id="description"
+            name="description"
+            placeholder={t("descriptionPlaceholder")}
+            onChange={() => clearError("description")}
+            aria-invalid={Boolean(errors.description)}
+            aria-describedby={
+              errors.description ? "description-error" : undefined
+            }
+            className={`${fieldClass(Boolean(errors.description))} ${EMOJI_PAD}`}
+          />
+          <EmojiInputButton inputRef={descriptionRef} />
+        </div>
         <FieldError id="description-error" message={errors.description} />
       </div>
 
@@ -289,21 +303,24 @@ function ParticipantsInput({
   return (
     <div>
       <div className="flex flex-col gap-2 sm:flex-row">
-        <input
-          ref={inputRef}
-          type="text"
-          value={draft}
-          onChange={(event) => {
-            setDraft(event.target.value);
-            setDuplicate(false);
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder={t("participantsPlaceholder")}
-          aria-label={t("participantsAriaLabel")}
-          aria-invalid={Boolean(message)}
-          aria-describedby={message ? "participants-error" : undefined}
-          className={fieldClass(Boolean(message))}
-        />
+        <div className="relative w-full min-w-0">
+          <input
+            ref={inputRef}
+            type="text"
+            value={draft}
+            onChange={(event) => {
+              setDraft(event.target.value);
+              setDuplicate(false);
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder={t("participantsPlaceholder")}
+            aria-label={t("participantsAriaLabel")}
+            aria-invalid={Boolean(message)}
+            aria-describedby={message ? "participants-error" : undefined}
+            className={`${fieldClass(Boolean(message))} ${EMOJI_PAD}`}
+          />
+          <EmojiInputButton inputRef={inputRef} />
+        </div>
         <div className="flex gap-2">
           <button
             type="button"
