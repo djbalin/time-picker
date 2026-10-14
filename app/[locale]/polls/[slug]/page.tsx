@@ -40,7 +40,7 @@ export default async function PollPage({ params }: PageProps) {
 
   return (
     // <main className="mx-auto flex w-full max-w-[1360px] flex-1 flex-col gap-4 px-4 py-6 sm:px-8">
-    <>
+    <div className="flex place-items-center justify-center ">
       {/* <Link
         className="text-xs font-bold text-muted underline-offset-2 transition-colors hover:text-body hover:underline"
         href="/polls"
@@ -48,7 +48,7 @@ export default async function PollPage({ params }: PageProps) {
         {t("backLink")}
       </Link> */}
       <SelectDatesApp poll={poll} />
-    </>
+    </div>
     // </main>
   );
 }

@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { AvatarStack, IconButton, SegmentedControl } from "@/components/ui";
+import { IconButton, SegmentedControl } from "@/components/ui";
 import { fromDateKey } from "@/lib/date-keys";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
 import { getIdentity, setIdentity } from "@/lib/local-store";
@@ -144,7 +144,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   const answered = summary.respondedCount;
 
   return (
-    <div className="flex  w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
+    <div className="flex max-w-[1400px]   w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
           <h1 className="font-display text-4xl leading-tight tracking-display text-strong sm:text-5xl">
@@ -172,20 +172,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
         </div>
         <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
           <InviteLink slug={poll.slug} />
-          {current !== null ? (
-            <div
-              aria-label={t("groupHeading", { count: participants.length })}
-              className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-1.5 pl-2 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
-            >
-              <AvatarStack names={participants.map((p) => p.name)} size="md" />
-              <span className="whitespace-nowrap text-xs font-semibold text-body">
-                {t("answeredCount", {
-                  answered,
-                  total: participants.length,
-                })}
-              </span>
-            </div>
-          ) : null}
         </div>
       </header>
 
@@ -268,6 +254,8 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
               <BestDates
                 days={summary.byDate}
                 locale={locale}
+                participantNames={participants.map((p) => p.name)}
+                answered={answered}
                 className="max-h-96 lg:absolute lg:inset-0 lg:max-h-none"
               />
             </div>

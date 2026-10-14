@@ -40,29 +40,41 @@ export function InviteLink({ slug }: { slug: string }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={copy}
-      disabled={!url}
-      aria-label={`${t("copy")} ${url}`}
-      className={`inline-flex min-w-0  h-6 md:h-8 max-w-full items-center gap-2 rounded-pill border border-white py-1.5 pl-3.5 pr-1.5 shadow-rest backdrop-blur-lg transition-colors ${
-        copied ? "bg-yes-soft" : "bg-surface-glass hover:bg-paper"
-      }`}
-    >
-      <Icon name="link" size={18} color="var(--color-support-text)" />
-      <span className="min-w-0 truncate text-xs md:text-sm font-bold text-support-text">
-        {url.replace(/^https?:\/\//, "") || "…"}
+    <div className="flex min-w-0 max-w-full flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:gap-2">
+      <span className="inline-flex items-center gap-1 rounded-pill bg-amber-100 py-1 pr-2.5 pl-3 text-sm font-bold ">
+        {t("hint")}
+        {/* Points at the pill: below it on mobile, beside it from `sm` up. */}
+        <span className="flex sm:hidden">
+          <Icon name="arrow_downward" size={16} />
+        </span>
+        <span className="hidden sm:flex">
+          <Icon name="arrow_forward" size={16} />
+        </span>
       </span>
-      <span
-        className={`grid h-5 w-5 md:h-6 md:w-6 shrink-0 place-items-center rounded-full text-on-accent transition-colors ${
-          copied ? "bg-yes-text" : "bg-support"
+      <button
+        type="button"
+        onClick={copy}
+        disabled={!url}
+        aria-label={`${t("copy")} ${url}`}
+        className={`inline-flex h-8 min-w-0 max-w-full items-center gap-2 rounded-pill border border-white py-1.5 pr-1.5 pl-3.5 shadow-rest backdrop-blur-lg transition-colors ${
+          copied ? "bg-yes-soft" : "bg-surface-glass hover:bg-paper"
         }`}
       >
-        <Icon name={copied ? "check" : "content_copy"} size={12} />
-      </span>
-      <span className="sr-only" aria-live="polite">
-        {copied ? t("copiedAnnounce") : ""}
-      </span>
-    </button>
+        <Icon name="link" size={18} color="var(--color-support-text)" />
+        <span className="min-w-0 truncate text-xs md:text-sm font-bold text-support-text">
+          {url.replace(/^https?:\/\//, "") || "…"}
+        </span>
+        <span
+          className={`grid h-5 w-5 md:h-6 md:w-6 shrink-0 place-items-center rounded-full text-on-accent transition-colors ${
+            copied ? "bg-yes-text" : "bg-support"
+          }`}
+        >
+          <Icon name={copied ? "check" : "content_copy"} size={12} />
+        </span>
+        <span className="sr-only" aria-live="polite">
+          {copied ? t("copiedAnnounce") : ""}
+        </span>
+      </button>
+    </div>
   );
 }

@@ -118,7 +118,8 @@
     "label": "Del link",
     "copy": "Kopiér",
     "copied": "Kopieret",
-    "copiedAnnounce": "Link kopieret til udklipsholder"
+    "copiedAnnounce": "Link kopieret til udklipsholder",
+    "hint": "Del linket med de andre"
   },
   "PollWorkspace": {
     "emptyPollTitle": "Ingen datoer endnu",
@@ -185,7 +186,6 @@
     "settleOn": "Vælg {date}",
     "reopen": "Genåbn afstemningen",
     "itsHappening": "Det sker",
-    "groupHeading": "{count, plural, one {# person} other {# personer}} i gruppen",
     "close": "Luk",
     "statAnswered": "Har svaret",
     "statNotAnswered": "Ikke svaret",

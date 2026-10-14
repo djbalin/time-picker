@@ -118,7 +118,8 @@
     "label": "Share link",
     "copy": "Copy",
     "copied": "Copied",
-    "copiedAnnounce": "Link copied to clipboard"
+    "copiedAnnounce": "Link copied to clipboard",
+    "hint": "Share this link so others can answer"
   },
   "PollWorkspace": {
     "emptyPollTitle": "No dates yet",
@@ -185,7 +186,6 @@
     "settleOn": "Settle on {date}",
     "reopen": "Reopen the poll",
     "itsHappening": "It's happening",
-    "groupHeading": "{count, plural, one {# person} other {# people}} in the group",
     "close": "Close",
     "statAnswered": "Answered",
     "statNotAnswered": "Not answered",

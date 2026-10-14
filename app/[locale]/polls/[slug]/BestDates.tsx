@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Chip, Icon } from "@/components/ui";
+import { AvatarStack, Chip, Icon } from "@/components/ui";
 import { heatLevel, heatTokens } from "@/lib/availability-heat";
 import { formatDateKey, fromDateKey } from "@/lib/date-keys";
 import type { DateSummary } from "@/lib/poll-summary";
@@ -9,15 +9,20 @@ import type { DateSummary } from "@/lib/poll-summary";
 /**
  * The right rail: every night that works for everyone or most of the group.
  * All-in nights first, then the most people, then the nearest night. Scrolls
- * on its own once it outgrows the calendar beside it.
+ * on its own once it outgrows the calendar beside it. The footer shows who's
+ * in the group and how many have answered so far.
  */
 export function BestDates({
   days,
   locale,
+  participantNames,
+  answered,
   className = "",
 }: {
   days: DateSummary[];
   locale: string;
+  participantNames: string[];
+  answered: number;
   className?: string;
 }) {
   const t = useTranslations("SelectDates");
@@ -88,6 +93,13 @@ export function BestDates({
           })}
         </div>
       )}
+
+      <div className="mt-auto flex shrink-0 items-center gap-3 border-t border-hairline px-6 py-4">
+        <AvatarStack names={participantNames} size="md" />
+        <span className="text-xs font-semibold text-body">
+          {t("answeredCount", { answered, total: participantNames.length })}
+        </span>
+      </div>
     </div>
   );
 }
