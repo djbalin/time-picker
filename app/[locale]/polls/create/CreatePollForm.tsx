@@ -13,7 +13,6 @@ import {
 import { createPoll } from "@/app/actions/polls";
 import { PencilIcon, SpinnerIcon, TrashIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
-import { toDateKey } from "@/lib/date-keys";
 import { setAdminToken } from "@/lib/local-store";
 import { participantColor } from "@/lib/participant-colors";
 import { buttonClass, fieldClass } from "@/lib/ui";
@@ -23,17 +22,17 @@ import {
   firstFieldErrors,
   nameIsTaken,
 } from "@/lib/validation";
-import { DatePicker } from "./DatePicker";
+import { DatePicker, type DatesUpdate } from "./DatePicker";
+
+const LABEL = "mb-2 block text-sm font-bold text-strong";
 
 export function CreatePollForm() {
   const t = useTranslations("CreatePollForm");
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createPoll, null);
-  const [dates, setDates] = useState<Date[]>([]);
+  const [dateKeys, setDateKeys] = useState<string[]>([]);
   const [participants, setParticipants] = useState<string[]>([]);
   const [errors, setErrors] = useState<CreatePollFieldErrors>({});
-
-  const dateKeys = dates.map(toDateKey);
 
   // The poll's admin token comes back exactly once, so it has to be stored
   // before navigating — it is the only proof this device created the poll.
@@ -60,8 +59,8 @@ export function CreatePollForm() {
   }, []);
 
   const handleDatesChange = useCallback(
-    (next: Date[]) => {
-      setDates(next);
+    (update: DatesUpdate) => {
+      setDateKeys(update);
       clearError("dates");
     },
     [clearError],
@@ -99,13 +98,10 @@ export function CreatePollForm() {
       action={formAction}
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-7"
     >
       <div>
-        <label
-          className="mb-1.5 block text-xs font-extrabold text-slate"
-          htmlFor="title"
-        >
+        <label className={LABEL} htmlFor="title">
           {t("titleLabel")}
         </label>
         <input
@@ -121,12 +117,9 @@ export function CreatePollForm() {
       </div>
 
       <div>
-        <label
-          className="mb-1.5 block text-xs font-extrabold text-slate"
-          htmlFor="description"
-        >
+        <label className={LABEL} htmlFor="description">
           {t("descriptionLabel")}{" "}
-          <span className="font-bold text-mist">
+          <span className="font-medium text-muted">
             {t("descriptionOptional")}
           </span>
         </label>
@@ -145,10 +138,7 @@ export function CreatePollForm() {
       </div>
 
       <div>
-        <label
-          className="mb-1.5 block text-xs font-extrabold text-slate"
-          htmlFor="creatorEmail"
-        >
+        <label className={LABEL} htmlFor="creatorEmail">
           {t("emailLabel")}
         </label>
         <input
@@ -165,15 +155,11 @@ export function CreatePollForm() {
           className={fieldClass(Boolean(errors.creatorEmail))}
         />
         <FieldError id="creatorEmail-error" message={errors.creatorEmail} />
-        <p className="mt-1.5 text-xs font-semibold text-mist">
-          {t("emailHint")}
-        </p>
+        <p className="mt-2 text-xs font-medium text-body">{t("emailHint")}</p>
       </div>
 
       <div>
-        <span className="mb-1.5 block text-xs font-extrabold text-slate">
-          {t("participantsLabel")}
-        </span>
+        <span className={LABEL}>{t("participantsLabel")}</span>
         <ParticipantsInput
           participants={participants}
           onChange={(next) => {
@@ -190,20 +176,20 @@ export function CreatePollForm() {
       />
 
       <div>
-        <span className="mb-1.5 block text-xs font-extrabold text-slate">
+        <span className={LABEL}>
           {t("datesLabel")}{" "}
-          {dates.length > 0 && (
+          {dateKeys.length > 0 && (
             <span className="font-bold text-sky-deep">
-              · {t("datesSelectedCount", { count: dates.length })}
+              · {t("datesSelectedCount", { count: dateKeys.length })}
             </span>
           )}
         </span>
-        <DatePicker selected={dates} onSelect={handleDatesChange} />
+        <DatePicker selected={dateKeys} onChange={handleDatesChange} />
         <FieldError id="dates-error" message={errors.dates} />
       </div>
       <input type="hidden" name="dates" value={JSON.stringify(dateKeys)} />
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-line pt-5">
+      <div className="flex flex-wrap items-center gap-4 border-t border-hairline pt-6">
         <button
           type="submit"
           disabled={pending}

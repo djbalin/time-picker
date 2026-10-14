@@ -14,7 +14,7 @@
   "Home": {
     "badge": "Planlægning gjort simpelt",
     "heading": "Find et tidspunkt, alle er glade for.",
-    "lead": "Foreslå en håndfuld datoer, del afstemningen, og lad gruppen vælge den, der passer. Ikke mere evig frem-og-tilbage.",
+    "lead": "Foreslå nogle datoer og del afstemningen.",
     "createPoll": "Opret en afstemning",
     "viewPolls": "Se afstemninger",
     "feature1Title": "Foreslå datoer",
@@ -69,7 +69,7 @@
   },
   "CreatePollPage": {
     "heading": "Opret afstemning",
-    "subtitle": "Tilføj hvem der kommer, og alle de datoer, der kunne fungere. Du får et link at dele, når den er oprettet.",
+    "subtitle": "Tilføj deltagere og datoer forneden. Du får bagefter et link, du kan dele.",
     "backLink": "← Tilbage til alle afstemninger"
   },
   "CreatePollForm": {
@@ -80,7 +80,7 @@
     "descriptionPlaceholder": "",
     "emailLabel": "Din e-mail",
     "emailPlaceholder": "dig@eksempel.dk",
-    "emailHint": "Bruges til at gruppere de afstemninger, du opretter, så du kan finde dem igen senere.",
+    "emailHint": "Så du kan finde din afstemning igen senere.",
     "participantsLabel": "Deltagere",
     "participantsPlaceholder": "Tilføj en person",
     "participantsAriaLabel": "Deltagernavn",

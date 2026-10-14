@@ -295,10 +295,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-:focus-visible {
-  outline: 2.5px solid var(--color-focus-ring);
-  outline-offset: 2px;
-  border-radius: var(--radius-xs);
+/* Layered so utilities (`outline-none`, `focus-visible:ring-*`) can override
+   it, and radius-free so the outline follows the element's own corners. */
+@layer base {
+  /* Tailwind v4's preflight leaves buttons on the default arrow; restore the
+     v3 pointer. Disabled buttons keep their own `cursor-not-allowed`. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
 }
 
 ::selection {

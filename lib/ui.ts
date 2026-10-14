@@ -37,14 +37,18 @@ export function buttonClass({
   return `${BASE} ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim();
 }
 
-/** Inputs never get borders — a lilac halo marks focus instead. */
+/**
+ * Inputs sit one surface level below the card they live on (sunken lilac
+ * fill + hairline), so they read as wells on a white sheet. Focus lifts the
+ * field back to white with a lilac border and halo.
+ */
 export const inputClass =
-  "w-full rounded-pill bg-surface-card px-[18px] py-3.5 text-md font-medium text-strong shadow-rest outline-none transition-shadow duration-[180ms] placeholder:font-medium placeholder:text-muted focus:shadow-[0_0_0_2.5px_var(--color-support-soft),var(--shadow-rest)]";
+  "w-full rounded-pill border bg-surface-sunken px-[18px] py-3 text-md font-medium text-strong outline-none transition-[background-color,border-color,box-shadow] duration-[180ms] placeholder:font-medium placeholder:text-muted focus:bg-surface-card focus:ring-4";
 
 export function fieldClass(hasError: boolean): string {
   return `${inputClass} ${
     hasError
-      ? "shadow-[0_0_0_2.5px_var(--color-no-soft),var(--shadow-rest)] focus:shadow-[0_0_0_2.5px_var(--color-no),var(--shadow-rest)]"
-      : ""
+      ? "border-no bg-no-soft/40 focus:border-no-text focus:ring-no-soft"
+      : "border-hairline hover:border-ink-200 focus:border-support focus:ring-support-soft"
   }`;
 }

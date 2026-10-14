@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   type ReactNode,
@@ -8,20 +7,11 @@ import {
   useEffect,
   useMemo,
   useState,
-  useTransition,
 } from "react";
-import { finalizePoll } from "@/app/actions/polls";
-import {
-  Avatar,
-  AvatarStack,
-  Button,
-  Chip,
-  IconButton,
-  SegmentedControl,
-} from "@/components/ui";
-import { formatDateKey, fromDateKey } from "@/lib/date-keys";
+import { AvatarStack, IconButton, SegmentedControl } from "@/components/ui";
+import { fromDateKey } from "@/lib/date-keys";
 import type { PollDetail, PollParticipant } from "@/lib/db/queries";
-import { getAdminToken, getIdentity, setIdentity } from "@/lib/local-store";
+import { getIdentity, setIdentity } from "@/lib/local-store";
 import { participantColor } from "@/lib/participant-colors";
 import { type DateSummary, summarizePoll } from "@/lib/poll-summary";
 import { BestDates } from "./BestDates";
@@ -29,7 +19,6 @@ import { IdentityPicker } from "./IdentityPicker";
 import { InviteLink } from "./InviteLink";
 import { MonthCalendar, monthLabel } from "./MonthCalendar";
 import { NightsList } from "./NightsList";
-import { OwnerTools } from "./OwnerTools";
 import { SaveIndicator } from "./SaveIndicator";
 import { type SaveState, useDebouncedSave } from "./useDebouncedSave";
 
@@ -42,23 +31,21 @@ type View = "month" | "nights";
 export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   const t = useTranslations("SelectDates");
   const locale = useLocale();
-  const router = useRouter();
 
   const [view, setView] = useState<View>("month");
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [identityChecked, setIdentityChecked] = useState(false);
-  const [adminToken, setAdminToken] = useState<string | null>(null);
   const [localAnswer, setLocalAnswer] = useState<string[] | null>(null);
   const [addedParticipants, setAddedParticipants] = useState<PollParticipant[]>(
     [],
   );
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [showGroup, setShowGroup] = useState(false);
+  // const [showGroup, setShowGroup] = useState(false);
   const [monthDate, setMonthDate] = useState<Date>(() =>
     startMonth(poll.dates),
   );
-  const [finalizing, startFinalize] = useTransition();
+  // const [finalizing, startFinalize] = useTransition();
 
   const participants = useMemo(() => {
     const known = new Set(poll.participants.map((p) => p.id));
@@ -110,10 +97,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   });
 
   useEffect(() => {
-    setAdminToken(getAdminToken(poll.slug));
-  }, [poll.slug]);
-
-  useEffect(() => {
     const remembered = getIdentity(poll.slug);
     const stillExists =
       remembered !== null && poll.participants.some((p) => p.id === remembered);
@@ -153,20 +136,11 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
     [currentId, myAnswer, save],
   );
 
-  function settle(date: string | null) {
-    if (!adminToken) return;
-    startFinalize(async () => {
-      const result = await finalizePoll(poll.slug, adminToken, date);
-      if (result.ok) router.refresh();
-    });
-  }
-
   const nav = [
     { value: "month" as const, label: t("viewMonth"), icon: "calendar_month" },
     { value: "nights" as const, label: t("viewNights"), icon: "list" },
   ];
 
-  const topDate = summary.topDates[0]?.date ?? null;
   const answered = summary.respondedCount;
 
   return (
@@ -199,9 +173,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
         <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
           <InviteLink slug={poll.slug} />
           {current !== null ? (
-            <button
-              type="button"
-              onClick={() => setShowGroup(true)}
+            <div
               aria-label={t("groupHeading", { count: participants.length })}
               className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-1.5 pl-2 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
             >
@@ -212,7 +184,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   total: participants.length,
                 })}
               </span>
-            </button>
+            </div>
           ) : null}
         </div>
       </header>
@@ -305,7 +277,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                 <SaveIndicator state={saveState} error={saveError} />
               </div>
 
-              {adminToken ? (
+              {/* {adminToken ? (
                 <SettleBar
                   finalizedDate={poll.finalizedDate}
                   topDate={topDate}
@@ -314,7 +286,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   onSettle={() => settle(topDate)}
                   onReopen={() => settle(null)}
                 />
-              ) : null}
+              ) : null} */}
             </div>
           </div>
         </>
@@ -349,86 +321,6 @@ function NamePill({
   );
 }
 
-function GroupStats({
-  participants,
-  respondedIds,
-  availability,
-  dates,
-  locale,
-  onClose,
-}: {
-  participants: PollParticipant[];
-  respondedIds: Set<number>;
-  availability: Record<number, string[]>;
-  dates: string[];
-  locale: string;
-  onClose: () => void;
-}) {
-  const t = useTranslations("SelectDates");
-  const proposed = new Set(dates);
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <button
-        type="button"
-        aria-label={t("close")}
-        onClick={onClose}
-        className="absolute inset-0 bg-ink-900/40 backdrop-blur-sm"
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="relative max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-sheet bg-surface-card p-6 shadow-pop"
-      >
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="font-display text-2xl tracking-display text-strong">
-            {t("groupHeading", { count: participants.length })}
-          </h2>
-          <IconButton
-            icon="close"
-            label={t("close")}
-            size="sm"
-            onClick={onClose}
-          />
-        </div>
-        <div className="mt-4 flex flex-col gap-3">
-          {participants.map((p) => {
-            const answered = respondedIds.has(p.id);
-            const yesDates = (availability[p.id] ?? [])
-              .filter((d) => proposed.has(d))
-              .sort();
-            return (
-              <div key={p.id} className="rounded-md bg-paper-2 p-4 shadow-rest">
-                <div className="flex items-center gap-3">
-                  <Avatar name={p.name} size="md" />
-                  <span className="flex-1 font-sans text-md font-bold text-strong">
-                    {p.name}
-                  </span>
-                  <Chip tone={answered ? "yes" : "accent"}>
-                    {answered ? t("statAnswered") : t("statNotAnswered")}
-                  </Chip>
-                </div>
-                {answered ? (
-                  <p className="mt-2 text-xs text-body">
-                    {yesDates.length > 0
-                      ? t("statYesDates", {
-                          count: yesDates.length,
-                          dates: yesDates
-                            .map((d) => formatDateKey(d, locale))
-                            .join(", "),
-                        })
-                      : t("statNoDates")}
-                  </p>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Legend() {
   const t = useTranslations("SelectDates");
   const items: [string, string][] = [
@@ -451,65 +343,6 @@ function Legend() {
   );
 }
 
-function SettleBar({
-  finalizedDate,
-  topDate,
-  locale,
-  busy,
-  onSettle,
-  onReopen,
-}: {
-  finalizedDate: string | null;
-  topDate: string | null;
-  locale: string;
-  busy: boolean;
-  onSettle: () => void;
-  onReopen: () => void;
-}) {
-  const t = useTranslations("SelectDates");
-
-  if (finalizedDate) {
-    return (
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-sheet p-[18px_22px] shadow-pop [background:var(--grad-sunset)]">
-        <span className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-white/75">
-            <span className="ms text-[22px] text-accent-text" aria-hidden>
-              celebration
-            </span>
-          </span>
-          <span>
-            <span className="block text-2xs font-semibold uppercase tracking-caps text-ink-800/70">
-              {t("itsHappening")}
-            </span>
-            <span className="block font-display text-xl text-ink-900">
-              {longDate(finalizedDate, locale)}
-            </span>
-          </span>
-        </span>
-        <Button variant="glass" onClick={onReopen} disabled={busy}>
-          {t("reopen")}
-        </Button>
-      </div>
-    );
-  }
-
-  if (!topDate) return null;
-
-  return (
-    <div className="mt-4 flex justify-end">
-      <Button
-        variant="primary"
-        size="lg"
-        icon="celebration"
-        onClick={onSettle}
-        disabled={busy}
-      >
-        {t("settleOn", { date: shortDate(topDate, locale) })}
-      </Button>
-    </div>
-  );
-}
-
 function Empty({ title, body }: { title: string; body: string }) {
   return (
     <div className="rounded-sheet bg-surface-card p-10 text-center shadow-sheet">
@@ -517,22 +350,6 @@ function Empty({ title, body }: { title: string; body: string }) {
       {body ? <p className="mt-2 text-sm text-body">{body}</p> : null}
     </div>
   );
-}
-
-function longDate(dateKey: string, locale: string): string {
-  return fromDateKey(dateKey).toLocaleDateString(locale, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-}
-
-function shortDate(dateKey: string, locale: string): string {
-  return fromDateKey(dateKey).toLocaleDateString(locale, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
 }
 
 function shiftMonth(date: Date, by: number): Date {
