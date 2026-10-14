@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Arimo, Righteous } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -93,6 +94,7 @@ export default async function RootLayout({ children, params }: LayoutProps) {
           <SiteHeader />
           {children}
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
