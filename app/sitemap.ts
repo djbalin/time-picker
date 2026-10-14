@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { SITE_URL } from "@/lib/site-url";
 
 /**
  * Only the marketing/entry pages are listed — individual polls are private,

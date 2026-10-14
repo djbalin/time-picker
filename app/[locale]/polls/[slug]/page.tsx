@@ -11,19 +11,29 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [poll, t] = await Promise.all([
+  const [poll, t, tSite] = await Promise.all([
     getPollBySlug(slug),
     getTranslations("PollPage"),
+    getTranslations("Metadata"),
   ]);
 
   if (!poll) {
     return { title: t("notFound") };
   }
 
+  const description = poll.description || t("defaultDescription");
   return {
     title: poll.title,
-    description:
-      poll.description || t("defaultDescription", { title: poll.title }),
+    description,
+    // The link preview in Messenger, Slack, iMessage, … — the poll's own
+    // title rather than the site's.
+    openGraph: {
+      type: "website",
+      siteName: tSite("title"),
+      title: poll.title,
+      description,
+    },
+    twitter: { card: "summary", title: poll.title, description },
   };
 }
 

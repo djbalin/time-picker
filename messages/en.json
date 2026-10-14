@@ -64,7 +64,7 @@
   },
   "PollPage": {
     "notFound": "Poll not found",
-    "defaultDescription": "Pick the dates that work for you: {title}",
+    "defaultDescription": "Pick the dates that work for you",
     "backLink": "← All polls"
   },
   "CreatePollPage": {

@@ -64,7 +64,7 @@
   },
   "PollPage": {
     "notFound": "Afstemning ikke fundet",
-    "defaultDescription": "Vælg de datoer, der passer dig: {title}",
+    "defaultDescription": "Vælg de datoer, der passer dig",
     "backLink": "← Alle afstemninger"
   },
   "CreatePollPage": {

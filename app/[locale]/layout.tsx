@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SiteHeader } from "@/components/SiteHeader";
 import { isAppLocale, routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 // Meety runs on two Google-hosted faces: Righteous for the 70s display voice
@@ -43,13 +44,18 @@ export async function generateMetadata({
 
   return {
     // Turns every relative URL below (and in page-level metadata) into an
-    // absolute one, which is what OpenGraph/canonical tags need. Set
-    // NEXT_PUBLIC_SITE_URL once there's a real domain to deploy to.
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    ),
+    // absolute one, which is what OpenGraph/canonical tags need.
+    metadataBase: new URL(SITE_URL),
     title: { default: t("title"), template: `%s · ${t("title")}` },
     description: t("description"),
+    // What chat apps show when a link is pasted. Pages that set their own
+    // `openGraph` replace this object wholesale (metadata merges shallowly).
+    openGraph: {
+      type: "website",
+      siteName: t("title"),
+      title: t("title"),
+      description: t("description"),
+    },
     alternates: {
       // Tells search engines the English and Danish pages are the same
       // content in different languages, not duplicates.
