@@ -149,7 +149,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   };
 
   return (
-    <div className="flex max-w-[1400px]   w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
+    <div className="flex max-w-[1300px]   w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
           <h1 className="font-display text-3xl leading-tight tracking-display text-strong sm:text-5xl">

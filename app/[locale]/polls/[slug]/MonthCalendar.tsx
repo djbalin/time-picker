@@ -39,7 +39,9 @@ export function MonthCalendar({
     const base = new Date(2024, 8, 2); // Mon 2 Sep 2024
     const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
     return Array.from({ length: 7 }, (_, i) =>
-      fmt.format(new Date(base.getFullYear(), base.getMonth(), 1 + i)),
+      fmt.format(
+        new Date(base.getFullYear(), base.getMonth(), base.getDate() + i),
+      ),
     );
   }, [locale]);
 
