@@ -1,10 +1,10 @@
 {
   "Metadata": {
-    "title": "Time Picker",
+    "title": "WhenWhenWhen",
     "description": "Find a time that works for everyone."
   },
   "SiteHeader": {
-    "brand": "Time Picker",
+    "brand": "WhenWhenWhen",
     "polls": "Polls",
     "newPoll": "New poll"
   },
@@ -39,7 +39,7 @@
     "retry": "Try again"
   },
   "PollsPage": {
-    "eyebrow": "Time Picker",
+    "eyebrow": "WhenWhenWhen",
     "heading": "My polls",
     "subtitle": "Enter the email you created your polls with to see them.",
     "createPoll": "Create poll"
