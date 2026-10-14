@@ -143,13 +143,23 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
 
   const answered = summary.respondedCount;
 
+  const switchPerson = () => {
+    flush();
+    setCurrentId(null);
+  };
+
   return (
     <div className="flex max-w-[1400px]   w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
-          <h1 className="font-display text-4xl leading-tight tracking-display text-strong sm:text-5xl">
+          <h1 className="font-display text-3xl leading-tight tracking-display text-strong sm:text-5xl">
             {poll.title}
           </h1>
+          {poll.description ? (
+            <p className="mt-1.5 max-w-[60ch] text-sm text-body sm:text-md">
+              {poll.description}
+            </p>
+          ) : null}
           {current !== null ? (
             <p className="mt-2 font-display text-xl leading-snug tracking-display text-body sm:text-2xl">
               {t.rich("greeting", {
@@ -158,10 +168,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                   <NamePill
                     colorIndex={participants.indexOf(current)}
                     label={t("switchPerson")}
-                    onClick={() => {
-                      flush();
-                      setCurrentId(null);
-                    }}
+                    onClick={switchPerson}
                   >
                     {chunks}
                   </NamePill>
@@ -192,6 +199,24 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                 calendar's height and scrolls past it instead of growing. */}
           <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
             <div className="min-w-0 rounded-sheet bg-surface-card p-3 shadow-sheet sm:p-[18px]">
+              <p className=" flex flex-wrap items-center gap-x-1 px-1 text-2xs text-muted">
+                <span>
+                  {t.rich("answeringAs", {
+                    name: current.name,
+                    b: (chunks) => (
+                      <span className="font-bold text-body">{chunks}</span>
+                    ),
+                  })}
+                </span>
+                <span aria-hidden="true">·</span>
+                <button
+                  type="button"
+                  onClick={switchPerson}
+                  className="font-bold text-support-text underline underline-offset-2 hover:text-support-hover"
+                >
+                  {t("switchPerson")}
+                </button>
+              </p>
               <div className="mb-3 flex items-center justify-between gap-2">
                 {view === "month" ? (
                   <div className="flex min-w-0 items-center gap-1">

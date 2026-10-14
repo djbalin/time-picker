@@ -166,6 +166,7 @@
   },
   "SelectDates": {
     "greeting": "Hi <pill>{name}</pill>. Which dates can you make?",
+    "answeringAs": "Answering as <b>{name}</b>",
     "viewLabel": "Calendar view",
     "viewMonth": "Month",
     "viewNights": "Nights",
