@@ -171,11 +171,51 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
 
   return (
     <div className="flex  w-full flex-col py-4 px-4 sm:py-8 lg:py-10 gap-4 h-screen  rounded-sheet[background:var(--grad-page)] sm:gap-[18px] ">
-      <InviteLink
-        slug={poll.slug}
-        label={t("inviteLink")}
-        hint={t("inviteHint")}
-      />
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-4xl leading-tight tracking-display text-strong sm:text-5xl">
+            {poll.title}
+          </h1>
+          {current !== null ? (
+            <p className="mt-2 font-display text-xl leading-snug tracking-display text-body sm:text-2xl">
+              {t.rich("greeting", {
+                name: current.name,
+                pill: (chunks) => (
+                  <NamePill
+                    colorIndex={participants.indexOf(current)}
+                    label={t("switchPerson")}
+                    onClick={() => {
+                      flush();
+                      setCurrentId(null);
+                    }}
+                  >
+                    {chunks}
+                  </NamePill>
+                ),
+              })}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
+          <InviteLink slug={poll.slug} />
+          {current !== null ? (
+            <button
+              type="button"
+              onClick={() => setShowGroup(true)}
+              aria-label={t("groupHeading", { count: participants.length })}
+              className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-1.5 pl-2 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
+            >
+              <AvatarStack names={participants.map((p) => p.name)} size="md" />
+              <span className="whitespace-nowrap text-xs font-semibold text-body">
+                {t("answeredCount", {
+                  answered,
+                  total: participants.length,
+                })}
+              </span>
+            </button>
+          ) : null}
+        </div>
+      </header>
 
       {poll.dates.length === 0 ? (
         <Empty title={t("emptyTitle")} body={t("emptyBody")} />
@@ -190,45 +230,6 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
         />
       ) : (
         <>
-          <header className="flex flex-wrap items-end justify-between gap-6">
-            <div className="min-w-0">
-              <div className="text-2xs font-semibold uppercase tracking-label text-muted">
-                {poll.title}
-              </div>
-              <h1 className="mt-2 font-display text-3xl leading-tight tracking-display text-strong">
-                {t.rich("greeting", {
-                  name: current.name,
-                  pill: (chunks) => (
-                    <NamePill
-                      colorIndex={participants.indexOf(current)}
-                      label={t("switchPerson")}
-                      onClick={() => {
-                        flush();
-                        setCurrentId(null);
-                      }}
-                    >
-                      {chunks}
-                    </NamePill>
-                  ),
-                })}
-              </h1>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowGroup(true)}
-              aria-label={t("groupHeading", { count: participants.length })}
-              className="flex shrink-0 items-center gap-3 rounded-pill border border-white bg-surface-glass py-2.5 pl-3 pr-4 shadow-rest backdrop-blur-lg transition-colors hover:bg-paper"
-            >
-              <AvatarStack names={participants.map((p) => p.name)} size="md" />
-              <span className="whitespace-nowrap text-xs font-semibold text-body">
-                {t("answeredCount", {
-                  answered,
-                  total: participants.length,
-                })}
-              </span>
-            </button>
-          </header>
-
           {/* The rail shares the calendar's row, so it stretches to the
                 calendar's height and scrolls past it instead of growing. */}
           <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
