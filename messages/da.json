@@ -121,11 +121,9 @@
     "cancel": "Annuller"
   },
   "ShareCard": {
-    "label": "Del link",
-    "copy": "Kopiér",
-    "copied": "Kopieret",
-    "copiedAnnounce": "Link kopieret til udklipsholder",
-    "hint": "Del linket med de andre"
+    "button": "Del afstemning",
+    "copied": "Link kopieret",
+    "copiedAnnounce": "Link kopieret til udklipsholder"
   },
   "PollWorkspace": {
     "emptyPollTitle": "Ingen datoer endnu",

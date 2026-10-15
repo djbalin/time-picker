@@ -121,11 +121,9 @@
     "cancel": "Cancel"
   },
   "ShareCard": {
-    "label": "Share link",
-    "copy": "Copy",
-    "copied": "Copied",
-    "copiedAnnounce": "Link copied to clipboard",
-    "hint": "Share this link so others can answer"
+    "button": "Share poll",
+    "copied": "Link copied",
+    "copiedAnnounce": "Link copied to clipboard"
   },
   "PollWorkspace": {
     "emptyPollTitle": "No dates yet",

@@ -16,10 +16,10 @@ import { participantColor } from "@/lib/participant-colors";
 import { type DateSummary, summarizePoll } from "@/lib/poll-summary";
 import { BestDates } from "./BestDates";
 import { IdentityPicker } from "./IdentityPicker";
-import { InviteLink } from "./InviteLink";
 import { MonthCalendar, monthLabel } from "./MonthCalendar";
 import { NightsList } from "./NightsList";
 import { SaveIndicator } from "./SaveIndicator";
+import { ShareButton } from "./ShareButton";
 import { type SaveState, useDebouncedSave } from "./useDebouncedSave";
 
 type View = "month" | "nights";
@@ -178,7 +178,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
           ) : null}
         </div>
         <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
-          <InviteLink slug={poll.slug} />
+          <ShareButton slug={poll.slug} />
         </div>
       </header>
 
