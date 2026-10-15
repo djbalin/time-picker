@@ -8,13 +8,50 @@
     "polls": "Polls",
     "newPoll": "New poll"
   },
+  "SiteFooter": {
+    "brand": "WhenWhenWhen",
+    "tagline": "Find a time that works for everyone.",
+    "label": "Footer",
+    "createPoll": "Create a poll",
+    "doodleAlternative": "Doodle alternative"
+  },
   "LanguageSwitcher": {
     "label": "Language"
   },
+  "OgImage": {
+    "headline": "Find a date that works for everyone.",
+    "subline": "Free group scheduling poll · No account needed"
+  },
   "Home": {
-    "badge": "Scheduling made simple",
-    "heading": "Find a time everyone loves.",
-    "lead": "Propose a handful of dates, share the poll, and let your group pick the one that works. No more endless back-and-forth.",
+    "metaTitle": "Free group scheduling poll, no account needed",
+    "metaDescription": "Propose a few dates, share one link and see which day works for everyone. A free group scheduling poll with no ads and no account needed.",
+    "badge": "Free · No account needed",
+    "heading": "Find a date that works for everyone.",
+    "lead": "A free group scheduling poll. Propose a handful of dates, share one link, and let your group pick the one that works. No more endless back-and-forth.",
+    "howItWorks": "How it works",
+    "faqHeading": "Questions",
+    "faq": {
+      "free": {
+        "q": "Is WhenWhenWhen free?",
+        "a": "Yes. Creating and answering polls is free, and there are no ads."
+      },
+      "account": {
+        "q": "Do people need an account to answer?",
+        "a": "No. They open the link, pick their name (or add it) and tick the dates they can make. Creating a poll only asks for your email, so you can find your polls again later."
+      },
+      "howTo": {
+        "q": "How do I find a date that works for everyone?",
+        "a": "Propose every date that could work, share the poll link in your group chat, and let everyone mark the dates they can make. The dates that work for the most people are shown first, so your group can settle on one quickly."
+      },
+      "changeAnswers": {
+        "q": "Can I change my answers later?",
+        "a": "Yes. Open the same link again and update your dates. Changes save automatically."
+      },
+      "doodle": {
+        "q": "How is it different from Doodle?",
+        "a": "WhenWhenWhen does one thing: find a date. No ads, no accounts and no calendar setup. <link>See the comparison</link>."
+      }
+    },
     "createPoll": "Create a poll",
     "viewPolls": "View polls",
     "feature1Title": "Propose dates",
@@ -68,6 +105,8 @@
     "backLink": "← All polls"
   },
   "CreatePollPage": {
+    "metaTitle": "Create a free date poll",
+    "metaDescription": "Pick every date that could work, add who's coming and get a link to share. Your group marks the dates they can make, no account needed.",
     "heading": "Create poll",
     "subtitle": "Add who's coming and every date that could work. You'll get a link to share once it's created.",
     "backLink": "← Back to all polls"
@@ -202,5 +241,40 @@
     "responseYes": "Can",
     "responseNo": "Can't",
     "responsePending": "Hasn't answered"
+  },
+  "DoodleAlternative": {
+    "metaTitle": "Free Doodle alternative with no ads",
+    "metaDescription": "Looking for a simpler Doodle alternative? WhenWhenWhen is a free date poll with no ads and no account needed. Propose dates, share a link, done.",
+    "eyebrow": "Doodle alternative",
+    "heading": "A simpler, free Doodle alternative",
+    "lead": "Doodle does a lot: calendars, booking pages, meeting slots. If all you need is to find a date that works for a group, WhenWhenWhen does that one thing, with no ads and no accounts.",
+    "benefitsHeading": "What you get",
+    "benefits": {
+      "free": {
+        "title": "Free, with no ads",
+        "body": "Creating and answering polls costs nothing, and nobody sees ads."
+      },
+      "noAccount": {
+        "title": "No account for your group",
+        "body": "People open the link, pick their name and tick the dates they can make."
+      },
+      "dates": {
+        "title": "Built for dates, not time slots",
+        "body": "Propose days across several months on one calendar. Great for dinners, trips, game nights and team days."
+      },
+      "bestDate": {
+        "title": "The best date at a glance",
+        "body": "The dates that work for the most people are shown first, so your group can settle quickly."
+      },
+      "languages": {
+        "title": "In English and Danish",
+        "body": "The whole app works in both languages."
+      }
+    },
+    "whenDoodleHeading": "When Doodle is the better choice",
+    "whenDoodleBody": "If you need to pick a time of day, connect calendars or let people book meetings with you, Doodle and similar tools are built for that. WhenWhenWhen only picks dates.",
+    "ctaHeading": "Try it for your next plan",
+    "ctaBody": "Creating a poll takes under a minute.",
+    "ctaButton": "Create a poll"
   }
 }

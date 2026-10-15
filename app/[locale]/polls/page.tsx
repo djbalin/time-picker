@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { NOINDEX } from "@/lib/seo";
 import { buttonClass } from "@/lib/ui";
 import { MyPolls } from "./MyPolls";
 
@@ -9,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("heading"),
     description: t("subtitle"),
+    // An email lookup form: nothing here for search results.
+    robots: NOINDEX,
   };
 }
 

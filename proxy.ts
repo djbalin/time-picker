@@ -8,6 +8,8 @@ export const proxy = createMiddleware(routing);
 
 export const config = {
   // Runs on every path except static assets, image optimization, and API
-  // routes — those don't have (or need) a locale.
-  matcher: ["/((?!api|_next|.*\\..*).*)"],
+  // routes — those don't have (or need) a locale. Also skips the link-preview
+  // images (`/en/opengraph-image`, …): their URLs already carry the locale,
+  // and the proxy would redirect the English one to its unprefixed form.
+  matcher: ["/((?!api|_next|.*opengraph-image|.*\\..*).*)"],
 };
