@@ -2,14 +2,27 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
+import { toAppLocale } from "@/i18n/routing";
+import { indexableMetadata } from "@/lib/seo";
 import { CreatePollForm } from "./CreatePollForm";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("CreatePollPage");
-  return {
-    title: t("heading"),
-    description: t("subtitle"),
-  };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = toAppLocale((await params).locale);
+  const [t, tSite] = await Promise.all([
+    getTranslations({ locale, namespace: "CreatePollPage" }),
+    getTranslations({ locale, namespace: "Metadata" }),
+  ]);
+  return indexableMetadata({
+    locale,
+    path: "/polls/create",
+    siteName: tSite("title"),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  });
 }
 
 export default async function CreatePollPage() {

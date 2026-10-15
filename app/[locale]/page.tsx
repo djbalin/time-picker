@@ -1,8 +1,57 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { toAppLocale } from "@/i18n/routing";
+import { absoluteUrl, indexableMetadata } from "@/lib/seo";
 
-export default async function Home() {
-  const t = await getTranslations("Home");
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const locale = toAppLocale((await params).locale);
+  const [t, tSite] = await Promise.all([
+    getTranslations({ locale, namespace: "Home" }),
+    getTranslations({ locale, namespace: "Metadata" }),
+  ]);
+  return indexableMetadata({
+    locale,
+    path: "/",
+    siteName: tSite("title"),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  });
+}
+
+const FAQ_KEYS = [
+  "free",
+  "account",
+  "howTo",
+  "changeAnswers",
+  "doodle",
+] as const;
+
+export default async function Home({ params }: PageProps) {
+  const locale = toAppLocale((await params).locale);
+  const [t, tSite] = await Promise.all([
+    getTranslations("Home"),
+    getTranslations("Metadata"),
+  ]);
+
+  // Describes the app to search engines. No rating/review markup: there are
+  // no real reviews to back it.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: tSite("title"),
+    url: absoluteUrl(locale, "/"),
+    description: t("metaDescription"),
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    browserRequirements: "Requires JavaScript",
+    inLanguage: locale,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+  };
 
   const features = [
     {
@@ -27,6 +76,13 @@ export default async function Home() {
 
   return (
     <main className="flex flex-1 flex-col">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inline; `<` is escaped so no string can close the tag.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <section className="mx-auto w-full max-w-5xl px-6 pt-10 pb-16">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
           <div>
@@ -65,6 +121,9 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-5xl px-6 pb-16">
+        <h2 className="mb-5 font-display text-2xl font-semibold text-ink">
+          {t("howItWorks")}
+        </h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           {features.map((feature) => (
             <div
@@ -76,13 +135,46 @@ export default async function Home() {
               >
                 {feature.icon}
               </div>
-              <div className="mb-1.5 font-display text-lg font-semibold text-ink">
+              <h3 className="mb-1.5 font-display text-lg font-semibold text-ink">
                 {feature.title}
-              </div>
+              </h3>
               <p className="text-sm leading-relaxed text-slate">
                 {feature.body}
               </p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Real questions people search for. Plain visible HTML, no FAQPage
+          JSON-LD: Google only shows FAQ rich results for government and
+          health sites now. */}
+      <section className="mx-auto w-full max-w-3xl px-6 pb-16">
+        <h2 className="mb-5 font-display text-2xl font-semibold text-ink">
+          {t("faqHeading")}
+        </h2>
+        <div className="flex flex-col gap-3">
+          {FAQ_KEYS.map((key) => (
+            <details
+              key={key}
+              className="rounded-lg border border-line bg-white px-5 py-4 shadow-soft"
+            >
+              <summary className="cursor-pointer font-display text-lg font-semibold text-ink">
+                <h3 className="inline">{t(`faq.${key}.q`)}</h3>
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-slate">
+                {t.rich(`faq.${key}.a`, {
+                  link: (chunks) => (
+                    <Link
+                      href="/doodle-alternative"
+                      className="font-bold text-ink underline underline-offset-2"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
+            </details>
           ))}
         </div>
       </section>
