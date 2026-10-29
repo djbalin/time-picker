@@ -17,21 +17,17 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
     <li>
       <Link
         href={`/polls/${poll.slug}`}
-        className="block rounded-lg border border-line bg-white p-6 shadow-soft transition hover:border-sky hover:shadow-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+        className="block rounded-[14px] border border-apricot-300 bg-paper p-5 transition-colors hover:border-plum-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plum-500 sm:p-6"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="font-display text-lg font-semibold text-ink">
-              {poll.title}
-            </h2>
+            <h2 className="font-display text-xl text-strong">{poll.title}</h2>
             {poll.description && (
-              <p className="mt-1 text-sm font-semibold text-slate">
-                {poll.description}
-              </p>
+              <p className="mt-1 text-body">{poll.description}</p>
             )}
           </div>
           {poll.finalizedDate && (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-green-tint px-3 py-1 text-xs font-extrabold text-green-deep">
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[6px] bg-mint-100 px-2.5 py-1 text-xs font-semibold text-mint-600">
               <CheckIcon className="h-3.5 w-3.5" />
               {t("decided")}
             </span>
@@ -39,20 +35,20 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
         </div>
 
         {poll.finalizedDate ? (
-          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-green-tint px-3 py-1 text-xs font-extrabold text-green-deep">
+          <p className="mt-3 inline-flex items-center gap-1.5 rounded-[6px] bg-mint-100 px-2.5 py-1 text-xs font-semibold text-mint-600">
             <CalendarIcon className="h-3.5 w-3.5" />
             {formatDateKeyLong(poll.finalizedDate, locale)}
           </p>
         ) : (
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-tint px-3 py-1 text-xs font-extrabold text-sky-deep">
+            <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-plum-50 px-2.5 py-1 text-xs font-semibold text-plum-700">
               {t("dateCount", { count: poll.dates.length })}
             </span>
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold ${
+              className={`inline-flex items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-xs font-semibold ${
                 everyoneAnswered
-                  ? "bg-green-tint text-green-deep"
-                  : "bg-cloud text-slate"
+                  ? "bg-mint-100 text-mint-600"
+                  : "bg-apricot-100 text-body"
               }`}
             >
               {t("answeredCount", {
@@ -63,7 +59,7 @@ export function PollCard({ poll }: { poll: PollSummaryRow }) {
           </div>
         )}
 
-        <p className="mt-4 border-t border-line pt-3 text-xs font-bold text-mist">
+        <p className="mt-4 border-t border-apricot-200 pt-3 text-xs font-semibold text-ink-400">
           {t("updated", { relative: formatRelative(poll.updatedAt, locale) })}
         </p>
       </Link>

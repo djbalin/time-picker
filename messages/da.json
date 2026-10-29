@@ -85,7 +85,6 @@
     "retry": "Prøv igen"
   },
   "PollsPage": {
-    "eyebrow": "WhenWhenWhen",
     "heading": "Mine afstemninger",
     "subtitle": "Indtast den e-mail, du oprettede dine afstemninger med, for at se dem.",
     "createPoll": "Opret afstemning"

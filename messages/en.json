@@ -85,7 +85,6 @@
     "retry": "Try again"
   },
   "PollsPage": {
-    "eyebrow": "WhenWhenWhen",
     "heading": "My polls",
     "subtitle": "Enter the email you created your polls with to see them.",
     "createPoll": "Create poll"

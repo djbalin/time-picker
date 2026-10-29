@@ -6,7 +6,7 @@ import { loadAllPolls, loadPollsByEmail } from "@/app/actions/polls";
 import { SpinnerIcon } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import type { PollSummaryRow } from "@/lib/db/queries";
-import { buttonClass, fieldClass } from "@/lib/ui";
+import { buttonClass, fieldClass, labelClass, sheetClass } from "@/lib/ui";
 import { PollCard } from "./PollCard";
 
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -56,12 +56,9 @@ export function MyPolls() {
       <form
         onSubmit={lookupByEmail}
         noValidate
-        className="rounded-lg border border-line bg-white p-6 shadow-soft"
+        className={`${sheetClass} p-5 sm:p-6`}
       >
-        <label
-          className="mb-1.5 block text-xs font-extrabold text-slate"
-          htmlFor="my-polls-email"
-        >
+        <label className={labelClass} htmlFor="my-polls-email">
           {t("emailLabel")}
         </label>
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -90,13 +87,14 @@ export function MyPolls() {
           </button>
         </div>
         {error && (
-          <p className="mt-1.5 text-xs font-bold text-red-deep" role="alert">
+          <p
+            className="mt-1.5 text-sm font-semibold text-coral-600"
+            role="alert"
+          >
             {error}
           </p>
         )}
-        <p className="mt-2 text-xs font-semibold text-mist">
-          {t("disclaimer")}
-        </p>
+        <p className="mt-2 text-sm text-ink-400">{t("disclaimer")}</p>
 
         {IS_DEV && (
           <button
@@ -128,11 +126,9 @@ export function MyPolls() {
         ) : (
           <div className="flex flex-col gap-3">
             {heading && (
-              <p className="text-xs font-extrabold uppercase tracking-wide text-mist">
-                {heading}
-              </p>
+              <p className="text-sm font-semibold text-body">{heading}</p>
             )}
-            <ul className="grid gap-4">
+            <ul className="grid gap-3">
               {polls.map((poll) => (
                 <PollCard key={poll.slug} poll={poll} />
               ))}
@@ -151,9 +147,9 @@ function Notice({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-lg border border-dashed border-line bg-white p-10 text-center">
-      <p className="font-display text-lg font-semibold text-ink">{title}</p>
-      <div className="mt-2 flex max-w-sm flex-col items-center text-sm font-semibold text-slate">
+    <div className="flex flex-col items-center rounded-[14px] border border-dashed border-apricot-300 bg-paper p-10 text-center">
+      <p className="font-display text-xl text-strong">{title}</p>
+      <div className="mt-2 flex max-w-sm flex-col items-center text-body">
         {children}
       </div>
     </div>
