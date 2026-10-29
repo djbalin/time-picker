@@ -6,26 +6,36 @@
   "SiteHeader": {
     "brand": "WhenWhenWhen",
     "polls": "Polls",
-    "newPoll": "New poll"
+    "newPoll": "New poll",
+    "newPollShort": "New"
   },
   "LanguageSwitcher": {
     "label": "Language"
   },
   "Home": {
-    "badge": "Scheduling made simple",
-    "heading": "Find a time everyone loves.",
-    "lead": "Propose a handful of dates, share the poll, and let your group pick the one that works. No more endless back-and-forth.",
+    "heading": "Stop asking <hl>“when works?”</hl> in the group chat.",
+    "lead": "Propose some dates, share one link, and everyone ticks the days they can make. Nobody needs an account. The best date floats to the top.",
     "createPoll": "Create a poll",
-    "viewPolls": "View polls",
-    "feature1Title": "Propose dates",
-    "feature1Body": "Pick every date that could work on a friendly, multi-month calendar.",
-    "feature2Title": "Share the poll",
-    "feature2Body": "Send a link to everyone you're trying to schedule with. No sign-up needed.",
-    "feature3Title": "See what works",
-    "feature3Body": "Watch responses roll in and spot the date that works for the whole group.",
-    "ctaHeading": "Ready to lock in a date?",
-    "ctaBody": "Create a poll in under a minute.",
-    "ctaButton": "Get started"
+    "seeHow": "See how it works",
+    "minute": "Takes about a minute to set up.",
+    "demoHint": "Try it: you're the sixth friend.",
+    "demoTitle": "Cabin weekend",
+    "demoAnswered": "{answered} of {total} answered",
+    "demoDayLabel": "{date}: {yes} of {total} can make it",
+    "demoBest": "Best so far: <b>{date}</b> · {yes} of {total} can make it",
+    "demoEveryone": "<b>{date}</b> works for everyone. It's happening!",
+    "demoSample": "Sample poll",
+    "legendEveryone": "Everyone",
+    "legendMost": "Most",
+    "legendFew": "A few",
+    "howHeading": "Three steps. Zero accounts.",
+    "step1Title": "Propose dates",
+    "step1Body": "Tap every day that could work, across as many months as you like.",
+    "step2Title": "Share one link",
+    "step2Body": "Drop it in the group chat. Friends pick their name and tick the days they can make.",
+    "step3Title": "Lock it in",
+    "step3Body": "The date that works for the most people rises to the top. Settle on it, and it's happening.",
+    "closeHeading": "The group chat can go back to memes."
   },
   "NotFound": {
     "title": "We couldn't find that",

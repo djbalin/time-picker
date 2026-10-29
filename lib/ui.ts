@@ -5,24 +5,21 @@
  * call sites on-brand until they migrate.
  */
 
+import {
+  type ButtonVariant,
+  buttonClass as uiButtonClass,
+} from "@/components/ui/Button";
+
 type Variant = "primary" | "secondary" | "accent" | "quiet" | "danger";
 type Size = "sm" | "md" | "lg";
 
-const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-pill font-bold tracking-tight transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100";
-
-const VARIANTS: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent shadow-accent hover:bg-accent-hover",
-  secondary: "bg-surface-card text-strong shadow-rest hover:bg-surface-sunken",
-  accent: "bg-support text-on-accent shadow-support hover:bg-support-hover",
-  quiet: "text-support-text hover:bg-support-soft",
-  danger: "bg-no-soft text-no-text hover:bg-no",
-};
-
-const SIZES: Record<Size, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-[22px] py-3 text-md",
-  lg: "px-[26px] py-3.5 text-lg",
+// The older names, mapped onto the shared button so both paths look the same.
+const VARIANT_MAP: Record<Variant, ButtonVariant> = {
+  primary: "primary",
+  secondary: "secondary",
+  accent: "support",
+  quiet: "ghost",
+  danger: "danger",
 };
 
 export function buttonClass({
@@ -34,7 +31,7 @@ export function buttonClass({
   size?: Size;
   className?: string;
 } = {}): string {
-  return `${BASE} ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim();
+  return uiButtonClass({ variant: VARIANT_MAP[variant], size, className });
 }
 
 /**

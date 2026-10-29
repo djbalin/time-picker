@@ -16,9 +16,9 @@ const PX: Record<IconButtonSize, string> = {
 
 const VARIANTS: Record<IconButtonVariant, string> = {
   quiet: "bg-transparent text-body hover:enabled:bg-surface-sunken",
-  solid: "bg-support text-on-accent hover:enabled:bg-support-hover",
+  solid: "bg-plum-600 text-apricot-50 hover:enabled:bg-plum-700",
   glass:
-    "bg-surface-glass text-strong border border-white backdrop-blur-lg hover:enabled:bg-paper",
+    "bg-paper text-strong ring-1 ring-inset ring-apricot-300 hover:enabled:ring-plum-300",
 };
 
 export function IconButton({

@@ -6,26 +6,36 @@
   "SiteHeader": {
     "brand": "WhenWhenWhen",
     "polls": "Afstemninger",
-    "newPoll": "Ny afstemning"
+    "newPoll": "Ny afstemning",
+    "newPollShort": "Ny"
   },
   "LanguageSwitcher": {
     "label": "Sprog"
   },
   "Home": {
-    "badge": "Planlægning gjort simpelt",
-    "heading": "Find et tidspunkt, alle er glade for.",
-    "lead": "Foreslå nogle datoer og del afstemningen.",
+    "heading": "Slut med <hl>“hvornår kan I?”</hl> i gruppechatten.",
+    "lead": "Foreslå nogle datoer, del ét link, og alle krydser de dage af, de kan. Ingen skal oprette en konto. Den bedste dato flyder op til toppen.",
     "createPoll": "Opret en afstemning",
-    "viewPolls": "Se afstemninger",
-    "feature1Title": "Foreslå datoer",
-    "feature1Body": "Vælg alle de datoer, der kunne fungere, i en overskuelig kalender over flere måneder.",
-    "feature2Title": "Del afstemningen",
-    "feature2Body": "Send et link til alle, du prøver at finde et tidspunkt med. Ingen oprettelse nødvendig.",
-    "feature3Title": "Se, hvad der fungerer",
-    "feature3Body": "Følg svarene, mens de kommer ind, og find den dato, der passer hele gruppen.",
-    "ctaHeading": "Klar til at låse en dato fast?",
-    "ctaBody": "Opret en afstemning på under et minut.",
-    "ctaButton": "Kom i gang"
+    "seeHow": "Se hvordan det virker",
+    "minute": "Tager cirka et minut at sætte op.",
+    "demoHint": "Prøv selv, vælg nogle datoer:",
+    "demoTitle": "Sommerhustur",
+    "demoAnswered": "{answered} af {total} har svaret",
+    "demoDayLabel": "{date}: {yes} af {total} kan",
+    "demoBest": "Bedst indtil videre: <b>{date}</b> · {yes} af {total} kan",
+    "demoEveryone": "<b>{date}</b> passer alle. Det sker!",
+    "demoSample": "Eksempel",
+    "legendEveryone": "Alle",
+    "legendMost": "De fleste",
+    "legendFew": "Få",
+    "howHeading": "Tre trin. Ingen konti.",
+    "step1Title": "Foreslå datoer",
+    "step1Body": "Tryk på alle de dage, der kunne passe – over lige så mange måneder, du vil.",
+    "step2Title": "Del ét link",
+    "step2Body": "Smid det i gruppechatten. Vennerne vælger deres navn og krydser de dage af, de kan.",
+    "step3Title": "Lås den fast",
+    "step3Body": "Den dato, der passer flest, ryger til toppen. Vælg den, og så sker det.",
+    "closeHeading": "Så kan gruppechatten igen bruges til reels."
   },
   "NotFound": {
     "title": "Vi kunne ikke finde den",

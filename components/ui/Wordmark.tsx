@@ -6,10 +6,13 @@
 export function Wordmark({
   label = "meety",
   size = "md",
+  compact = false,
   className = "",
 }: {
   label?: string;
   size?: "sm" | "md";
+  /** Below `sm`, show only the dots (the name stays for screen readers). */
+  compact?: boolean;
   className?: string;
 }) {
   const text = size === "sm" ? "text-lg" : "text-xl";
@@ -23,7 +26,13 @@ export function Wordmark({
             "8px 0 0 var(--color-mint-300), 16px 0 0 var(--color-blush-300)",
         }}
       />
-      <span className={`font-display ${text} text-strong`}>{label}</span>
+      <span
+        className={`font-display ${text} text-strong ${
+          compact ? "max-sm:sr-only" : ""
+        }`}
+      >
+        {label}
+      </span>
     </span>
   );
 }

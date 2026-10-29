@@ -23,7 +23,10 @@ export function LanguageSwitcher() {
   const t = useTranslations("LanguageSwitcher");
 
   return (
-    <nav aria-label={t("label")} className="inline-flex items-center gap-1.5">
+    <nav
+      aria-label={t("label")}
+      className="inline-flex items-center gap-2 sm:gap-2.5"
+    >
       {routing.locales.map((locale) => {
         const { name, Flag } = LANGUAGES[locale];
         const active = locale === activeLocale;
@@ -35,10 +38,10 @@ export function LanguageSwitcher() {
             aria-current={active ? "true" : undefined}
             aria-label={name}
             title={name}
-            className={`block overflow-hidden rounded-[4px] transition-opacity ${
+            className={`block overflow-hidden rounded-[5px] transition-opacity ${
               active
-                ? "opacity-100 ring-2 ring-white shadow-rest"
-                : "opacity-45 hover:opacity-100"
+                ? "opacity-100 ring-2 ring-plum-600 ring-offset-2 ring-offset-paper"
+                : "opacity-55 hover:opacity-100"
             }`}
           >
             <Flag />
@@ -53,10 +56,10 @@ function FlagDK() {
   return (
     <svg
       viewBox="0 0 37 28"
-      width="22"
-      height="16"
+      width="32"
+      height="23"
       aria-hidden="true"
-      className="block"
+      className="block h-[19px] w-[26px] sm:h-[23px] sm:w-8"
     >
       <rect width="37" height="28" fill="#C8102E" />
       <rect x="12" width="4" height="28" fill="#fff" />
@@ -69,11 +72,11 @@ function FlagGB() {
   return (
     <svg
       viewBox="0 0 60 30"
-      width="22"
-      height="16"
+      width="32"
+      height="23"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
-      className="block"
+      className="block h-[19px] w-[26px] sm:h-[23px] sm:w-8"
     >
       <clipPath id="flag-gb-diagonals">
         <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
