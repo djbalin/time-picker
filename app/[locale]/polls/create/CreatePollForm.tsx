@@ -25,6 +25,15 @@ import {
 } from "@/lib/validation";
 import { DatePicker, type DatesUpdate } from "./DatePicker";
 
+/** Fields in on-screen order, so the summary under the button reads top down. */
+const FIELD_ORDER: (keyof CreatePollFieldErrors)[] = [
+  "title",
+  "description",
+  "creatorEmail",
+  "participants",
+  "dates",
+];
+
 /** Right padding that keeps typed text clear of the emoji button. */
 const EMOJI_PAD = "pr-12!";
 
@@ -96,6 +105,11 @@ export function CreatePollForm() {
   }
 
   const formError = state && !state.ok ? state.message : null;
+  // After a failed attempt the button stays disabled until every flagged
+  // field has been touched; each field clears its own message on change.
+  const invalidFields = FIELD_ORDER.filter((field) => errors[field]);
+  const blocked = invalidFields.length > 0;
+  const showSummary = blocked || Boolean(formError);
 
   return (
     <Form
@@ -201,19 +215,27 @@ export function CreatePollForm() {
       </div>
       <input type="hidden" name="dates" value={JSON.stringify(dateKeys)} />
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-apricot-200 pt-6">
+      <div className="border-t border-apricot-200 pt-6">
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || blocked}
+          aria-describedby={showSummary ? "submit-errors" : undefined}
           className={buttonClass({ size: "lg" })}
         >
           {pending && <SpinnerIcon className="h-4 w-4" />}
           {pending ? t("submitting") : t("submit")}
         </button>
-        {formError && (
-          <span className="text-sm font-semibold text-coral-600" role="alert">
-            {formError}
-          </span>
+        {showSummary && (
+          <ul
+            id="submit-errors"
+            role="alert"
+            className="mt-3 flex flex-col gap-1 text-sm font-semibold text-coral-600"
+          >
+            {invalidFields.map((field) => (
+              <li key={field}>{errors[field]}</li>
+            ))}
+            {formError && <li>{formError}</li>}
+          </ul>
         )}
       </div>
     </Form>

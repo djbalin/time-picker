@@ -31,7 +31,7 @@ export default async function CreatePollPage() {
   return (
     <main
       data-surface="warm"
-      className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 pt-10 pb-16 lg:pt-14"
+      className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 pt-10 pb-16 lg:pt-6"
     >
       <header>
         <h1 className="font-display text-[clamp(2.25rem,4vw,3rem)] leading-tight text-strong">
@@ -42,16 +42,9 @@ export default async function CreatePollPage() {
         </p>
       </header>
 
-      <div className={`${sheetClass} px-5 py-6 sm:px-8 sm:py-8`}>
+      <div className={`${sheetClass} px-5 py-6 sm:px-8 sm:py-6`}>
         <CreatePollForm />
       </div>
-
-      <Link
-        href="/polls"
-        className="self-start text-sm font-semibold text-plum-600 underline decoration-plum-100 decoration-2 underline-offset-4 transition-colors hover:decoration-plum-600"
-      >
-        {t("backLink")}
-      </Link>
     </main>
   );
 }

@@ -50,7 +50,7 @@ export function MiniMonth({
 
   const gap = large ? "gap-1.5 sm:gap-2" : "gap-1";
   const cellBase = large
-    ? "min-h-[46px] rounded-[10px] p-1.5 sm:min-h-[58px] sm:p-2"
+    ? "min-h-[62px] rounded-[10px] p-1.5 sm:p-2"
     : "aspect-square rounded-[5px] p-0.5";
   const number = large
     ? "font-display text-base leading-none sm:text-lg"
@@ -85,7 +85,7 @@ export function MiniMonth({
               <div
                 key={day}
                 className={`${cellBase} bg-paper-2 text-ink-300 ${
-                  large ? "" : "text-center"
+                  large ? "text-center sm:text-left" : "text-center"
                 }`}
               >
                 <span className={number}>{day}</span>
@@ -98,7 +98,7 @@ export function MiniMonth({
               <div
                 key={day}
                 className={`${cellBase} border-2 border-dashed border-ink-300 bg-paper text-strong ${
-                  large ? "" : "text-center"
+                  large ? "text-center sm:text-left" : "text-center"
                 }`}
               >
                 <span className={number}>{day}</span>
@@ -112,14 +112,14 @@ export function MiniMonth({
             <>
               <span className={number}>{day}</span>
               {large ? (
-                <span className="absolute right-1.5 bottom-1 text-[10px] font-bold sm:right-2 sm:bottom-1.5 sm:text-xs">
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] font-bold sm:right-2 sm:bottom-1.5 sm:left-auto sm:translate-x-0 sm:text-xs">
                   {demo.yes}/{total}
                 </span>
               ) : null}
               {large && onToggle ? (
                 <span
                   aria-hidden="true"
-                  className={`absolute top-1.5 right-1.5 grid size-[17px] place-items-center rounded-full transition-colors sm:top-2 sm:right-2 ${
+                  className={`absolute top-1/2 left-1/2 grid size-[17px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full transition-colors sm:top-2 sm:right-2 sm:left-auto sm:translate-x-0 sm:translate-y-0 ${
                     demo.mine
                       ? "bg-plum-600 text-apricot-50"
                       : "bg-white/60 text-transparent"
@@ -131,7 +131,9 @@ export function MiniMonth({
             </>
           );
           const cellClass = `relative flex ${cellBase} ${heat.bg} ${heat.fg} ${
-            large ? "items-start" : "items-center justify-center"
+            large
+              ? "items-start justify-center sm:justify-start"
+              : "items-center justify-center"
           } ${isWinner ? "ring-2 ring-plum-600 ring-offset-2 ring-offset-paper" : ""}`;
 
           if (!onToggle) {

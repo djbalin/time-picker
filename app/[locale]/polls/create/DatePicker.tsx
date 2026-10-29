@@ -246,7 +246,7 @@ const DayCell = memo(function DayCell({
       aria-pressed={selected}
       aria-label={label}
       tabIndex={tabbable ? 0 : -1}
-      className={`h-9 w-9 rounded-[8px] text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-200 ${state}`}
+      className={`h-9 w-9 rounded-[20px] text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-200 ${state}`}
     >
       {day}
     </button>
