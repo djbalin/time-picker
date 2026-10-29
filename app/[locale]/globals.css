@@ -384,3 +384,8 @@ body:has(main[data-surface="home"]) > header {
   backdrop-filter: none;
   border-bottom-color: var(--color-apricot-300);
 }
+
+body:has(main[data-surface="home"]) > footer {
+  background: var(--color-apricot-100);
+  border-top-color: var(--color-apricot-300);
+}

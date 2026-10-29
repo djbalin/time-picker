@@ -9,12 +9,25 @@
     "newPoll": "Ny afstemning",
     "newPollShort": "Ny"
   },
+  "SiteFooter": {
+    "brand": "WhenWhenWhen",
+    "tagline": "Find et tidspunkt, der passer alle.",
+    "label": "Sidefod",
+    "createPoll": "Opret en afstemning",
+    "doodleAlternative": "Doodle-alternativ"
+  },
   "LanguageSwitcher": {
     "label": "Sprog"
   },
+  "OgImage": {
+    "headline": "Find en dato, der passer alle.",
+    "subline": "Gratis datoafstemning · Ingen konto nødvendig"
+  },
   "Home": {
+    "metaTitle": "Gratis datoafstemning til grupper",
+    "metaDescription": "Foreslå nogle datoer, del ét link og se, hvilken dag der passer alle. En gratis datoafstemning uden reklamer, hvor ingen skal oprette en konto.",
     "heading": "Slut med <hl>“hvornår kan I?”</hl> i gruppechatten.",
-    "lead": "Foreslå nogle datoer, del ét link, og alle krydser de dage af, de kan. Ingen skal oprette en konto. Den bedste dato flyder op til toppen.",
+    "lead": "En gratis datoafstemning til grupper. Foreslå nogle datoer, del ét link, og alle krydser de dage af, de kan. Ingen skal oprette en konto, og den bedste dato flyder op til toppen.",
     "createPoll": "Opret en afstemning",
     "seeHow": "Se hvordan det virker",
     "minute": "Tager cirka et minut at sætte op.",
@@ -35,7 +48,30 @@
     "step2Body": "Smid det i gruppechatten. Vennerne vælger deres navn og krydser de dage af, de kan.",
     "step3Title": "Lås den fast",
     "step3Body": "Den dato, der passer flest, ryger til toppen. Vælg den, og så sker det.",
-    "closeHeading": "Så kan gruppechatten igen bruges til reels."
+    "closeHeading": "Så kan gruppechatten igen bruges til reels.",
+    "faqHeading": "Spørgsmål og svar",
+    "faq": {
+      "free": {
+        "q": "Er WhenWhenWhen gratis?",
+        "a": "Ja. Det er gratis at oprette og besvare afstemninger, og der er ingen reklamer."
+      },
+      "account": {
+        "q": "Skal deltagerne oprette en konto?",
+        "a": "Nej. De åbner linket, vælger deres navn (eller tilføjer det) og markerer de datoer, de kan. Når du opretter en afstemning, beder vi kun om din e-mail, så du kan finde dine afstemninger igen."
+      },
+      "howTo": {
+        "q": "Hvordan finder man en dato, der passer alle?",
+        "a": "Foreslå alle de datoer, der kunne fungere, del linket i gruppechatten, og lad alle markere, hvornår de kan. De datoer, der passer flest, vises først, så I hurtigt kan blive enige."
+      },
+      "changeAnswers": {
+        "q": "Kan jeg ændre mine svar senere?",
+        "a": "Ja. Åbn det samme link igen og ret dine datoer. Ændringer gemmes automatisk."
+      },
+      "doodle": {
+        "q": "Hvordan adskiller det sig fra Doodle?",
+        "a": "WhenWhenWhen gør én ting: finder en dato. Ingen reklamer, ingen konti og ingen kalenderopsætning. <link>Se sammenligningen</link>."
+      }
+    }
   },
   "NotFound": {
     "title": "Vi kunne ikke finde den",
@@ -78,6 +114,8 @@
     "backLink": "← Alle afstemninger"
   },
   "CreatePollPage": {
+    "metaTitle": "Opret en gratis datoafstemning",
+    "metaDescription": "Vælg de datoer, der kunne fungere, tilføj deltagerne og få et link, du kan dele. Gruppen markerer, hvornår de kan, uden at oprette en konto.",
     "heading": "Opret afstemning",
     "subtitle": "Tilføj deltagere og datoer forneden. Du får bagefter et link, du kan dele.",
     "backLink": "← Tilbage til alle afstemninger"
@@ -212,5 +250,40 @@
     "responseYes": "Kan",
     "responseNo": "Kan ikke",
     "responsePending": "Har ikke svaret"
+  },
+  "DoodleAlternative": {
+    "metaTitle": "Gratis Doodle-alternativ uden reklamer",
+    "metaDescription": "Leder du efter et enklere alternativ til Doodle? WhenWhenWhen er en gratis datoafstemning uden reklamer, og ingen skal oprette en konto. Prøv det nu.",
+    "eyebrow": "Doodle-alternativ",
+    "heading": "Et enklere, gratis alternativ til Doodle",
+    "lead": "Doodle kan meget: kalendere, bookingsider og mødetidspunkter. Skal du bare finde en dato, der passer en gruppe, gør WhenWhenWhen netop det, uden reklamer og uden konti.",
+    "benefitsHeading": "Det får du",
+    "benefits": {
+      "free": {
+        "title": "Gratis og uden reklamer",
+        "body": "Det koster ingenting at oprette og besvare afstemninger, og ingen ser reklamer."
+      },
+      "noAccount": {
+        "title": "Ingen konto til gruppen",
+        "body": "Deltagerne åbner linket, vælger deres navn og markerer de datoer, de kan."
+      },
+      "dates": {
+        "title": "Lavet til datoer, ikke tidspunkter",
+        "body": "Foreslå dage over flere måneder i én kalender. Perfekt til middage, ture, spilaftener og teamdage."
+      },
+      "bestDate": {
+        "title": "Den bedste dato med det samme",
+        "body": "De datoer, der passer flest, vises først, så gruppen hurtigt kan blive enige."
+      },
+      "languages": {
+        "title": "På dansk og engelsk",
+        "body": "Hele appen virker på begge sprog."
+      }
+    },
+    "whenDoodleHeading": "Hvornår Doodle er det bedre valg",
+    "whenDoodleBody": "Skal du vælge et tidspunkt på dagen, forbinde kalendere eller lade folk booke møder med dig, er Doodle og lignende værktøjer bygget til det. WhenWhenWhen vælger kun datoer.",
+    "ctaHeading": "Prøv det til jeres næste plan",
+    "ctaBody": "Det tager under et minut at oprette en afstemning.",
+    "ctaButton": "Opret en afstemning"
   }
 }

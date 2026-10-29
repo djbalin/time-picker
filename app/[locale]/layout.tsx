@@ -4,6 +4,7 @@ import { Arimo, Righteous } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { isAppLocale, routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/site-url";
@@ -46,6 +47,10 @@ export async function generateMetadata({
     // Turns every relative URL below (and in page-level metadata) into an
     // absolute one, which is what OpenGraph/canonical tags need.
     metadataBase: new URL(SITE_URL),
+    // Only a fallback: every indexable page sets its own keyword title via
+    // `indexableMetadata` (lib/seo.ts), which also sets its canonical and
+    // hreflang links. Those can't live here, or every page would inherit the
+    // homepage's.
     title: { default: t("title"), template: `%s · ${t("title")}` },
     description: t("description"),
     // What chat apps show when a link is pasted. Pages that set their own
@@ -55,11 +60,6 @@ export async function generateMetadata({
       siteName: t("title"),
       title: t("title"),
       description: t("description"),
-    },
-    alternates: {
-      // Tells search engines the English and Danish pages are the same
-      // content in different languages, not duplicates.
-      languages: { en: "/", da: "/da" },
     },
   };
 }
@@ -99,6 +99,7 @@ export default async function RootLayout({ children, params }: LayoutProps) {
         <NextIntlClientProvider>
           <SiteHeader />
           {children}
+          <SiteFooter />
         </NextIntlClientProvider>
         <Analytics />
       </body>

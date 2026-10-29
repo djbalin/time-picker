@@ -2,38 +2,52 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { toAppLocale } from "@/i18n/routing";
 import { getPollBySlug } from "@/lib/db/queries";
+import { localizedPath, NOINDEX, ogImage } from "@/lib/seo";
 import { SelectDatesApp } from "./SelectDatesApp";
 
-type PageProps = { params: Promise<{ slug: string }> };
+type PageProps = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const [poll, t, tSite] = await Promise.all([
     getPollBySlug(slug),
     getTranslations("PollPage"),
     getTranslations("Metadata"),
   ]);
 
+  // Polls are private links: never in search results. They stay crawlable
+  // (see app/robots.ts) so this tag can be seen and link previews work.
   if (!poll) {
-    return { title: t("notFound") };
+    return { title: t("notFound"), robots: NOINDEX };
   }
 
+  const appLocale = toAppLocale(locale);
   const description = poll.description || t("defaultDescription");
+  const image = ogImage(appLocale, tSite("title"));
   return {
     title: poll.title,
     description,
+    robots: NOINDEX,
     // The link preview in Messenger, Slack, iMessage, … — the poll's own
-    // title rather than the site's.
+    // title rather than the site's, over the site-wide image.
     openGraph: {
       type: "website",
       siteName: tSite("title"),
+      url: localizedPath(appLocale, `/polls/${slug}`),
       title: poll.title,
       description,
+      images: [image],
     },
-    twitter: { card: "summary", title: poll.title, description },
+    twitter: {
+      card: "summary_large_image",
+      title: poll.title,
+      description,
+      images: [image],
+    },
   };
 }
 

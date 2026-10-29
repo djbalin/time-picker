@@ -1,8 +1,38 @@
-import { getLocale, getTranslations } from "next-intl/server";
-import { buttonClass } from "@/components/ui";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { buttonClass, Icon } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
+import { toAppLocale } from "@/i18n/routing";
+import { absoluteUrl, indexableMetadata } from "@/lib/seo";
 import { type DemoDay, MiniMonth } from "./MiniMonth";
 import { SamplePoll } from "./SamplePoll";
+
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const locale = toAppLocale((await params).locale);
+  const [t, tSite] = await Promise.all([
+    getTranslations({ locale, namespace: "Home" }),
+    getTranslations({ locale, namespace: "Metadata" }),
+  ]);
+  return indexableMetadata({
+    locale,
+    path: "/",
+    siteName: tSite("title"),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  });
+}
+
+const FAQ_KEYS = [
+  "free",
+  "account",
+  "howTo",
+  "changeAnswers",
+  "doodle",
+] as const;
 
 // The "how it works" months: the same sample poll at three moments.
 const STEP_YEAR = 2027;
@@ -35,9 +65,27 @@ const asDays = (counts?: Record<number, number>) =>
     PROPOSED.map((day) => [day, { yes: counts?.[day] } satisfies DemoDay]),
   );
 
-export default async function Home() {
-  const t = await getTranslations("Home");
-  const locale = await getLocale();
+export default async function Home({ params }: PageProps) {
+  const locale = toAppLocale((await params).locale);
+  const [t, tSite] = await Promise.all([
+    getTranslations("Home"),
+    getTranslations("Metadata"),
+  ]);
+
+  // Describes the app to search engines. No rating/review markup: there are
+  // no real reviews to back it.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: tSite("title"),
+    url: absoluteUrl(locale, "/"),
+    description: t("metaDescription"),
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    browserRequirements: "Requires JavaScript",
+    inLanguage: locale,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+  };
 
   const steps = [
     { title: t("step1Title"), body: t("step1Body"), days: asDays() },
@@ -52,6 +100,13 @@ export default async function Home() {
 
   return (
     <main data-surface="home" className="flex flex-1 flex-col">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inline; `<` is escaped so no string can close the tag.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <section className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 pt-10 pb-20 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pt-16 lg:pb-28">
         <div>
           <h1 className="font-display text-[clamp(2.6rem,5.2vw,4.4rem)] leading-[1.04] tracking-display text-balance text-strong">
@@ -113,6 +168,40 @@ export default async function Home() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* Real questions people search for. Plain visible HTML, no FAQPage
+          JSON-LD: Google only shows FAQ rich results for government and
+          health sites now. */}
+      <section className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 pt-24 lg:grid-cols-[1fr_1.7fr] lg:gap-16 lg:pt-28">
+        <h2 className="font-display text-[clamp(2rem,3.6vw,3rem)] leading-tight text-strong">
+          {t("faqHeading")}
+        </h2>
+        <div className="border-t border-apricot-300">
+          {FAQ_KEYS.map((key) => (
+            <details key={key} className="group border-b border-apricot-300">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-bold text-strong transition-colors hover:text-plum-700 [&::-webkit-details-marker]:hidden">
+                <h3>{t(`faq.${key}.q`)}</h3>
+                <Icon
+                  name="expand_more"
+                  className="shrink-0 text-plum-600 transition-transform duration-200 group-open:rotate-180"
+                />
+              </summary>
+              <p className="max-w-[60ch] pb-6 leading-relaxed text-body">
+                {t.rich(`faq.${key}.a`, {
+                  link: (chunks) => (
+                    <Link
+                      href="/doodle-alternative"
+                      className="font-bold text-plum-600 underline decoration-plum-300 decoration-2 underline-offset-4 hover:decoration-plum-600"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
+            </details>
+          ))}
         </div>
       </section>
 
