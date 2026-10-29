@@ -16,7 +16,7 @@ import { PencilIcon, SpinnerIcon, TrashIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
 import { setAdminToken } from "@/lib/local-store";
 import { participantColor } from "@/lib/participant-colors";
-import { buttonClass, fieldClass } from "@/lib/ui";
+import { buttonClass, fieldClass, labelClass } from "@/lib/ui";
 import {
   type CreatePollFieldErrors,
   createPollSchema,
@@ -24,8 +24,6 @@ import {
   nameIsTaken,
 } from "@/lib/validation";
 import { DatePicker, type DatesUpdate } from "./DatePicker";
-
-const LABEL = "mb-2 block text-sm font-bold text-strong";
 
 /** Right padding that keeps typed text clear of the emoji button. */
 const EMOJI_PAD = "pr-12!";
@@ -104,10 +102,10 @@ export function CreatePollForm() {
       action={formAction}
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-7"
+      className="flex flex-col gap-6"
     >
       <div>
-        <label className={LABEL} htmlFor="title">
+        <label className={labelClass} htmlFor="title">
           {t("titleLabel")}
         </label>
         <div className="relative">
@@ -127,9 +125,9 @@ export function CreatePollForm() {
       </div>
 
       <div>
-        <label className={LABEL} htmlFor="description">
+        <label className={labelClass} htmlFor="description">
           {t("descriptionLabel")}{" "}
-          <span className="font-medium text-muted">
+          <span className="font-normal text-ink-400">
             {t("descriptionOptional")}
           </span>
         </label>
@@ -152,7 +150,7 @@ export function CreatePollForm() {
       </div>
 
       <div>
-        <label className={LABEL} htmlFor="creatorEmail">
+        <label className={labelClass} htmlFor="creatorEmail">
           {t("emailLabel")}
         </label>
         <input
@@ -169,11 +167,11 @@ export function CreatePollForm() {
           className={fieldClass(Boolean(errors.creatorEmail))}
         />
         <FieldError id="creatorEmail-error" message={errors.creatorEmail} />
-        <p className="mt-2 text-xs font-medium text-body">{t("emailHint")}</p>
+        <p className="mt-1.5 text-sm text-ink-400">{t("emailHint")}</p>
       </div>
 
       <div>
-        <span className={LABEL}>{t("participantsLabel")}</span>
+        <span className={labelClass}>{t("participantsLabel")}</span>
         <ParticipantsInput
           participants={participants}
           onChange={(next) => {
@@ -190,10 +188,10 @@ export function CreatePollForm() {
       />
 
       <div>
-        <span className={LABEL}>
+        <span className={labelClass}>
           {t("datesLabel")}{" "}
           {dateKeys.length > 0 && (
-            <span className="font-bold text-sky-deep">
+            <span className="font-semibold text-plum-600">
               · {t("datesSelectedCount", { count: dateKeys.length })}
             </span>
           )}
@@ -203,17 +201,17 @@ export function CreatePollForm() {
       </div>
       <input type="hidden" name="dates" value={JSON.stringify(dateKeys)} />
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-hairline pt-6">
+      <div className="flex flex-wrap items-center gap-4 border-t border-apricot-200 pt-6">
         <button
           type="submit"
           disabled={pending}
-          className={buttonClass({ size: "md" })}
+          className={buttonClass({ size: "lg" })}
         >
           {pending && <SpinnerIcon className="h-4 w-4" />}
           {pending ? t("submitting") : t("submit")}
         </button>
         {formError && (
-          <span className="text-sm font-bold text-red-deep" role="alert">
+          <span className="text-sm font-semibold text-coral-600" role="alert">
             {formError}
           </span>
         )}
@@ -225,7 +223,7 @@ export function CreatePollForm() {
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1.5 text-xs font-bold text-red-deep">
+    <p id={id} className="mt-1.5 text-sm font-semibold text-coral-600">
       {message}
     </p>
   );
@@ -326,7 +324,10 @@ function ParticipantsInput({
             type="button"
             onClick={commit}
             disabled={!trimmed}
-            className={buttonClass({ className: "flex-1 sm:flex-none" })}
+            className={buttonClass({
+              variant: "secondary",
+              className: "flex-1 sm:flex-none",
+            })}
           >
             {editingIndex !== null ? t("save") : t("add")}
           </button>
@@ -334,7 +335,7 @@ function ParticipantsInput({
             <button
               type="button"
               onClick={cancelEdit}
-              className={buttonClass({ variant: "secondary" })}
+              className={buttonClass({ variant: "quiet" })}
             >
               {t("cancel")}
             </button>
@@ -376,7 +377,7 @@ function ParticipantBadge({
   const { bg, text } = participantColor(index);
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full py-1 pr-1.5 pl-3.5 text-sm font-extrabold ${bg} ${text}`}
+      className={`inline-flex items-center gap-0.5 rounded-[6px] py-1 pr-1 pl-2.5 text-sm font-semibold ${bg} ${text}`}
     >
       {name}
       <button
@@ -384,7 +385,7 @@ function ParticipantBadge({
         onClick={onEdit}
         aria-label={t("editParticipant", { name })}
         title={t("editNameTitle")}
-        className="inline-flex h-6 w-6 items-center justify-center rounded-full transition hover:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+        className="inline-flex size-6 items-center justify-center rounded-[4px] transition hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plum-500"
       >
         <PencilIcon className="h-3.5 w-3.5" />
       </button>
@@ -393,7 +394,7 @@ function ParticipantBadge({
         onClick={onDelete}
         aria-label={t("removeParticipant", { name })}
         title={t("removeParticipantTitle")}
-        className="inline-flex h-6 w-6 items-center justify-center rounded-full transition hover:bg-white/60 hover:text-red-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+        className="inline-flex size-6 items-center justify-center rounded-[4px] transition hover:bg-white/70 hover:text-coral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plum-500"
       >
         <TrashIcon className="h-3.5 w-3.5" />
       </button>

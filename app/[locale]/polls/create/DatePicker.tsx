@@ -130,7 +130,7 @@ function MonthGrid({
   };
 
   return (
-    <div className="rounded-md border border-hairline bg-surface-card p-3">
+    <div className="rounded-[10px] border border-apricot-300 bg-paper p-3">
       <div className="mb-3 flex flex-col gap-2">
         <div className="text-center font-display text-sm text-strong">
           {caption}
@@ -141,10 +141,10 @@ function MonthGrid({
           disabled={remaining.length === 0}
           // Labelled by what the click is about to do, not the current state,
           // so there's no ambiguity about which way the toggle is about to go.
-          className={`flex w-full items-center justify-center gap-1.5 rounded-sm px-2 py-1 text-xs font-extrabold uppercase tracking-wide transition-colors disabled:opacity-45 ${
+          className={`flex w-full items-center justify-center gap-1.5 rounded-[6px] px-2 py-1 text-xs font-semibold transition-colors disabled:opacity-45 ${
             fullySelected
-              ? "bg-surface-sunken text-body hover:bg-support-soft"
-              : "bg-accent-soft text-accent-text hover:bg-blush-200"
+              ? "bg-apricot-100 text-body hover:bg-apricot-200"
+              : "bg-plum-50 text-plum-700 hover:bg-plum-100"
           }`}
         >
           {fullySelected ? (
@@ -166,7 +166,7 @@ function MonthGrid({
                 // biome-ignore lint/suspicious/noArrayIndexKey: fixed 7 columns
                 key={index}
                 scope="col"
-                className="pb-1 text-xs font-bold text-muted"
+                className="pb-1 text-xs font-semibold text-ink-400"
               >
                 {weekday}
               </th>
@@ -177,7 +177,7 @@ function MonthGrid({
           {weeks.map((week) => (
             <tr key={week.weekNumber}>
               <td
-                className="px-1.5 text-center text-xs font-bold text-muted"
+                className="px-1.5 text-center text-xs font-semibold text-ink-300"
                 aria-hidden="true"
               >
                 {week.weekNumber}
@@ -231,10 +231,10 @@ const DayCell = memo(function DayCell({
   onToggle: (dateKey: string) => void;
 }) {
   const state = selected
-    ? "bg-accent text-on-accent hover:bg-accent-hover"
+    ? "bg-plum-600 text-apricot-50 hover:bg-plum-700"
     : isToday
-      ? "text-strong ring-1 ring-inset ring-accent hover:bg-surface-sunken"
-      : "text-strong hover:bg-surface-sunken";
+      ? "text-strong ring-1 ring-inset ring-plum-500 hover:bg-apricot-100"
+      : "text-strong hover:bg-apricot-100";
 
   return (
     <button
@@ -246,7 +246,7 @@ const DayCell = memo(function DayCell({
       aria-pressed={selected}
       aria-label={label}
       tabIndex={tabbable ? 0 : -1}
-      className={`h-9 w-9 rounded-md text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-200 ${state}`}
+      className={`h-9 w-9 rounded-[8px] text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-200 ${state}`}
     >
       {day}
     </button>

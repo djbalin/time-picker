@@ -35,17 +35,25 @@ export function buttonClass({
 }
 
 /**
- * Inputs sit one surface level below the card they live on (sunken lilac
- * fill + hairline), so they read as wells on a white sheet. Focus lifts the
- * field back to white with a lilac border and halo.
+ * A white panel on the warm ground: a fine apricot border and a small radius,
+ * no shadow. Separation comes from the border, not from depth.
+ */
+export const sheetClass = "rounded-[14px] border border-apricot-300 bg-paper";
+
+/**
+ * Inputs are crisp white fields with a fine warm border and a small radius.
+ * Focus turns the border plum and adds a soft plum halo.
  */
 export const inputClass =
-  "w-full rounded-pill border bg-surface-sunken px-[18px] py-3 text-md font-medium text-strong outline-none transition-[background-color,border-color,box-shadow] duration-[180ms] placeholder:font-medium placeholder:text-muted focus:bg-surface-card focus:ring-4";
+  "w-full rounded-[8px] border bg-paper px-3.5 py-2.5 text-md text-strong outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-ink-400 focus:ring-3";
 
 export function fieldClass(hasError: boolean): string {
   return `${inputClass} ${
     hasError
-      ? "border-no bg-no-soft/40 focus:border-no-text focus:ring-no-soft"
-      : "border-hairline hover:border-ink-200 focus:border-support focus:ring-support-soft"
+      ? "border-coral-400 focus:border-coral-600 focus:ring-coral-100"
+      : "border-apricot-300 hover:border-apricot-600 focus:border-plum-500 focus:ring-plum-100"
   }`;
 }
+
+/** A form label: small, semibold, in the strong ink. */
+export const labelClass = "mb-1.5 block text-sm font-semibold text-strong";

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Card } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { toAppLocale } from "@/i18n/routing";
 import { indexableMetadata } from "@/lib/seo";
+import { sheetClass } from "@/lib/ui";
 import { CreatePollForm } from "./CreatePollForm";
 
 export async function generateMetadata({
@@ -29,21 +29,26 @@ export default async function CreatePollPage() {
   const t = await getTranslations("CreatePollPage");
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
+    <main
+      data-surface="warm"
+      className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 pt-10 pb-16 lg:pt-14"
+    >
       <header>
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+        <h1 className="font-display text-[clamp(2.25rem,4vw,3rem)] leading-tight text-strong">
           {t("heading")}
         </h1>
-        <p className="mt-1 text-sm font-semibold text-slate">{t("subtitle")}</p>
+        <p className="mt-2 max-w-[56ch] text-lg leading-relaxed text-body">
+          {t("subtitle")}
+        </p>
       </header>
 
-      <Card pad="none" className="px-5 py-6 sm:px-8 sm:py-8">
+      <div className={`${sheetClass} px-5 py-6 sm:px-8 sm:py-8`}>
         <CreatePollForm />
-      </Card>
+      </div>
 
       <Link
         href="/polls"
-        className="text-sm font-extrabold text-slate underline-offset-2 transition hover:text-ink hover:underline"
+        className="self-start text-sm font-semibold text-plum-600 underline decoration-plum-100 decoration-2 underline-offset-4 transition-colors hover:decoration-plum-600"
       >
         {t("backLink")}
       </Link>

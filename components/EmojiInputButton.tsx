@@ -120,8 +120,8 @@ export function EmojiInputButton({
         title={t("open")}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className={`absolute top-1/2 right-2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full transition-colors hover:bg-support-soft hover:text-support-text ${
-          open ? "bg-support-soft text-support-text" : "text-muted"
+        className={`absolute top-1/2 right-2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[6px] transition-colors hover:bg-plum-50 hover:text-plum-700 ${
+          open ? "bg-plum-50 text-plum-700" : "text-ink-400"
         }`}
       >
         <Icon name="add_reaction" size={20} />
@@ -133,7 +133,7 @@ export function EmojiInputButton({
             ref={panelRef}
             role="dialog"
             aria-label={t("open")}
-            className="fixed z-50 rounded-md bg-surface-card p-2 shadow-pop"
+            className="fixed z-50 rounded-[12px] border border-apricot-300 bg-paper p-2 shadow-warm"
             style={{
               top: position.top,
               left: position.left,
@@ -172,13 +172,13 @@ function EmojiPickerPanel({ onSelect }: { onSelect: (emoji: string) => void }) {
       <EmojiPicker.Search
         ref={searchRef}
         placeholder={t("search")}
-        className="mb-2 w-full rounded-pill border border-hairline bg-surface-sunken px-3.5 py-2 text-sm text-strong outline-none placeholder:text-muted focus:border-support focus:bg-surface-card"
+        className="mb-2 w-full rounded-[8px] border border-apricot-300 bg-paper px-3 py-2 text-sm text-strong outline-none placeholder:text-ink-400 focus:border-plum-500"
       />
       <EmojiPicker.Viewport className="relative flex-1 outline-none">
-        <EmojiPicker.Loading className="absolute inset-0 grid place-items-center text-sm text-muted">
+        <EmojiPicker.Loading className="absolute inset-0 grid place-items-center text-sm text-ink-400">
           {t("loading")}
         </EmojiPicker.Loading>
-        <EmojiPicker.Empty className="absolute inset-0 grid place-items-center text-sm text-muted">
+        <EmojiPicker.Empty className="absolute inset-0 grid place-items-center text-sm text-ink-400">
           {t("empty")}
         </EmojiPicker.Empty>
         <EmojiPicker.List
@@ -198,7 +198,7 @@ const LIST_COMPONENTS = {
     ...props
   }: EmojiPickerListCategoryHeaderProps) => (
     <div
-      className="bg-surface-card px-1.5 pt-2 pb-1 text-2xs font-semibold uppercase tracking-label text-muted"
+      className="bg-paper px-1.5 pt-2 pb-1 text-2xs font-semibold uppercase tracking-label text-ink-400"
       {...props}
     >
       {category.label}
@@ -211,7 +211,7 @@ const LIST_COMPONENTS = {
   ),
   Emoji: ({ emoji, ...props }: EmojiPickerListEmojiProps) => (
     <button
-      className="flex h-8 w-8 items-center justify-center rounded-sm text-xl data-[active]:bg-surface-sunken"
+      className="flex h-8 w-8 items-center justify-center rounded-[6px] text-xl data-[active]:bg-apricot-100"
       {...props}
     >
       {emoji.emoji}

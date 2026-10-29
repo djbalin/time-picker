@@ -99,7 +99,7 @@ export default async function Home({ params }: PageProps) {
   ];
 
   return (
-    <main data-surface="home" className="flex flex-1 flex-col">
+    <main data-surface="warm" className="flex flex-1 flex-col">
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inline; `<` is escaped so no string can close the tag.

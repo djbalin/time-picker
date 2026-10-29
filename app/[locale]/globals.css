@@ -201,15 +201,13 @@
       65% 50% at 96% 96%,
       var(--color-blush-100) 0%,
       rgba(251, 221, 235, 0) 62%
-    ),
-    linear-gradient(200deg, #e8f4f1, #eae4fb 60%, #fbedf3);
+    ), linear-gradient(200deg, #e8f4f1, #eae4fb 60%, #fbedf3);
   --grad-page-warm:
     radial-gradient(
       60% 50% at 88% 6%,
       var(--color-butter-100) 0%,
       rgba(255, 239, 207, 0) 58%
-    ),
-    linear-gradient(200deg, #fbedf3, #eae4fb 70%, #e8f4f1);
+    ), linear-gradient(200deg, #fbedf3, #eae4fb 70%, #e8f4f1);
   --grad-selected: linear-gradient(
     100deg,
     var(--color-mint-100),
@@ -236,16 +234,18 @@
   --weight-black: 800;
 
   /* ── Type roles — `font` shorthand, one per role ───────────── */
-  --type-display: var(--weight-regular) var(--text-4xl) / var(--leading-tight)
+  --type-display:
+    var(--weight-regular) var(--text-4xl) / var(--leading-tight)
     var(--font-display);
-  --type-title: var(--weight-regular) var(--text-3xl) / var(--leading-tight)
+  --type-title:
+    var(--weight-regular) var(--text-3xl) / var(--leading-tight)
     var(--font-display);
-  --type-heading: var(--weight-bold) var(--text-xl) / var(--leading-snug)
-    var(--font-core);
-  --type-slot: var(--weight-bold) var(--text-lg) / var(--leading-snug)
-    var(--font-core);
-  --type-body: var(--weight-regular) var(--text-md) / var(--leading-body)
-    var(--font-core);
+  --type-heading:
+    var(--weight-bold) var(--text-xl) / var(--leading-snug) var(--font-core);
+  --type-slot:
+    var(--weight-bold) var(--text-lg) / var(--leading-snug) var(--font-core);
+  --type-body:
+    var(--weight-regular) var(--text-md) / var(--leading-body) var(--font-core);
   --type-meta: var(--weight-regular) var(--text-xs) / 1.4 var(--font-core);
   --type-label: var(--weight-semibold) var(--text-2xs) / 1.4 var(--font-core);
   --type-button: var(--weight-bold) var(--text-lg) / 1 var(--font-core);
@@ -266,8 +266,8 @@
   --dur-slow: 340ms;
   --dur-celebrate: 600ms;
   --motion-lift:
-    transform var(--dur-base) var(--ease-bounce),
-    box-shadow var(--dur-base) var(--ease-out);
+    transform var(--dur-base) var(--ease-bounce), box-shadow var(--dur-base)
+    var(--ease-out);
   --lift-hover: translateY(-3px);
   --press-scale: scale(0.98);
 }
@@ -347,10 +347,11 @@ body {
 }
 
 /*
- * ── Warm ground (landing, trial) ──────────────────────────────────
- * A flat pale apricot-brown in place of the pastel gradient and glass.
- * Scoped to the landing page for now through `data-surface="home"`; if it
- * sticks, these move into the semantic surface tokens above.
+ * ── Warm ground ───────────────────────────────────────────────────
+ * A flat pale apricot-brown in place of the pastel gradient and glass,
+ * with plum as the accent. Routes opt in with `data-surface="warm"` on
+ * their <main> while the rest of the app migrates; once every route has,
+ * these move into the semantic surface tokens above.
  */
 @theme {
   --color-apricot-50: #fdf7f0;
@@ -374,18 +375,18 @@ body {
   --shadow-warm: 0 14px 28px -18px rgba(74, 46, 27, 0.45);
 }
 
-body:has(main[data-surface="home"]) {
+body:has(main[data-surface="warm"]) {
   background: var(--color-apricot-100);
 }
 
 /* The shared header drops its frosted glass on the warm ground. */
-body:has(main[data-surface="home"]) > header {
+body:has(main[data-surface="warm"]) > header {
   background: var(--color-apricot-100);
   backdrop-filter: none;
   border-bottom-color: var(--color-apricot-300);
 }
 
-body:has(main[data-surface="home"]) > footer {
+body:has(main[data-surface="warm"]) > footer {
   background: var(--color-apricot-100);
   border-top-color: var(--color-apricot-300);
 }
