@@ -40,12 +40,9 @@ export function ShareButton({ slug }: { slug: string }) {
       <Button
         onClick={copy}
         size="sm"
+        variant={copied ? "soft" : "support"}
         icon={copied ? "check" : undefined}
-        className={`shadow-none! ${
-          copied
-            ? "bg-yes-soft! text-yes-text!"
-            : "bg-amber-100! text-strong! hover:bg-amber-200!"
-        }`}
+        className={copied ? "bg-mint-100! text-mint-600!" : ""}
       >
         {copied ? t("copied") : t("button")}
       </Button>

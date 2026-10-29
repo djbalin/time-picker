@@ -25,7 +25,7 @@ export function SaveIndicator({
 
   if (state === "saving") {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-muted">
+      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-ink-400">
         <Icon name="progress_activity" size={14} className="animate-spin" />
         {t("saving")}
       </span>

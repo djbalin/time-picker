@@ -198,8 +198,8 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
           {/* The rail shares the calendar's row, so it stretches to the
                 calendar's height and scrolls past it instead of growing. */}
           <div className="grid gap-x-5 gap-y-4 lg:grid-cols-[minmax(0,1fr)_322px]">
-            <div className="min-w-0 rounded-sheet bg-surface-card p-3 shadow-sheet sm:p-[18px]">
-              <p className=" flex flex-wrap items-center gap-x-1 px-1 text-2xs text-muted">
+            <div className="min-w-0 rounded-[14px] border border-apricot-300 bg-paper p-3 sm:p-[18px]">
+              <p className="flex flex-wrap items-center gap-x-1 px-1 text-xs text-ink-400">
                 <span>
                   {t.rich("answeringAs", {
                     name: current.name,
@@ -212,7 +212,7 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
                 <button
                   type="button"
                   onClick={switchPerson}
-                  className="font-bold text-support-text underline underline-offset-2 hover:text-support-hover"
+                  className="font-semibold text-plum-600 underline decoration-plum-300 underline-offset-2 hover:decoration-plum-600"
                 >
                   {t("switchPerson")}
                 </button>
@@ -326,7 +326,7 @@ function NamePill({
       type="button"
       onClick={onClick}
       title={label}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-0.5 align-baseline font-display transition-[filter] hover:brightness-95 ${bg} ${text}`}
+      className={`inline-flex items-center gap-1.5 rounded-[8px] px-2.5 py-0.5 align-baseline font-display transition-[filter] hover:brightness-95 ${bg} ${text}`}
     >
       {children}
       <span className="sr-only">{label}</span>
@@ -358,7 +358,7 @@ function Legend() {
 
 function Empty({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-sheet bg-surface-card p-10 text-center shadow-sheet">
+    <div className="rounded-[14px] border border-apricot-300 bg-paper p-10 text-center">
       <p className="font-display text-xl text-strong">{title}</p>
       {body ? <p className="mt-2 text-sm text-body">{body}</p> : null}
     </div>

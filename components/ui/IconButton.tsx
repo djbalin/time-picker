@@ -15,7 +15,7 @@ const PX: Record<IconButtonSize, string> = {
 };
 
 const VARIANTS: Record<IconButtonVariant, string> = {
-  quiet: "bg-transparent text-body hover:enabled:bg-surface-sunken",
+  quiet: "bg-transparent text-body hover:enabled:bg-apricot-100",
   solid: "bg-plum-600 text-apricot-50 hover:enabled:bg-plum-700",
   glass:
     "bg-paper text-strong ring-1 ring-inset ring-apricot-300 hover:enabled:ring-plum-300",
@@ -43,7 +43,7 @@ export function IconButton({
       aria-label={label}
       title={label}
       className={`grid place-items-center rounded-full cursor-pointer transition-[background-color,color] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] disabled:cursor-not-allowed disabled:opacity-40 ${PX[size]} ${
-        active ? "bg-accent-soft text-accent-text" : VARIANTS[variant]
+        active ? "bg-plum-50 text-plum-700" : VARIANTS[variant]
       } ${className}`}
       {...rest}
     >

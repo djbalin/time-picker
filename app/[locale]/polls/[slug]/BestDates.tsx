@@ -39,9 +39,9 @@ export function BestDates({
 
   return (
     <div
-      className={`flex flex-col rounded-sheet bg-surface-card shadow-sheet ${className}`}
+      className={`flex flex-col rounded-[14px] border border-apricot-300 bg-paper ${className}`}
     >
-      <p className="px-6 pb-2.5 pt-6 text-2xs font-semibold uppercase tracking-label text-muted">
+      <p className="px-5 pb-2.5 pt-5 text-sm font-semibold text-strong">
         {t("bestDates")}
       </p>
 
@@ -50,7 +50,7 @@ export function BestDates({
           <Icon
             name="event"
             size="lg"
-            className="mx-auto mb-2 mt-2 block text-muted"
+            className="mx-auto mb-2 mt-2 block text-ink-300"
           />
           <p className="text-sm text-body">{t("bestDatesEmpty")}</p>
         </div>
@@ -61,10 +61,10 @@ export function BestDates({
             return (
               <div
                 key={day.date}
-                className="flex shrink-0 items-center gap-3 rounded-row p-2.5"
+                className="flex shrink-0 items-center gap-3 rounded-[10px] p-2.5"
               >
                 <span
-                  className={`grid h-[38px] w-[38px] shrink-0 place-items-center rounded-sm font-display text-lg ${heat.tileBg} ${heat.tileFg}`}
+                  className={`grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[8px] font-display text-lg ${heat.tileBg} ${heat.tileFg}`}
                 >
                   {fromDateKey(day.date).getDate()}
                 </span>
@@ -73,7 +73,7 @@ export function BestDates({
                     {formatDateKey(day.date, locale)}
                   </span>
                   {level === "everyone" ? (
-                    <span className="mt-0.5 block truncate text-xs text-muted">
+                    <span className="mt-0.5 block truncate text-xs text-ink-400">
                       {t("canPlayCount", {
                         yes: day.yesCount,
                         total: day.totalCount,
@@ -94,7 +94,7 @@ export function BestDates({
         </div>
       )}
 
-      <div className="mt-auto flex shrink-0 items-center gap-3 border-t border-hairline px-6 py-4">
+      <div className="mt-auto flex shrink-0 items-center gap-3 border-t border-apricot-200 px-5 py-4">
         <AvatarStack names={participantNames} size="md" />
         <span className="text-xs font-semibold text-body">
           {t("answeredCount", { answered, total: participantNames.length })}
@@ -112,7 +112,7 @@ function MissingPeople({ day }: { day: DateSummary }) {
       {day.unavailable.map((person) => (
         <span
           key={person.id}
-          className="rounded-pill bg-no-soft px-2 py-px text-[11px] font-bold text-no-text"
+          className="rounded-[5px] bg-no-soft px-1.5 py-px text-[11px] font-bold text-no-text"
         >
           {person.name}
         </span>
@@ -121,7 +121,7 @@ function MissingPeople({ day }: { day: DateSummary }) {
         <span
           key={person.id}
           title={t("responsePending")}
-          className="rounded-pill bg-paper-2 px-2 py-px text-[11px] font-bold text-muted"
+          className="rounded-[5px] bg-apricot-100 px-1.5 py-px text-[11px] font-bold text-ink-400"
         >
           {person.name}
         </span>

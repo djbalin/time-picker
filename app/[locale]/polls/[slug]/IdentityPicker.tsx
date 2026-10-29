@@ -6,7 +6,7 @@ import { joinPoll } from "@/app/actions/polls";
 import { PlusIcon, SpinnerIcon } from "@/components/icons";
 import type { PollParticipant } from "@/lib/db/queries";
 import { participantColor } from "@/lib/participant-colors";
-import { buttonClass, fieldClass } from "@/lib/ui";
+import { buttonClass, fieldClass, labelClass } from "@/lib/ui";
 
 /**
  * First screen a responder sees. Picking a name is remembered per device, so
@@ -64,11 +64,9 @@ export function IdentityPicker({
   }
 
   return (
-    <section className="rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
-      <h2 className="font-display text-lg font-semibold text-ink">
-        {t("heading")}
-      </h2>
-      <p className="mt-1 text-sm font-semibold text-slate">
+    <section className="rounded-[14px] border border-apricot-300 bg-paper p-6 sm:p-8">
+      <h2 className="font-display text-xl text-strong">{t("heading")}</h2>
+      <p className="mt-1 text-body">
         {participants.length > 0 ? t("subtitlePick") : t("subtitleAdd")}
       </p>
 
@@ -80,18 +78,18 @@ export function IdentityPicker({
               key={participant.id}
               type="button"
               onClick={() => onSelect(participant.id)}
-              className="flex flex-col items-center gap-3 rounded-md border border-line bg-white p-5 shadow-soft transition hover:border-sky hover:shadow-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+              className="flex flex-col items-center gap-3 rounded-[12px] border border-apricot-300 bg-paper p-5 transition-colors hover:border-plum-300 hover:bg-apricot-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plum-500"
             >
               <span
                 aria-hidden="true"
-                className={`grid h-auto w-auto px-4 py-2 place-items-center rounded-full text-lg font-extrabold ${bg} ${text}`}
+                className={`grid h-auto w-auto place-items-center rounded-[8px] px-3.5 py-1.5 text-lg font-bold ${bg} ${text}`}
               >
                 {participant.name}
               </span>
               {/* <span className="text-center text-sm font-extrabold text-ink">
                 {participant.name}
               </span> */}
-              <span className="text-[11px] font-bold text-mist">
+              <span className="text-xs font-semibold text-ink-400">
                 {participant.hasResponded ? t("answered") : t("notAnsweredYet")}
               </span>
             </button>
@@ -102,12 +100,12 @@ export function IdentityPicker({
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="flex flex-col items-center gap-3 rounded-md border border-dashed border-line bg-paper p-5 transition hover:border-sky hover:bg-sky-tint/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky"
+            className="flex flex-col items-center gap-3 rounded-[12px] border border-dashed border-apricot-300 bg-paper p-5 transition-colors hover:border-plum-300 hover:bg-plum-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plum-500"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-cloud text-slate">
+            <span className="grid size-11 place-items-center rounded-[10px] bg-plum-50 text-plum-600">
               <PlusIcon className="h-5 w-5" />
             </span>
-            <span className="text-sm font-extrabold text-slate">
+            <span className="text-sm font-semibold text-body">
               {t("notListed")}
             </span>
           </button>
@@ -115,11 +113,8 @@ export function IdentityPicker({
       </div>
 
       {adding && (
-        <div className="mt-4 rounded-md border border-sky bg-sky-tint/40 p-4">
-          <label
-            className="mb-1.5 block text-xs font-extrabold text-slate"
-            htmlFor="new-participant-name"
-          >
+        <div className="mt-4 rounded-[12px] border border-apricot-300 bg-apricot-50 p-4">
+          <label className={labelClass} htmlFor="new-participant-name">
             {t("yourNameLabel")}
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -154,7 +149,7 @@ export function IdentityPicker({
                     setDraft("");
                     setError(null);
                   }}
-                  className={buttonClass({ variant: "secondary" })}
+                  className={buttonClass({ variant: "quiet" })}
                 >
                   {t("cancel")}
                 </button>
@@ -164,7 +159,7 @@ export function IdentityPicker({
           {error && (
             <p
               id="new-participant-error"
-              className="mt-2 text-xs font-bold text-red-deep"
+              className="mt-2 text-sm font-semibold text-coral-600"
             >
               {error}
             </p>
