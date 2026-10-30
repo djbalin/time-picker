@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { toAppLocale } from "@/i18n/routing";
 import { indexableMetadata } from "@/lib/seo";
@@ -25,7 +25,15 @@ export async function generateMetadata({
   });
 }
 
-export default async function CreatePollPage() {
+export default async function CreatePollPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  // Static rendering needs the locale set in every page, not only the
+  // layout: they render independently, and without it next-intl falls back
+  // to reading request headers, which makes the route dynamic.
+  setRequestLocale(toAppLocale((await params).locale));
   const t = await getTranslations("CreatePollPage");
 
   return (
