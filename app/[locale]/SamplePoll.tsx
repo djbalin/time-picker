@@ -5,21 +5,25 @@ import { useState } from "react";
 import { type DemoDay, MiniMonth } from "./MiniMonth";
 
 // A made-up poll the visitor can answer: five friends have already ticked
-// their days, and the visitor plays the sixth. Ticking Saturday the 16th is
-// what turns it from "most" into "everyone".
+// their days, and the visitor plays the sixth. Most days are one tick short
+// of everyone, so the visitor's tick turns them green; others climb from
+// "few" to "most", and a couple stay out of reach. The 21st to the 24th is a
+// long weekend proposed as a run of days.
 const YEAR = 2027;
 const MONTH = 0; // January
 const TOTAL = 6;
 const FRIENDS_ANSWERED = 5;
 const FRIENDS_YES: Record<number, number> = {
-  8: 3,
-  9: 4,
-  15: 2,
+  8: 5,
+  9: 5,
+  15: 3,
   16: 5,
-  22: 2,
-  23: 4,
-  29: 1,
-  30: 3,
+  21: 3,
+  22: 5,
+  23: 5,
+  24: 2,
+  29: 3,
+  30: 1,
 };
 
 /**
