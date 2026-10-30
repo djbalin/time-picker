@@ -1,11 +1,12 @@
 "use client";
 
 import { Icon } from "./Icon";
+import type { IconName } from "./icon-names";
 
 export type Segment<T extends string> = {
   value: T;
   label: string;
-  icon?: string;
+  icon?: IconName;
 };
 
 /**

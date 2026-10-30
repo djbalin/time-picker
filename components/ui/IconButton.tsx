@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 import { Icon } from "./Icon";
+import type { IconName } from "./icon-names";
 
 /**
  * A round, icon-only button. `label` is required — it is the accessible
@@ -31,7 +32,7 @@ export function IconButton({
   type = "button",
   ...rest
 }: {
-  icon: string;
+  icon: IconName;
   label: string;
   size?: IconButtonSize;
   variant?: IconButtonVariant;

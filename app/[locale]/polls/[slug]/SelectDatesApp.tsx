@@ -137,8 +137,12 @@ export function SelectDatesApp({ poll }: { poll: PollDetail }) {
   );
 
   const nav = [
-    { value: "month" as const, label: t("viewMonth"), icon: "calendar_month" },
-    { value: "nights" as const, label: t("viewNights"), icon: "list" },
+    {
+      value: "month" as const,
+      label: t("viewMonth"),
+      icon: "calendar_month" as const,
+    },
+    { value: "nights" as const, label: t("viewNights"), icon: "list" as const },
   ];
 
   const answered = summary.respondedCount;

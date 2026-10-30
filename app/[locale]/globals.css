@@ -18,9 +18,6 @@
 
 @import "tailwindcss";
 
-/* Material Symbols Rounded is loaded via a <link> in the root layout — a
-   remote @import here is stripped by the CSS build. */
-
 @theme {
   /* ── Base palette — pastel 70s ──────────────────────────────── */
   --color-blush-50: #fdf0f6;
@@ -319,8 +316,7 @@ body {
 /* Material Symbols Rounded glyph. `data-fill="1"` is a state, not a style —
    filled glyphs only for selected nav items and active toggles. */
 .ms {
-  /* biome-ignore lint/a11y/useGenericFontNames: icon font — no meaningful generic fallback */
-  font-family: "Material Symbols Rounded";
+  font-family: var(--font-icons);
   font-weight: 400;
   font-style: normal;
   line-height: 1;

@@ -49,6 +49,8 @@ small and grey; answering pops it to full colour in one bounce.
 ## Fonts
 
 Righteous (display, one weight) and Gabarito (everything else) load via
-`next/font/google` in the root layout. Material Symbols Rounded loads from
-the Google Fonts CDN in `globals.css`; the `.ms` class carries the
-variation settings and `Icon` wraps it.
+`next/font/google` in the root layout. Material Symbols Rounded is a
+self-hosted subset (`material-symbols-rounded.woff2`) holding only the
+glyphs in `icon-names.ts`, loaded with `next/font/local` in the root layout;
+the `.ms` class carries the variation settings and `Icon` wraps it. To use a
+new glyph, add it to `ICON_NAMES` and run `pnpm icons:font`.

@@ -1,8 +1,10 @@
 import type { CSSProperties } from "react";
+import type { IconName } from "./icon-names";
 
 /**
- * A Material Symbols Rounded glyph. The font is loaded globally in
- * `globals.css`; the `.ms` class carries the variation settings.
+ * A Material Symbols Rounded glyph. The font is a self-hosted subset loaded
+ * in the root layout; the `.ms` class in `globals.css` carries the variation
+ * settings. A new glyph needs adding to `ICON_NAMES` first.
  *
  * Icons are `currentColor` by default and inherit the surrounding ink.
  * Colour one only when it carries answer semantics (mint check, butter
@@ -20,7 +22,7 @@ export function Icon({
   className = "",
   style,
 }: {
-  name: string;
+  name: IconName;
   /** A keyword (`sm`–`xl`) or an explicit pixel size. */
   size?: IconSize | number;
   /** Filled glyph — a *state* (selected nav, active toggle), not a style. */

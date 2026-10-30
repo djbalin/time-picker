@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "./Icon";
+import type { IconName } from "./icon-names";
 
 /**
  * The round tick — the single most important control in the product.
@@ -19,7 +20,7 @@ const CYCLE: Record<SlotMode, SlotValue[]> = {
 
 const STATES: Record<
   "yes" | "maybe" | "no",
-  { className: string; icon: string }
+  { className: string; icon: IconName }
 > = {
   yes: { className: "bg-yes text-yes-text", icon: "check" },
   maybe: { className: "bg-maybe text-maybe-text", icon: "question_mark" },
