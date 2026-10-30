@@ -38,14 +38,16 @@ const FAQ_KEYS = [
 const STEP_YEAR = 2027;
 const STEP_MONTH = 0;
 const STEP_TOTAL = 6;
-const PROPOSED = [8, 9, 15, 16, 22, 23, 29, 30];
+const PROPOSED = [8, 9, 15, 16, 21, 22, 23, 24, 29, 30];
 const PARTWAY: Record<number, number> = {
   8: 2,
   9: 3,
   15: 1,
   16: 4,
+  21: 2,
   22: 1,
   23: 3,
+  24: 1,
   29: 1,
   30: 2,
 };
@@ -54,8 +56,10 @@ const SETTLED: Record<number, number> = {
   9: 4,
   15: 2,
   16: 6,
-  22: 2,
-  23: 4,
+  21: 4,
+  22: 6,
+  23: 6,
+  24: 6,
   29: 1,
   30: 3,
 };
