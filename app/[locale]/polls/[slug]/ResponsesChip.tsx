@@ -111,10 +111,18 @@ function DayResponses({
     ...day.pending.map((p) => ({ ...p, mark: "pending" as const })),
   ];
   const MARK = {
-    yes: { icon: "check", color: "var(--color-yes)", label: t("responseYes") },
-    no: { icon: "close", color: "var(--color-no)", label: t("responseNo") },
+    yes: {
+      icon: "check" as const,
+      color: "var(--color-yes)",
+      label: t("responseYes"),
+    },
+    no: {
+      icon: "close" as const,
+      color: "var(--color-no)",
+      label: t("responseNo"),
+    },
     pending: {
-      icon: "schedule",
+      icon: "schedule" as const,
       color: "var(--color-ink-200)",
       label: t("responsePending"),
     },

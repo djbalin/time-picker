@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { Icon } from "./Icon";
+import type { IconName } from "./icon-names";
 
 /**
  * The button: a slim pill. Hover darkens it one step; press shrinks it a
@@ -70,9 +71,9 @@ export function Button({
   size?: ButtonSize;
   full?: boolean;
   /** Leading Material Symbols glyph name. */
-  icon?: string;
+  icon?: IconName;
   /** Trailing Material Symbols glyph name. */
-  iconEnd?: string;
+  iconEnd?: IconName;
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
+import type { IconName } from "./icon-names";
 
 /**
  * A small status pill. Answer tones (`yes` / `maybe` / `no`) are semantic:
@@ -34,7 +35,7 @@ export function Chip({
 }: {
   children: ReactNode;
   tone?: ChipTone;
-  icon?: string;
+  icon?: IconName;
   /** Uppercase + tracked. On by default; turn off for sentence-case chips. */
   caps?: boolean;
   size?: "sm" | "md";

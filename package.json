@@ -10,6 +10,7 @@
     "lint": "biome check",
     "format": "biome format --write",
     "test": "tsx ./scripts/checks.ts",
+    "icons:font": "tsx ./scripts/fetch-icon-font.ts",
     "supabase": "supabase",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
